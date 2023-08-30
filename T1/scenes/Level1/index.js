@@ -1,27 +1,44 @@
 import * as THREE from "three";
 import Stats from "../../../build/jsm/libs/stats.module.js";
 import { TrackballControls } from "../../../build/jsm/controls/TrackballControls.js";
-import { initRenderer, initCamera, onWindowResize, initDefaultBasicLight } from "../../../libs/util/util.js";
+import { initRenderer, onWindowResize, initDefaultBasicLight } from "../../../libs/util/util.js";
 import Hitter from "../../sprites/Hitter/index.js";
 import Block from "../../sprites/Block/index.js";
+import OrthographicCameraWrapper from "../../utils/OrthographicCameraWrapper/index.js";
+import Platform from "../../sprites/Platform/index.js";
 
 const scene = new THREE.Scene();
 const stats = new Stats();
 const renderer = initRenderer();
-const camera = initCamera(new THREE.Vector3(1, 0, 0));
+const camera = new OrthographicCameraWrapper();
+camera.disableZoom();
 const trackballControls = new TrackballControls(camera, renderer.domElement);
 initDefaultBasicLight(scene);
 
 const buildLevel = () => {
-    const level = [];
+    const buildPlatform = () => {
+        const platform = new Platform(15, 30, 0x00ff00);
+        return platform;
+    };
 
-    level.push(new Hitter(0, 0, 0));
+    const buildHitter = () => {
+        const hitter = new Hitter(0, -10, 0);
+        return hitter;
+    };
 
-    for (let i = 0; i < 10; i++) {
-        for (let j = 0; j < 10; j++) {
-            level.push(new Block(0, i + i * 0.1 + 5, j + j * 0.1 - 5));
+    const buildBlocks = () => {
+        const blocks = [];
+
+        for (let i = 0; i < 10; i++) {
+            for (let j = 0; j < 10; j++) {
+                blocks.push(new Block(i + i * 0.1 - 5, j + j * 0.1 + 5, 0).translateY(-1));
+            }
         }
-    }
+
+        return blocks;
+    };
+
+    const level = [buildPlatform(), buildHitter(), ...buildBlocks()];
 
     return level;
 };
