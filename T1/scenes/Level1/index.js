@@ -23,6 +23,7 @@ const buildLevel = () => {
 
     const buildHitter = () => {
         const hitter = new Hitter(0, -10, 0);
+        hitter.dance();
         return hitter;
     };
 

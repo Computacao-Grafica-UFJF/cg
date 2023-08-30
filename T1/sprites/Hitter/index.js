@@ -13,7 +13,7 @@ class Hitter extends THREE.Mesh {
     }
 
     dance = () => {
-        this.translateX(5);
+        this.translateX(2);
     };
 }
 
