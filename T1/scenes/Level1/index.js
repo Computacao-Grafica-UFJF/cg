@@ -78,18 +78,4 @@ const render = () => {
     renderer.render(scene, camera);
 };
 
-// function clearSelected()
-// {
-//    for (let i = 0; i < objects.length; i++)
-//       objects[i].material.emissive.setRGB(0, 0, 0);
-// }
-
-// function showInterceptionCoords(layer, point)
-// {
-//    leftBox.changeMessage("Intersection on Layer " + layer + "  [" +
-//        point.x.toFixed(2) + ", " +
-//        point.y.toFixed(2) + ", " +
-//        point.z.toFixed(2) + "]");
-// }
-
 export default render;
