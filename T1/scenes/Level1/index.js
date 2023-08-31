@@ -55,10 +55,10 @@ const buildLevel = () => {
     };
 
     const buildWalls = () => {
-        const wallBottom = new Wall(0, width + 0.1, 0, 0.1, 0.1, width, 30, true);
-        const wallTop = new Wall(0, -width - 0.1, 0, 0.1, 0.1, width, 30, true);
-        const wallLeft = new Wall(-width / 2 - 0.1, 0, 0, 0.1, 0.1, width * 2, 30);
-        const wallRight = new Wall(width / 2 + 0.1, 0, 0, 0.1, 0.1, width * 2, 30);
+        const wallBottom = new Wall(0, width + 0.5, 0, width, 1);
+        const wallTop = new Wall(0, -width - 0.5, 0, width, 1);
+        const wallLeft = new Wall(-width / 2 - 0.5, 0, 0, 1, 2 * width);
+        const wallRight = new Wall(width / 2 + 0.5, 0, 0, 1, 2 * width);
 
         return [wallLeft, wallRight, wallTop, wallBottom];
     };
@@ -80,7 +80,7 @@ window.addEventListener(
 );
 
 const hitterObject = level.find((object) => object instanceof Hitter);
-const playablePlatform = new Platform(15 - hitterObject.geometry.parameters.height, 30, 0x00ff00);
+const playablePlatform = new Platform(15 - hitterObject.geometry.parameters.width, 30, 0x00ff00);
 scene.add(playablePlatform);
 
 const raycaster = new Raycaster();
