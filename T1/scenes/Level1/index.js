@@ -7,6 +7,8 @@ import Block from "../../sprites/Block/index.js";
 import OrthographicCameraWrapper from "../../utils/OrthographicCameraWrapper/index.js";
 import Platform from "../../sprites/Platform/index.js";
 import Raycaster from "../../utils/Raycaster/index.js";
+import MiniBall from "../../sprites/MiniBall/index.js";
+import Wall from "../../sprites/Wall/index.js";
 
 const scene = new THREE.Scene();
 const stats = new Stats();
@@ -16,6 +18,8 @@ camera.disableZoom();
 const trackballControls = new TrackballControls(camera, renderer.domElement);
 initDefaultBasicLight(scene);
 
+const width = 15;
+
 const buildLevel = () => {
     const buildGamePlatform = () => {
         const gamePlatform = new Platform(innerWidth, innerHeight, "#000");
@@ -23,7 +27,7 @@ const buildLevel = () => {
     };
 
     const buildPlatform = () => {
-        const platform = new Platform(15, 30, 0x00ff00);
+        const platform = new Platform(width, 2 * width, 0x00ff00);
         return platform;
     };
 
@@ -44,7 +48,22 @@ const buildLevel = () => {
         return blocks;
     };
 
-    const level = [buildGamePlatform(), buildPlatform(), buildHitter(), ...buildBlocks()];
+    const buildMiniBall = () => {
+        const miniball = new MiniBall(0, 0, 0);
+
+        return miniball;
+    };
+
+    const buildWalls = () => {
+        const wallBottom = new Wall(0, width + 0.5, 0, width, 1);
+        const wallTop = new Wall(0, -width - 0.5, 0, width, 1);
+        const wallLeft = new Wall(-width / 2 - 0.5, 0, 0, 1, 2 * width);
+        const wallRight = new Wall(width / 2 + 0.5, 0, 0, 1, 2 * width);
+
+        return [wallLeft, wallRight, wallTop, wallBottom];
+    };
+
+    const level = [buildGamePlatform(), buildPlatform(), buildHitter(), buildMiniBall(), ...buildWalls(), ...buildBlocks()];
 
     return level;
 };
@@ -61,7 +80,7 @@ window.addEventListener(
 );
 
 const hitterObject = level.find((object) => object instanceof Hitter);
-const playablePlatform = new Platform(15 - hitterObject.geometry.parameters.height, 30, 0x00ff00);
+const playablePlatform = new Platform(15 - hitterObject.geometry.parameters.width, 30, 0x00ff00);
 scene.add(playablePlatform);
 
 const raycaster = new Raycaster();
