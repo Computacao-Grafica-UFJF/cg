@@ -46,9 +46,18 @@ const buildLevel = () => {
     };
 
     const buildMiniBall = () => {
-        const miniball = new MiniBall(0.5, 32, 32, "rgb(255, 0, 0)", 1000);
+        const miniball = new MiniBall(0, 0, 0);
 
         return miniball;
+    };
+
+    const buildWalls = () => {
+        const wallBottom = new Hitter(0, -10, 0);
+        const wallTop = new Hitter(0, -10, 0);
+        const wallLeft = new Hitter(0, -10, 0);
+        const wallRight = new Hitter(0, -10, 0);
+
+        return wall;
     };
 
     const level = [buildGamePlatform(), buildPlatform(), buildHitter(), buildMiniBall(), ...buildBlocks()];
