@@ -61,7 +61,7 @@ window.addEventListener(
 );
 
 const hitterObject = level.find((object) => object instanceof Hitter);
-const playablePlatform = new Platform(15 - hitterObject.geometry.parameters.height, 30, 0x00ffcccc);
+const playablePlatform = new Platform(15 - hitterObject.geometry.parameters.height, 30, 0x00ff00);
 scene.add(playablePlatform);
 
 const raycaster = new Raycaster();
