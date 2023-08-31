@@ -16,18 +16,19 @@ class Hitter extends THREE.Mesh {
         this.translateX(2);
     };
 
-    // moveX = (x) => {
-    //     if (x >= 0) {
-    //         console.log(x, "+", this.geometry.parameters.height / 2);
-    //         this.position.x = x - this.geometry.parameters.height / 2;
-    //     } else {
-    //         this.position.x = x + this.geometry.parameters.height / 2;
+    // moveX = (x, width) => {
+    //     if (x > 0 && x + this.geometry.parameters.height > width / 2) {
+    //         x = x - this.geometry.parameters.height / 2;
     //     }
+    //     if (x < 0 && x - this.geometry.parameters.height < width / 2) {
+    //         x = x + this.geometry.parameters.height / 2;
+    //     }
+
+    //     this.position.x = x;
     // };
 
     moveX = (x) => {
-        const halfHeight = this.geometry.parameters.height / 2;
-        this.position.x = x + (x >= 0 ? -halfHeight : halfHeight);
+        this.position.x = x;
     };
 }
 
