@@ -7,6 +7,7 @@ import Block from "../../sprites/Block/index.js";
 import OrthographicCameraWrapper from "../../utils/OrthographicCameraWrapper/index.js";
 import Platform from "../../sprites/Platform/index.js";
 import Raycaster from "../../utils/Raycaster/index.js";
+import MiniBall from "../../sprites/MiniBall/index.js";
 
 const scene = new THREE.Scene();
 const stats = new Stats();
@@ -44,7 +45,13 @@ const buildLevel = () => {
         return blocks;
     };
 
-    const level = [buildGamePlatform(), buildPlatform(), buildHitter(), ...buildBlocks()];
+    const buildMiniBall = () => {
+        const miniball = new MiniBall(0.5, 32, 32, "rgb(255, 0, 0)", 1000);
+
+        return miniball;
+    };
+
+    const level = [buildGamePlatform(), buildPlatform(), buildHitter(), buildMiniBall(), ...buildBlocks()];
 
     return level;
 };
