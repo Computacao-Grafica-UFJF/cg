@@ -17,8 +17,8 @@ Files for the Computer Graphics course in Three.js
 ## Hitter
 
 -   [x] Hitter structure
--   [ ] Hitter movement
--   [ ] Mouse Listener
+-   [x] Hitter movement
+-   [x] Mouse Listener
 -   [ ] Hitter collision with Mini Ball
 
 ## Wall
