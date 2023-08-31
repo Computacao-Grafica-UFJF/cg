@@ -16,17 +16,6 @@ class Hitter extends THREE.Mesh {
         this.translateX(2);
     };
 
-    // moveX = (x, width) => {
-    //     if (x > 0 && x + this.geometry.parameters.height > width / 2) {
-    //         x = x - this.geometry.parameters.height / 2;
-    //     }
-    //     if (x < 0 && x - this.geometry.parameters.height < width / 2) {
-    //         x = x + this.geometry.parameters.height / 2;
-    //     }
-
-    //     this.position.x = x;
-    // };
-
     moveX = (x) => {
         this.position.x = x;
     };
