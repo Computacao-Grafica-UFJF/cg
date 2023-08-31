@@ -87,9 +87,8 @@ function onMouseMove(event) {
         // intersectionSphere.visible = true;
         intersectionSphere.position.set(point.x, point.y, point.z);
         const hitterObject = level.find((object) => object instanceof Hitter);
-        const plataformObject = level.find((object) => object instanceof Platform);
 
-        hitterObject.moveX(point.x, plataformObject.geometry.parameters.width);
+        hitterObject.moveX(point.x);
     }
 }
 
