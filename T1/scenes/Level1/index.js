@@ -66,8 +66,11 @@ scene.add(playablePlatform);
 
 const raycaster = new Raycaster();
 
+const platforms = level.filter((element) => element instanceof Platform);
+platforms.push(playablePlatform);
+
 window.addEventListener("mousemove", (event) => {
-    raycaster.onMouseMove(event, hitterObject, playablePlatform, camera);
+    raycaster.onMouseMove(event, hitterObject, platforms, camera);
 });
 
 const render = () => {
