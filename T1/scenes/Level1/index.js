@@ -55,10 +55,10 @@ const buildLevel = () => {
     };
 
     const buildWalls = () => {
-        const wallBottom = new Wall(0, width + 0.5, 0, 0.5, 0.5, width, 32, true);
-        const wallTop = new Wall(0, -width - 0.5, 0, 0.5, 0.5, width, 32, true);
-        const wallLeft = new Wall(-width / 2 - 0.5, 0, 0, 0.5, 0.5, width, 32);
-        const wallRight = new Wall(width / 2 + 0.5, 0, 0, 0.5, 0.5, width, 32);
+        const wallBottom = new Wall(0, width + 0.1, 0, 0.1, 0.1, width, 30, true);
+        const wallTop = new Wall(0, -width - 0.1, 0, 0.1, 0.1, width, 30, true);
+        const wallLeft = new Wall(-width / 2 - 0.1, 0, 0, 0.1, 0.1, width * 2, 30);
+        const wallRight = new Wall(width / 2 + 0.1, 0, 0, 0.1, 0.1, width * 2, 30);
 
         return [wallLeft, wallRight, wallTop, wallBottom];
     };

@@ -6,7 +6,7 @@ class Wall extends THREE.Mesh {
         if (rotate) {
             cylinderGeometry = new THREE.CylinderGeometry(radiusTop, radiusBottom, height, radialSegments).rotateX(Math.PI / 2).rotateY(Math.PI / 2);
         } else {
-            cylinderGeometry = new THREE.CylinderGeometry(0.5, 0.5, 32, 32);
+            cylinderGeometry = new THREE.CylinderGeometry(radiusTop, radiusBottom, height, radialSegments);
         }
 
         const cylinderMaterial = new THREE.MeshBasicMaterial({ color: "rgb(0, 0, 0)" });
