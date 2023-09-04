@@ -11,15 +11,46 @@ export class MiniBall extends THREE.Mesh {
         this.translateY(y);
         this.translateZ(z);
 
-        this.speedX = 0.1;
+        this.speedX = 0.3;
         this.angle = -Math.PI / 2;
 
-        this.rotateX(this.angle);
+        this.rotateZ(this.angle);
     }
 
-    update() {
+    radToDeg = (rad) => {
+        return rad * (180 / Math.PI);
+    };
+
+    update(hitter, walls, blocks) {
+        const collisionWithHitter = () => {
+            const ballBoundingBox = new THREE.Box3().setFromObject(this);
+            const hitterBoundingBox = new THREE.Box3().setFromObject(hitter);
+
+            if (ballBoundingBox.intersectsBox(hitterBoundingBox)) {
+                const relativeX = this.position.x - hitter.position.x;
+                const angle = hitter.getKickBallAngle(relativeX);
+                this.angle = angle;
+                this.rotation.set(0, 0, angle);
+            }
+        };
+
+        const collisionWithWalls = () => {
+            const ballBoundingBox = new THREE.Box3().setFromObject(this);
+
+            walls.forEach((wall) => {
+                const wallBoundingBox = new THREE.Box3().setFromObject(wall);
+
+                if (ballBoundingBox.intersectsBox(wallBoundingBox)) {
+                    this.angle = wall.type === "horizontal" ? -this.angle : Math.PI - this.angle;
+                    this.rotation.set(0, 0, this.angle);
+                }
+            });
+        };
+
+        collisionWithHitter();
+        collisionWithWalls();
         this.translateX(this.speedX);
-        this.rotation.set(0, 0, this.angle);
     }
 }
+
 export default MiniBall;

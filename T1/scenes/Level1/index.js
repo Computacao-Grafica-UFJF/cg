@@ -62,12 +62,12 @@ class Level1 {
     }
 
     buildWalls() {
-        const wallBottom = new Wall(0, game.width + 0.5, 0, game.width + 2, 1);
-        const wallTop = new Wall(0, -game.width - 0.5, 0, game.width + 2, 1);
-        const wallLeft = new Wall(-game.width / 2 - 0.5, 0, 0, 1, 2 * game.width);
-        const wallRight = new Wall(game.width / 2 + 0.5, 0, 0, 1, 2 * game.width);
+        const wallTop = new Wall(0, game.width + 0.5, 0, game.width + 2, 1, "horizontal");
+        const wallBottom = new Wall(0, -game.width - 0.5, 0, game.width + 2, 1, "horizontal");
+        const wallLeft = new Wall(-game.width / 2 - 0.5, 0, 0, 1, 2 * game.width, "vertical");
+        const wallRight = new Wall(game.width / 2 + 0.5, 0, 0, 1, 2 * game.width, "vertical");
 
-        return [wallLeft, wallRight, wallTop, wallBottom];
+        return [wallTop, wallBottom, wallLeft, wallRight];
     }
 
     buildPlayablePlatform() {
@@ -80,7 +80,7 @@ class Level1 {
     }
 
     moveMiniBall() {
-        this.miniBall.update();
+        this.miniBall.update(this.hitter, this.walls, this.blocks);
     }
 }
 

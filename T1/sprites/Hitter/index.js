@@ -15,6 +15,18 @@ class Hitter extends THREE.Mesh {
     moveX = (x) => {
         this.position.x = x;
     };
+
+    getKickBallAngle(relativeX) {
+        const inputMax = -2.5;
+        const inputMin = 2.5;
+
+        const outputMin = 10;
+        const outputMax = 170;
+
+        const outputValue = ((relativeX - inputMin) / (inputMax - inputMin)) * (outputMax - outputMin) + outputMin;
+
+        return THREE.MathUtils.degToRad(Math.min(Math.max(outputValue, outputMin), outputMax));
+    }
 }
 
 export default Hitter;
