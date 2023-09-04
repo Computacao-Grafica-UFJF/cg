@@ -92,6 +92,8 @@ function moveCameraLookAtToYNegative() {
 function keyboardUpdate() {
     keyboard.update();
 
+    console.log(keyboard.getKey());
+
     if (keyboard.pressed("pageup")) moveCameraToLookAtZoom();
     if (keyboard.pressed("pagedown")) moveCameraToLookOpposite();
 

@@ -50,7 +50,7 @@ scene.add(...level);
 window.addEventListener(
     "resize",
     () => {
-        onWindowResize(camera, renderer);
+        onWindowResize(camera, renderer, 30);
     },
     false
 );

@@ -12,8 +12,8 @@ class OrthographicCameraWrapper extends THREE.OrthographicCamera {
     }
 
     disableZoom = () => {
-        this.zoom = 1;
-        this.updateProjectionMatrix();
+        // this.zoom = 1;
+        // this.updateProjectionMatrix();
     };
 }
 
