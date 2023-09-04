@@ -11,7 +11,7 @@ export class MiniBall extends THREE.Mesh {
         this.translateY(y);
         this.translateZ(z);
 
-        this.speedX = 0.3;
+        this.speed = 0.3;
         this.angle = -Math.PI / 2;
 
         this.rotateZ(this.angle);
@@ -21,7 +21,7 @@ export class MiniBall extends THREE.Mesh {
         return rad * (180 / Math.PI);
     };
 
-    update(hitter, walls, blocks) {
+    update(hitter, walls, blocks, deathZones) {
         const collisionWithHitter = () => {
             const ballBoundingBox = new THREE.Box3().setFromObject(this);
             const hitterBoundingBox = new THREE.Box3().setFromObject(hitter);
@@ -47,9 +47,22 @@ export class MiniBall extends THREE.Mesh {
             });
         };
 
+        const collisionWithDeathZones = () => {
+            const ballBoundingBox = new THREE.Box3().setFromObject(this);
+
+            deathZones.forEach((deathZone) => {
+                const wallBoundingBox = new THREE.Box3().setFromObject(deathZone);
+
+                if (ballBoundingBox.intersectsBox(wallBoundingBox)) {
+                    this.speed = 0;
+                }
+            });
+        };
+
         collisionWithHitter();
         collisionWithWalls();
-        this.translateX(this.speedX);
+        collisionWithDeathZones();
+        this.translateX(this.speed);
     }
 }
 

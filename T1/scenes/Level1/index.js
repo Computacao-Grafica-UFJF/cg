@@ -80,7 +80,10 @@ class Level1 {
     }
 
     moveMiniBall() {
-        this.miniBall.update(this.hitter, this.walls, this.blocks);
+        const collisionWalls = [this.walls[0], this.walls[2], this.walls[3]];
+        const deathZones = [this.walls[1]];
+
+        this.miniBall.update(this.hitter, collisionWalls, this.blocks, deathZones);
     }
 }
 
