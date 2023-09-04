@@ -102,10 +102,6 @@ KeyboardState.prototype.pressed = function (keyName) {
     return KeyboardState.status[keyName] && KeyboardState.status[keyName].pressed;
 };
 
-KeyboardState.prototype.getKey = function () {
-    for (var arg in KeyboardState.status) return arg;
-};
-
 KeyboardState.prototype.up = function (keyName) {
     return KeyboardState.status[keyName] && KeyboardState.status[keyName].up;
 };
