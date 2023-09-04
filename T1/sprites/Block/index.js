@@ -11,10 +11,6 @@ class Block extends THREE.Mesh {
         this.translateY(y);
         this.translateZ(z);
     }
-
-    dance = () => {
-        this.translateX(5);
-    };
 }
 
 export default Block;

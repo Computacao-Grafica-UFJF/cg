@@ -21,7 +21,7 @@ const trackballControls = new TrackballControls(camera, renderer.domElement);
 initDefaultBasicLight(scene);
 
 class Level1 {
-    constructor() {
+    constructor(scene) {
         this.gamePlatform = this.buildGamePlatform();
         this.platform = this.buildPlatform();
         this.hitter = this.buildHitter();
@@ -31,6 +31,7 @@ class Level1 {
         this.blocks = [...this.buildBlocks()];
 
         this.raycaster = new Raycaster();
+        this.scene = scene;
     }
 
     buildGamePlatform() {
@@ -79,11 +80,16 @@ class Level1 {
         return [this.gamePlatform, this.platform, this.hitter, this.playablePlatform, this.miniBall, ...this.walls, ...this.blocks];
     }
 
+    destroyBlock(block) {
+        this.blocks = this.blocks.filter((b) => b !== block);
+        this.scene.remove(block);
+    }
+
     moveMiniBall() {
         const collisionWalls = [this.walls[0], this.walls[2], this.walls[3]];
         const deathZones = [this.walls[1]];
 
-        this.miniBall.update(this.hitter, collisionWalls, this.blocks, deathZones);
+        this.miniBall.update(this.hitter, collisionWalls, this.blocks, deathZones, this.destroyBlock.bind(this));
     }
 }
 
@@ -100,7 +106,7 @@ const startListeners = (level, camera, renderer) => {
     });
 };
 
-const level = new Level1();
+const level = new Level1(scene);
 
 scene.add(...level.getElements());
 

@@ -2,7 +2,7 @@ import * as THREE from "three";
 
 class Hitter extends THREE.Mesh {
     constructor(x, y, z) {
-        const cylinderGeometry = new THREE.BoxGeometry(4, 1, 1);
+        const cylinderGeometry = new THREE.BoxGeometry(4, 0.5, 1);
         const cylinderMaterial = new THREE.MeshPhongMaterial({ color: "rgb(255,255,255)" });
 
         super(cylinderGeometry, cylinderMaterial);

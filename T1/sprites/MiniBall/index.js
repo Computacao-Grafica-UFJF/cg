@@ -51,6 +51,54 @@ export class MiniBall extends THREE.Mesh {
         });
     };
 
+    invertHorizontally(angle) {
+        angle = angle % 360;
+        if (angle < 0) {
+            angle += 360;
+        }
+
+        const angleOfIncidence = 90 - angle;
+        const reflectedAngle = 90 + angleOfIncidence;
+
+        return reflectedAngle;
+    }
+
+    invertHorizontally(angle) {
+        return -angle;
+    }
+
+    invertVertically(angle) {
+        return Math.PI - angle;
+    }
+
+    collisionWithBlocks = (blocks, destroyBlock) => {
+        const ballBoundingBox = new THREE.Box3().setFromObject(this);
+
+        blocks.forEach((block) => {
+            const blockBoundingBox = new THREE.Box3().setFromObject(block);
+
+            if (ballBoundingBox.intersectsBox(blockBoundingBox)) {
+                const ballCenter = new THREE.Vector3();
+                ballBoundingBox.getCenter(ballCenter);
+
+                const blockCenter = new THREE.Vector3();
+                blockBoundingBox.getCenter(blockCenter);
+
+                const relativePosition = ballCenter.clone().sub(blockCenter);
+
+                if (Math.abs(relativePosition.x) > Math.abs(relativePosition.y)) {
+                    this.angle = this.invertHorizontally(this.angle);
+                } else {
+                    this.angle = this.invertVertically(this.angle);
+                }
+
+                this.rotation.set(0, 0, this.angle);
+
+                destroyBlock(block);
+            }
+        });
+    };
+
     collisionWithDeathZones = (deathZones) => {
         const ballBoundingBox = new THREE.Box3().setFromObject(this);
 
@@ -63,9 +111,10 @@ export class MiniBall extends THREE.Mesh {
         });
     };
 
-    update(hitter, walls, blocks, deathZones) {
+    update(hitter, walls, blocks, deathZones, destroyBlock) {
         this.collisionWithHitter(hitter);
         this.collisionWithWalls(walls);
+        this.collisionWithBlocks(blocks, destroyBlock);
         this.collisionWithDeathZones(deathZones);
         this.translateX(this.speed);
     }
