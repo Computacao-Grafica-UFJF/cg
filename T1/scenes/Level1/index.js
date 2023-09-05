@@ -105,21 +105,13 @@ class Level1 extends Engine {
     }
 }
 
-const keyboardUpdate = (level) => {
-    keyboard.update();
-
-    if (keyboard.down("R")) level.restart();
-    if (keyboard.down("space")) console.log("space");
-    // if (keyboard.down("enter")) goFullScreen();
-};
-
 const level = new Level1(camera, renderer, scene);
 
 const render = () => {
     stats.update();
     trackballControls.update();
     level.moveMiniBall();
-    keyboardUpdate(level);
+    level.keyboardUpdate(level);
     requestAnimationFrame(render);
 
     renderer.render(scene, camera);

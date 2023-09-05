@@ -5,6 +5,7 @@ class FullScreenControl {
 
     toggleFullScreen() {
         this.isFullScreen ? this.exitFullScreen() : this.goFullScreen();
+        this.isFullScreen = !this.isFullScreen;
     }
 
     goFullScreen() {
