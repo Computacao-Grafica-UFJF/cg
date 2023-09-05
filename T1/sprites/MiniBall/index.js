@@ -68,8 +68,14 @@ export class MiniBall extends THREE.Mesh {
         return 2 * Math.PI - angle;
     }
 
+    verifyIfHorizontalCollisionOrVerticalCollision(relativePosition) {
+        return Math.abs(relativePosition.x) > Math.abs(relativePosition.y);
+    }
+
     collisionWithBlocks = (blocks, destroyBlock) => {
         const ballBoundingBox = new THREE.Box3().setFromObject(this);
+
+        // TODO: Conserte a colisão
 
         blocks.forEach((block) => {
             const blockBoundingBox = new THREE.Box3().setFromObject(block);
@@ -83,7 +89,7 @@ export class MiniBall extends THREE.Mesh {
 
                 const relativePosition = ballCenter.clone().sub(blockCenter);
 
-                Math.abs(relativePosition.x) > Math.abs(relativePosition.y)
+                this.verifyIfHorizontalCollisionOrVerticalCollision(relativePosition)
                     ? (this.angle = this.invertHorizontally(this.angle))
                     : (this.angle = this.invertVertically(this.angle));
 

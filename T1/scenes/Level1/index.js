@@ -9,7 +9,6 @@ import Platform from "../../sprites/Platform/index.js";
 import MiniBall from "../../sprites/MiniBall/index.js";
 import Wall from "../../sprites/Wall/index.js";
 import game from "../../config/Game.js";
-import KeyboardState from "../../../libs/util/KeyboardState.js";
 
 import OrthographicCameraWrapper from "../../utils/OrthographicCameraWrapper/index.js";
 import Engine from "../../utils/Engine/index.js";
@@ -19,7 +18,7 @@ const stats = new Stats();
 const renderer = initRenderer();
 const camera = new OrthographicCameraWrapper();
 const trackballControls = new TrackballControls(camera, renderer.domElement);
-const keyboard = new KeyboardState();
+
 initDefaultBasicLight(scene);
 
 class Level1 extends Engine {
