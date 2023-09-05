@@ -1,27 +1,35 @@
 import * as THREE from "three";
 import Stats from "../../../build/jsm/libs/stats.module.js";
 import { TrackballControls } from "../../../build/jsm/controls/TrackballControls.js";
-import { initRenderer, initDefaultBasicLight, onWindowResize } from "../../../libs/util/util.js";
+import { initRenderer, initDefaultBasicLight } from "../../../libs/util/util.js";
 
 import Hitter from "../../sprites/Hitter/index.js";
 import Block from "../../sprites/Block/index.js";
 import Platform from "../../sprites/Platform/index.js";
-import Raycaster from "../../utils/Raycaster/index.js";
 import MiniBall from "../../sprites/MiniBall/index.js";
 import Wall from "../../sprites/Wall/index.js";
 import game from "../../config/Game.js";
+import KeyboardState from "../../../libs/util/KeyboardState.js";
 
 import OrthographicCameraWrapper from "../../utils/OrthographicCameraWrapper/index.js";
+import Engine from "../../utils/Engine/index.js";
 
 const scene = new THREE.Scene();
 const stats = new Stats();
 const renderer = initRenderer();
 const camera = new OrthographicCameraWrapper();
 const trackballControls = new TrackballControls(camera, renderer.domElement);
+const keyboard = new KeyboardState();
 initDefaultBasicLight(scene);
 
-class Level1 {
-    constructor(scene) {
+class Level1 extends Engine {
+    constructor(camera, renderer, scene) {
+        super(camera, renderer, scene);
+
+        this.start();
+    }
+
+    start() {
         this.gamePlatform = this.buildGamePlatform();
         this.platform = this.buildPlatform();
         this.hitter = this.buildHitter();
@@ -30,8 +38,12 @@ class Level1 {
         this.walls = [...this.buildWalls()];
         this.blocks = [...this.buildBlocks()];
 
-        this.raycaster = new Raycaster();
-        this.scene = scene;
+        this.scene.add(...this.getElements());
+    }
+
+    restart() {
+        this.scene.remove(...this.getElements());
+        this.start();
     }
 
     buildGamePlatform() {
@@ -93,29 +105,21 @@ class Level1 {
     }
 }
 
-const startListeners = (level, camera, renderer) => {
-    window.addEventListener(
-        "resize",
-        () => {
-            onWindowResize(camera, renderer, 40);
-        },
-        false
-    );
-    window.addEventListener("mousemove", (event) => {
-        level.raycaster.onMouseMove(event, level, camera);
-    });
+const keyboardUpdate = (level) => {
+    keyboard.update();
+
+    if (keyboard.down("R")) level.restart();
+    if (keyboard.down("space")) console.log("space");
+    // if (keyboard.down("enter")) goFullScreen();
 };
 
-const level = new Level1(scene);
-
-scene.add(...level.getElements());
-
-startListeners(level, camera, renderer);
+const level = new Level1(camera, renderer, scene);
 
 const render = () => {
     stats.update();
     trackballControls.update();
     level.moveMiniBall();
+    keyboardUpdate(level);
     requestAnimationFrame(render);
 
     renderer.render(scene, camera);

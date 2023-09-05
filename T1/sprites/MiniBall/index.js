@@ -3,12 +3,12 @@ import * as THREE from "three";
 export class MiniBall extends THREE.Mesh {
     constructor(x, y, z) {
         const geometry = new THREE.SphereGeometry(0.5, 32, 32);
-        const material = new THREE.MeshPhongMaterial({ color: "#fff", shininess: 200 });
+        const material = new THREE.MeshPhongMaterial({ color: "#fff" });
 
         super(geometry, material);
 
         this.translateX(x);
-        this.translateY(y);
+        this.translateY(y - 2);
         this.translateZ(z);
 
         this.speed = 0.3;
@@ -32,7 +32,7 @@ export class MiniBall extends THREE.Mesh {
 
         if (ballBoundingBox.intersectsBox(hitterBoundingBox)) {
             const relativeX = this.position.x - hitter.position.x;
-            const angle = hitter.getKickBallAngle(relativeX);
+            const angle = hitter.getKickBallAngle(relativeX, this.angle);
             this.angle = angle;
             this.rotation.set(0, 0, angle);
         }
@@ -47,28 +47,25 @@ export class MiniBall extends THREE.Mesh {
             if (ballBoundingBox.intersectsBox(wallBoundingBox)) {
                 this.angle = wall.type === "horizontal" ? -this.angle : Math.PI - this.angle;
                 this.rotation.set(0, 0, this.angle);
+                return;
             }
         });
     };
 
-    invertHorizontally(angle) {
-        angle = angle % 360;
-        if (angle < 0) {
-            angle += 360;
+    getAngleInQuadrant(angle) {
+        while (angle > Math.PI) {
+            angle -= Math.PI;
         }
 
-        const angleOfIncidence = 90 - angle;
-        const reflectedAngle = 90 + angleOfIncidence;
-
-        return reflectedAngle;
+        return angle;
     }
 
     invertHorizontally(angle) {
-        return -angle;
+        return Math.PI - angle;
     }
 
     invertVertically(angle) {
-        return Math.PI - angle;
+        return 2 * Math.PI - angle;
     }
 
     collisionWithBlocks = (blocks, destroyBlock) => {
@@ -86,15 +83,14 @@ export class MiniBall extends THREE.Mesh {
 
                 const relativePosition = ballCenter.clone().sub(blockCenter);
 
-                if (Math.abs(relativePosition.x) > Math.abs(relativePosition.y)) {
-                    this.angle = this.invertHorizontally(this.angle);
-                } else {
-                    this.angle = this.invertVertically(this.angle);
-                }
+                Math.abs(relativePosition.x) > Math.abs(relativePosition.y)
+                    ? (this.angle = this.invertHorizontally(this.angle))
+                    : (this.angle = this.invertVertically(this.angle));
 
                 this.rotation.set(0, 0, this.angle);
 
                 destroyBlock(block);
+                return;
             }
         });
     };
@@ -121,3 +117,7 @@ export class MiniBall extends THREE.Mesh {
 }
 
 export default MiniBall;
+
+const miniBall = new MiniBall(1, 1, 1);
+
+miniBall.invertVertically();

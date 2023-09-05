@@ -16,7 +16,7 @@ class Hitter extends THREE.Mesh {
         this.position.x = x;
     };
 
-    getKickBallAngle(relativeX) {
+    getDirectlyKickBallAngle = (relativeX) => {
         const inputMax = -2.5;
         const inputMin = 2.5;
 
@@ -26,6 +26,14 @@ class Hitter extends THREE.Mesh {
         const outputValue = ((relativeX - inputMin) / (inputMax - inputMin)) * (outputMax - outputMin) + outputMin;
 
         return THREE.MathUtils.degToRad(Math.min(Math.max(outputValue, outputMin), outputMax));
+    };
+
+    getReflexiveKickBallAngle = (relativeX, angle) => {
+        return this.getDirectlyKickBallAngle(relativeX);
+    };
+
+    getKickBallAngle(relativeX, angle) {
+        return this.getDirectlyKickBallAngle(relativeX);
     }
 }
 
