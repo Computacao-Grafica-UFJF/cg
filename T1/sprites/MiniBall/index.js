@@ -68,7 +68,7 @@ export class MiniBall extends THREE.Mesh {
         return 2 * Math.PI - angle;
     }
 
-    verifyIfHorizontalCollisionOrVerticalCollision(relativePosition) {
+    verifyIfHorizontalCollision(relativePosition) {
         return Math.abs(relativePosition.x) > Math.abs(relativePosition.y);
     }
 
@@ -89,7 +89,7 @@ export class MiniBall extends THREE.Mesh {
 
                 const relativePosition = ballCenter.clone().sub(blockCenter);
 
-                this.verifyIfHorizontalCollisionOrVerticalCollision(relativePosition)
+                this.verifyIfHorizontalCollision(relativePosition)
                     ? (this.angle = this.invertHorizontally(this.angle))
                     : (this.angle = this.invertVertically(this.angle));
 
@@ -101,7 +101,7 @@ export class MiniBall extends THREE.Mesh {
         });
     };
 
-    collisionWithDeathZones = (deathZones) => {
+    collisionWithDeathZones(deathZones) {
         const ballBoundingBox = new THREE.Box3().setFromObject(this);
 
         deathZones.forEach((deathZone) => {
@@ -111,14 +111,19 @@ export class MiniBall extends THREE.Mesh {
                 this.speed = 0;
             }
         });
-    };
+    }
+
+    move() {
+        this.translateX(this.speed);
+    }
 
     update(hitter, walls, blocks, deathZones, destroyBlock) {
+        this.move();
+
         this.collisionWithHitter(hitter);
         this.collisionWithWalls(walls);
         this.collisionWithBlocks(blocks, destroyBlock);
         this.collisionWithDeathZones(deathZones);
-        this.translateX(this.speed);
     }
 }
 

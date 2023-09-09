@@ -61,7 +61,7 @@ class Level1 extends Engine {
     }
 
     buildBlocks() {
-        const blocks = Array.from({ length: 10 }, (_, i) =>
+        const blocks = Array.from({ length: 5 }, (_, i) =>
             Array.from({ length: 10 }, (_, j) => new Block(i + i * 0.4 - 6.5, j + j * 0.4 + 2.5, 0).translateY(-1))
         ).flat();
 
