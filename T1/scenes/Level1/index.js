@@ -12,6 +12,7 @@ import game from "../../config/Game.js";
 
 import OrthographicCameraWrapper from "../../utils/OrthographicCameraWrapper/index.js";
 import Engine from "../../utils/Engine/index.js";
+import BlocksBuilder from "../../utils/BlocksBuilder/index.js";
 
 const scene = new THREE.Scene();
 const stats = new Stats();
@@ -61,9 +62,15 @@ class Level1 extends Engine {
     }
 
     buildBlocks() {
-        const blocks = Array.from({ length: 10 }, (_, i) =>
-            Array.from({ length: 10 }, (_, j) => new Block(i + i * 0.4 - 6.5, j + j * 0.4 + 2.5, 0).translateY(-1))
-        ).flat();
+        const matrix = [
+            [0, 1, 1, 1],
+            [1, 1, 1, 1],
+            [1, 1, 1, 1],
+            [1, 1, 1, 1],
+            [1, 1, 1, 1],
+        ];
+
+        const blocks = BlocksBuilder.buildGamePlatform(matrix);
 
         return blocks;
     }

@@ -11,10 +11,13 @@ export class MiniBall extends THREE.Mesh {
         this.translateY(y - 2);
         this.translateZ(z);
 
-        // this.speed = 0.03;
-        this.speed = 0.1;
-        // this.angle = Math.PI - Math.PI / 3.3;
+        this.speed = 0.3;
+        this.radius = 0.5;
+        this.evadeTime = 10;
+
         this.angle = this.getRandomAngleToDown();
+        this.angle = Math.PI / 2;
+        this.evadeMode = false;
 
         this.rotateZ(this.angle);
     }
@@ -62,61 +65,91 @@ export class MiniBall extends THREE.Mesh {
         return angle;
     }
 
-    invertHorizontally(angle) {
-        return Math.PI + angle;
+    invertAngleHorizontally() {
+        this.angle = Math.PI - this.angle;
+        this.rotation.set(0, 0, this.angle);
     }
 
-    invertVertically(angle) {
-        return 2 * Math.PI - angle;
+    invertAngleVertically() {
+        this.angle = 2 * Math.PI - this.angle;
+        this.rotation.set(0, 0, this.angle);
     }
 
-    verifyIfHorizontalCollision(relativePosition) {
-        return Math.abs(relativePosition.x) > Math.abs(relativePosition.y);
+    activateEvadeMode() {
+        this.evadeMode = true;
+        setTimeout(() => (this.evadeMode = false), this.evadeTime);
+    }
+
+    checkCollisions(block) {
+        const ballLeft = this.position.x - this.radius;
+        const ballRight = this.position.x + this.radius;
+        const ballTop = this.position.y + this.radius;
+        const ballBottom = this.position.y - this.radius;
+
+        const blockLeft = block.position.x - block.geometry.parameters.depth / 2;
+        const blockRight = block.position.x + block.geometry.parameters.depth / 2;
+        const blockTop = block.position.y + block.geometry.parameters.height / 2;
+        const blockBottom = block.position.y - block.geometry.parameters.height / 2;
+
+        console.log(block.geometry.parameters);
+
+        const leftCollisionDistance = Math.abs(ballLeft - blockRight);
+        const rightCollisionDistance = Math.abs(ballRight - blockLeft);
+        const topCollisionDistance = Math.abs(ballTop - blockBottom);
+        const bottomCollisionDistance = Math.abs(ballBottom - blockTop);
+
+        const minCollisionDistance = Math.min(leftCollisionDistance, rightCollisionDistance, topCollisionDistance, bottomCollisionDistance);
+
+        console.log({
+            leftCollisionDistance,
+            rightCollisionDistance,
+            topCollisionDistance,
+            bottomCollisionDistance,
+            minCollisionDistance,
+            ball: {
+                left: ballLeft,
+                right: ballRight,
+                top: ballTop,
+                bottom: ballBottom,
+            },
+            block: {
+                left: blockLeft,
+                right: blockRight,
+                top: blockTop,
+                bottom: blockBottom,
+            },
+        });
+
+        if (minCollisionDistance === leftCollisionDistance || minCollisionDistance === rightCollisionDistance) {
+            console.log("horizontal");
+            this.invertAngleHorizontally();
+            return;
+        }
+
+        console.log("vertical");
+        this.invertAngleVertically();
     }
 
     collisionWithBlocks = (blocks, destroyBlock) => {
-        // const ballBoundingBox1 = new THREE.Box3().setFromObject(this);
+        const getBallBoundingBox = () => {
+            const sphereCenter = this.position;
 
-        const sphereCenter = this.position;
-        const sphereRadius = 0.5;
+            const min = new THREE.Vector3(sphereCenter.x - this.radius, sphereCenter.y - this.radius, sphereCenter.z - this.radius);
+            const max = new THREE.Vector3(sphereCenter.x + this.radius, sphereCenter.y + this.radius, sphereCenter.z + this.radius);
+            const ballBoundingBox = new THREE.Box3(min, max);
 
-        const min = new THREE.Vector3(sphereCenter.x - sphereRadius, sphereCenter.y - sphereRadius, sphereCenter.z - sphereRadius);
-        const max = new THREE.Vector3(sphereCenter.x + sphereRadius, sphereCenter.y + sphereRadius, sphereCenter.z + sphereRadius);
-        const ballBoundingBox = new THREE.Box3(min, max);
+            return ballBoundingBox;
+        };
 
-        // TODO: Conserte a colisão
+        const ballBoundingBox = getBallBoundingBox();
 
         blocks.find((block) => {
             const blockBoundingBox = new THREE.Box3().setFromObject(block);
 
-            if (ballBoundingBox.intersectsBox(blockBoundingBox)) {
-                const ballCenter = new THREE.Vector3();
-                ballBoundingBox.getCenter(ballCenter);
+            if (ballBoundingBox.intersectsBox(blockBoundingBox) && this.evadeMode === false) {
+                this.checkCollisions(block);
 
-                const blockCenter = new THREE.Vector3();
-                blockBoundingBox.getCenter(blockCenter);
-
-                const relativePosition = ballCenter.clone().sub(blockCenter);
-
-                // console.log("Ball Center: ", ballCenter);
-                // console.log("Block Center: ", blockCenter);
-                // console.log(relativePosition.x, " ", relativePosition.y);
-                // console.log(ballBoundingBox, " ");
-
-                // // console.log(this.angle);
-
-                // if (Math.abs(relativePosition.x) > Math.sqrt(0.5) && Math.abs(relativePosition.y) > Math.sqrt(0.5)) {
-                //     console.log("a");
-                //     return;
-                // }
-
-                console.log(relativePosition);
-                this.verifyIfHorizontalCollision(relativePosition)
-                    ? (this.angle = this.invertHorizontally(this.angle))
-                    : (this.angle = this.invertVertically(this.angle));
-
-                this.rotation.set(0, 0, this.angle);
-                // console.log(ballBoundingBox1);
+                this.activateEvadeMode();
 
                 destroyBlock(block);
 
@@ -152,7 +185,3 @@ export class MiniBall extends THREE.Mesh {
 }
 
 export default MiniBall;
-
-const miniBall = new MiniBall(1, 1, 1);
-
-miniBall.invertVertically();
