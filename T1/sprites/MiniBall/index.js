@@ -11,7 +11,9 @@ export class MiniBall extends THREE.Mesh {
         this.translateY(y - 2);
         this.translateZ(z);
 
-        this.speed = 0.3;
+        // this.speed = 0.03;
+        this.speed = 0.1;
+        // this.angle = Math.PI - Math.PI / 3.3;
         this.angle = this.getRandomAngleToDown();
 
         this.rotateZ(this.angle);
@@ -61,7 +63,7 @@ export class MiniBall extends THREE.Mesh {
     }
 
     invertHorizontally(angle) {
-        return Math.PI - angle;
+        return Math.PI + angle;
     }
 
     invertVertically(angle) {
@@ -73,11 +75,18 @@ export class MiniBall extends THREE.Mesh {
     }
 
     collisionWithBlocks = (blocks, destroyBlock) => {
-        const ballBoundingBox = new THREE.Box3().setFromObject(this);
+        // const ballBoundingBox1 = new THREE.Box3().setFromObject(this);
+
+        const sphereCenter = this.position;
+        const sphereRadius = 0.5;
+
+        const min = new THREE.Vector3(sphereCenter.x - sphereRadius, sphereCenter.y - sphereRadius, sphereCenter.z - sphereRadius);
+        const max = new THREE.Vector3(sphereCenter.x + sphereRadius, sphereCenter.y + sphereRadius, sphereCenter.z + sphereRadius);
+        const ballBoundingBox = new THREE.Box3(min, max);
 
         // TODO: Conserte a colisão
 
-        blocks.forEach((block) => {
+        blocks.find((block) => {
             const blockBoundingBox = new THREE.Box3().setFromObject(block);
 
             if (ballBoundingBox.intersectsBox(blockBoundingBox)) {
@@ -89,13 +98,28 @@ export class MiniBall extends THREE.Mesh {
 
                 const relativePosition = ballCenter.clone().sub(blockCenter);
 
+                // console.log("Ball Center: ", ballCenter);
+                // console.log("Block Center: ", blockCenter);
+                // console.log(relativePosition.x, " ", relativePosition.y);
+                // console.log(ballBoundingBox, " ");
+
+                // // console.log(this.angle);
+
+                // if (Math.abs(relativePosition.x) > Math.sqrt(0.5) && Math.abs(relativePosition.y) > Math.sqrt(0.5)) {
+                //     console.log("a");
+                //     return;
+                // }
+
+                console.log(relativePosition);
                 this.verifyIfHorizontalCollision(relativePosition)
                     ? (this.angle = this.invertHorizontally(this.angle))
                     : (this.angle = this.invertVertically(this.angle));
 
                 this.rotation.set(0, 0, this.angle);
+                // console.log(ballBoundingBox1);
 
                 destroyBlock(block);
+
                 return;
             }
         });
