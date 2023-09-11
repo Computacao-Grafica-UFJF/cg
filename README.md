@@ -23,12 +23,12 @@ Files for the Computer Graphics course in Three.js
 
 ## Wall
 
--   [ ] Wall structure
+-   [x] Wall structure
 
 ## Mini Ball
 
--   [ ] Mini Ball structure
--   [ ] Mini Ball movement
+-   [x] Mini Ball structure
+-   [x] Mini Ball movement
 -   [ ] Mini Ball collision with Block
 -   [ ] Mini Ball collision with the Wall
 -   [ ] Mini Ball collision with Bottom Wall

@@ -1,100 +1,123 @@
 import * as THREE from "three";
 import Stats from "../../../build/jsm/libs/stats.module.js";
 import { TrackballControls } from "../../../build/jsm/controls/TrackballControls.js";
-import { initRenderer, onWindowResize, initDefaultBasicLight } from "../../../libs/util/util.js";
+import { initRenderer, initDefaultBasicLight } from "../../../libs/util/util.js";
+
 import Hitter from "../../sprites/Hitter/index.js";
 import Block from "../../sprites/Block/index.js";
-import OrthographicCameraWrapper from "../../utils/OrthographicCameraWrapper/index.js";
 import Platform from "../../sprites/Platform/index.js";
-import Raycaster from "../../utils/Raycaster/index.js";
 import MiniBall from "../../sprites/MiniBall/index.js";
 import Wall from "../../sprites/Wall/index.js";
+import game from "../../config/Game.js";
+
+import OrthographicCameraWrapper from "../../utils/OrthographicCameraWrapper/index.js";
+import Engine from "../../utils/Engine/index.js";
+import BlocksBuilder from "../../utils/BlocksBuilder/index.js";
 
 const scene = new THREE.Scene();
 const stats = new Stats();
 const renderer = initRenderer();
 const camera = new OrthographicCameraWrapper();
-camera.disableZoom();
 const trackballControls = new TrackballControls(camera, renderer.domElement);
+
 initDefaultBasicLight(scene);
 
-const width = 15;
+class Level1 extends Engine {
+    constructor(camera, renderer, scene) {
+        super(camera, renderer, scene);
 
-const buildLevel = () => {
-    const buildGamePlatform = () => {
+        this.start();
+    }
+
+    start() {
+        this.gamePlatform = this.buildGamePlatform();
+        this.platform = this.buildPlatform();
+        this.hitter = this.buildHitter();
+        this.playablePlatform = this.buildPlayablePlatform();
+        this.miniBall = this.buildMiniBall();
+        this.walls = [...this.buildWalls()];
+        this.blocks = [...this.buildBlocks()];
+
+        this.scene.add(...this.getElements());
+    }
+
+    restart() {
+        this.scene.remove(...this.getElements());
+        this.start();
+    }
+
+    buildGamePlatform() {
         const gamePlatform = new Platform(innerWidth, innerHeight, "#000");
         return gamePlatform;
-    };
+    }
 
-    const buildPlatform = () => {
-        const platform = new Platform(width, 2 * width, 0x00ff00);
+    buildPlatform() {
+        const platform = new Platform(game.width, 2 * game.width, "#000");
         return platform;
-    };
+    }
 
-    const buildHitter = () => {
-        const hitter = new Hitter(0, -10, 0);
+    buildHitter() {
+        const hitter = new Hitter(0, -13, 0);
         return hitter;
-    };
+    }
 
-    const buildBlocks = () => {
-        const blocks = [];
+    buildBlocks() {
+        const matrix = [
+            [0, 1, 1, 1],
+            [1, 1, 1, 1],
+            [1, 1, 1, 1],
+            [1, 1, 1, 1],
+            [1, 1, 1, 1],
+        ];
 
-        for (let i = 0; i < 10; i++) {
-            for (let j = 0; j < 10; j++) {
-                blocks.push(new Block(i + i * 0.1 - 5, j + j * 0.1 + 5, 0).translateY(-1));
-            }
-        }
+        const blocks = BlocksBuilder.buildGamePlatform(matrix);
 
         return blocks;
-    };
+    }
 
-    const buildMiniBall = () => {
-        const miniball = new MiniBall(0, 0, 0);
+    buildMiniBall() {
+        const miniBall = new MiniBall(0, 0, 0);
+        return miniBall;
+    }
 
-        return miniball;
-    };
+    buildWalls() {
+        const wallTop = new Wall(0, game.width + 0.5, 0, game.width + 2, 1, "horizontal");
+        const wallBottom = new Wall(0, -game.width - 0.5, 0, game.width + 2, 1, "horizontal");
+        const wallLeft = new Wall(-game.width / 2 - 0.5, 0, 0, 1, 2 * game.width, "vertical");
+        const wallRight = new Wall(game.width / 2 + 0.5, 0, 0, 1, 2 * game.width, "vertical");
 
-    const buildWalls = () => {
-        const wallBottom = new Wall(0, width + 0.5, 0, width, 1);
-        const wallTop = new Wall(0, -width - 0.5, 0, width, 1);
-        const wallLeft = new Wall(-width / 2 - 0.5, 0, 0, 1, 2 * width);
-        const wallRight = new Wall(width / 2 + 0.5, 0, 0, 1, 2 * width);
+        return [wallTop, wallBottom, wallLeft, wallRight];
+    }
 
-        return [wallLeft, wallRight, wallTop, wallBottom];
-    };
+    buildPlayablePlatform() {
+        const playablePlatform = new Platform(15 - this.hitter.geometry.parameters.width, 30, "#000");
+        return playablePlatform;
+    }
 
-    const level = [buildGamePlatform(), buildPlatform(), buildHitter(), buildMiniBall(), ...buildWalls(), ...buildBlocks()];
+    getElements() {
+        return [this.gamePlatform, this.platform, this.hitter, this.playablePlatform, this.miniBall, ...this.walls, ...this.blocks];
+    }
 
-    return level;
-};
+    destroyBlock(block) {
+        this.blocks = this.blocks.filter((b) => b !== block);
+        this.scene.remove(block);
+    }
 
-const level = buildLevel();
-scene.add(...level);
+    moveMiniBall() {
+        const collisionWalls = [this.walls[0], this.walls[2], this.walls[3]];
+        const deathZones = [this.walls[1]];
 
-window.addEventListener(
-    "resize",
-    () => {
-        onWindowResize(camera, renderer, 30);
-    },
-    false
-);
+        this.miniBall.update(this.hitter, collisionWalls, this.blocks, deathZones, this.destroyBlock.bind(this));
+    }
+}
 
-const hitterObject = level.find((object) => object instanceof Hitter);
-const playablePlatform = new Platform(15 - hitterObject.geometry.parameters.width, 30, 0x00ff00);
-scene.add(playablePlatform);
-
-const raycaster = new Raycaster();
-
-const platforms = level.filter((element) => element instanceof Platform);
-platforms.push(playablePlatform);
-
-window.addEventListener("mousemove", (event) => {
-    raycaster.onMouseMove(event, hitterObject, platforms, camera);
-});
+const level = new Level1(camera, renderer, scene);
 
 const render = () => {
     stats.update();
     trackballControls.update();
+    level.moveMiniBall();
+    level.keyboardUpdate(level);
     requestAnimationFrame(render);
 
     renderer.render(scene, camera);

@@ -5,41 +5,37 @@ class Raycaster extends THREE.Raycaster {
         super();
     }
 
-    onMouseMove = (event, hitter, platform, camera) => {
+    onMouseMove = (event, level, camera) => {
         const pointer = new THREE.Vector2();
         pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
         pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
         this.setFromCamera(pointer, camera);
-        const intersects = this.intersectObjects(platform);
+
+        const intersects = this.intersectObjects([level.gamePlatform, level.platform, level.playablePlatform]);
 
         const intersectGamePlatform = intersects[0];
         const intersectPlatform = intersects[1];
         const intersectPlayablePlatform = intersects[2];
+        const hitter = level.hitter;
 
-        let pointX;
+        if (intersects.length === 0) {
+            return;
+        }
 
-        if (intersects.length > 0) {
-            if (intersectPlayablePlatform) {
-                pointX = intersectPlayablePlatform.point.x;
-            } else {
-                if (intersectPlatform) {
-                    if (intersectPlatform.point.x > 0) {
-                        pointX = platform[2].geometry.parameters.width / 2;
-                    } else {
-                        pointX = -platform[2].geometry.parameters.width / 2;
-                    }
-                } else {
-                    if (intersectGamePlatform) {
-                        if (intersectGamePlatform.point.x > 0) {
-                            pointX = platform[2].geometry.parameters.width / 2;
-                        } else {
-                            pointX = -platform[2].geometry.parameters.width / 2;
-                        }
-                    }
-                }
-            }
+        const pointX = intersectPlayablePlatform
+            ? intersectPlayablePlatform.point.x
+            : intersectPlatform
+            ? intersectPlatform.point.x > 0
+                ? level.playablePlatform.geometry.parameters.width / 2
+                : -level.playablePlatform.geometry.parameters.width / 2
+            : intersectGamePlatform
+            ? intersectGamePlatform.point.x > 0
+                ? level.playablePlatform.geometry.parameters.width / 2
+                : -level.playablePlatform.geometry.parameters.width / 2
+            : undefined;
 
+        if (pointX !== undefined) {
             hitter.moveX(pointX);
         }
     };
