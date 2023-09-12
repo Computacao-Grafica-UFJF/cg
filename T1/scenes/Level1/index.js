@@ -63,7 +63,7 @@ class Level1 extends Engine {
 
     buildBlocks() {
         const matrix = [
-            [0, 1, 1, 1],
+            [1, 1, 1, 1],
             [1, 1, 1, 1],
             [1, 1, 1, 1],
             [1, 1, 1, 1],
