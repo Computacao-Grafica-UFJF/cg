@@ -150,6 +150,10 @@ export class MiniBall extends THREE.Mesh {
         this.translateX(this.speed);
     }
 
+    pause() {
+        this.speed = this.speed === 0 ? 0.3 : 0;
+    }
+
     update(hitter, walls, blocks, deathZones, destroyBlock) {
         this.move();
 

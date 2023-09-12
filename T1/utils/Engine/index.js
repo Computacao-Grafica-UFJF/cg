@@ -8,6 +8,7 @@ class Engine {
         this.camera = camera;
         this.renderer = renderer;
         this.scene = scene;
+        this.paused = false;
 
         this.raycaster = new Raycaster();
         this.keyboardCommands = new KeyboardCommands();
@@ -27,13 +28,23 @@ class Engine {
         });
     };
 
+    restart() {
+        this.scene.remove(...this.getElements());
+        this.start();
+    }
+
+    pause() {
+        this.paused = !this.paused;
+
+        if (this.miniBall) this.miniBall.pause();
+
+        console.log(this.paused);
+    }
+
     keyboardUpdate = (level) => {
         const keyboard = this.keyboardCommands.keyboardState;
         keyboard.update();
-
-        if (keyboard.down("R")) level.restart();
-        if (keyboard.down("space")) console.log("space");
-        if (keyboard.down("enter")) this.keyboardCommands.fullScreenControl.toggleFullScreen();
+        this.keyboardCommands.listenCommands(level);
     };
 }
 
