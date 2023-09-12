@@ -1,9 +1,9 @@
 import * as THREE from "three";
 
 export class MiniBall extends THREE.Mesh {
-    constructor(x, y, z) {
+    constructor(x, y, z, color) {
         const geometry = new THREE.SphereGeometry(0.5, 32, 32);
-        const material = new THREE.MeshPhongMaterial({ color: "#fff" });
+        const material = new THREE.MeshPhongMaterial({ color });
 
         super(geometry, material);
 
@@ -158,17 +158,20 @@ export class MiniBall extends THREE.Mesh {
         });
     };
 
-    collisionWithDeathZones(deathZones) {
+    collisionWithDeathZones(deathZones, death) {
         const ballBoundingBox = new THREE.Box3().setFromObject(this);
 
         deathZones.forEach((deathZone) => {
             const wallBoundingBox = new THREE.Box3().setFromObject(deathZone);
 
             if (ballBoundingBox.intersectsBox(wallBoundingBox)) {
-                this.position.set(1, -12, 0);
-                this.speed = 0.3;
+                death();
             }
         });
+    }
+
+    resetPosition() {
+        this.position.set(1, -12, 0);
     }
 
     move() {
@@ -179,13 +182,13 @@ export class MiniBall extends THREE.Mesh {
         this.speed = this.speed === 0 ? 0.3 : 0;
     }
 
-    update(hitter, walls, blocks, deathZones, destroyBlock) {
+    update(hitter, walls, blocks, deathZones, destroyBlock, death) {
         this.move();
 
         this.collisionWithHitter(hitter);
         this.collisionWithWalls(walls);
         this.collisionWithBlocks(blocks, destroyBlock);
-        this.collisionWithDeathZones(deathZones);
+        this.collisionWithDeathZones(deathZones, death);
     }
 }
 

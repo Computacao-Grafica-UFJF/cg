@@ -3,9 +3,9 @@ import * as THREE from "three";
 class Hitter extends THREE.Mesh {
     paused = true;
 
-    constructor(x, y, z) {
+    constructor(x, y, z, color) {
         const boxGeometry = new THREE.BoxGeometry(4, 0.5, 1);
-        const boxMaterial = new THREE.MeshPhongMaterial({ color: "rgb(255,255,255)" });
+        const boxMaterial = new THREE.MeshLambertMaterial({ color: color });
 
         super(boxGeometry, boxMaterial);
 
@@ -44,6 +44,10 @@ class Hitter extends THREE.Mesh {
 
     pause() {
         this.paused = !this.paused;
+    }
+
+    resetPosition() {
+        this.position.set(0, -13, 0);
     }
 }
 

@@ -52,7 +52,7 @@ class Level1 extends Engine {
     }
 
     buildHitter() {
-        const hitter = new Hitter(0, -13, 0);
+        const hitter = new Hitter(0, -13, 0, "rgb(255,255,255)");
         return hitter;
     }
 
@@ -71,7 +71,7 @@ class Level1 extends Engine {
     }
 
     buildMiniBall() {
-        const miniBall = new MiniBall(1, -12, 0);
+        const miniBall = new MiniBall(1, -12, 0, "#fff");
         return miniBall;
     }
 
@@ -108,7 +108,14 @@ class Level1 extends Engine {
         const collisionWalls = [this.walls[0], this.walls[2], this.walls[3]];
         const deathZones = [this.walls[1]];
 
-        this.miniBall.update(this.hitter, collisionWalls, this.blocks, deathZones, this.destroyBlock.bind(this));
+        this.miniBall.update(this.hitter, collisionWalls, this.blocks, deathZones, this.destroyBlock.bind(this), this.death.bind(this));
+    }
+
+    death() {
+        this.miniBall.resetPosition();
+        this.hitter.resetPosition();
+
+        this.pause();
     }
 }
 
