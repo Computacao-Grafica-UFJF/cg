@@ -91,8 +91,6 @@ export class MiniBall extends THREE.Mesh {
         const blockTop = block.position.y + block.geometry.parameters.height / 2;
         const blockBottom = block.position.y - block.geometry.parameters.height / 2;
 
-        console.log(block.geometry.parameters);
-
         const leftCollisionDistance = Math.abs(ballLeft - blockRight);
         const rightCollisionDistance = Math.abs(ballRight - blockLeft);
         const topCollisionDistance = Math.abs(ballTop - blockBottom);
@@ -100,33 +98,11 @@ export class MiniBall extends THREE.Mesh {
 
         const minCollisionDistance = Math.min(leftCollisionDistance, rightCollisionDistance, topCollisionDistance, bottomCollisionDistance);
 
-        console.log({
-            leftCollisionDistance,
-            rightCollisionDistance,
-            topCollisionDistance,
-            bottomCollisionDistance,
-            minCollisionDistance,
-            ball: {
-                left: ballLeft,
-                right: ballRight,
-                top: ballTop,
-                bottom: ballBottom,
-            },
-            block: {
-                left: blockLeft,
-                right: blockRight,
-                top: blockTop,
-                bottom: blockBottom,
-            },
-        });
-
         if (minCollisionDistance === leftCollisionDistance || minCollisionDistance === rightCollisionDistance) {
-            console.log("horizontal");
             this.invertAngleHorizontally();
             return;
         }
 
-        console.log("vertical");
         this.invertAngleVertically();
     }
 
@@ -172,6 +148,10 @@ export class MiniBall extends THREE.Mesh {
 
     move() {
         this.translateX(this.speed);
+    }
+
+    pause() {
+        this.speed = this.speed === 0 ? 0.3 : 0;
     }
 
     update(hitter, walls, blocks, deathZones, destroyBlock) {

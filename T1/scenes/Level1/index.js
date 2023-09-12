@@ -41,11 +41,6 @@ class Level1 extends Engine {
         this.scene.add(...this.getElements());
     }
 
-    restart() {
-        this.scene.remove(...this.getElements());
-        this.start();
-    }
-
     buildGamePlatform() {
         const gamePlatform = new Platform(innerWidth, innerHeight, "#000");
         return gamePlatform;
@@ -63,7 +58,7 @@ class Level1 extends Engine {
 
     buildBlocks() {
         const matrix = [
-            [0, 1, 1, 1],
+            [1, 1, 1, 1],
             [1, 1, 1, 1],
             [1, 1, 1, 1],
             [1, 1, 1, 1],
@@ -114,11 +109,16 @@ class Level1 extends Engine {
 const level = new Level1(camera, renderer, scene);
 
 const render = () => {
+    level.keyboardUpdate(level);
     stats.update();
     trackballControls.update();
     level.moveMiniBall();
-    level.keyboardUpdate(level);
+
     requestAnimationFrame(render);
+
+    if (level.paused) {
+        return;
+    }
 
     renderer.render(scene, camera);
 };

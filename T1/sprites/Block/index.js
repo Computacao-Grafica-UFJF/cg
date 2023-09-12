@@ -7,8 +7,6 @@ class Block extends THREE.Mesh {
 
         super(blockGeometry, blockMaterial);
 
-        console.log(this.geometry.parameters.width);
-
         this.translateX(x);
         this.translateY(y);
         this.translateZ(z);
