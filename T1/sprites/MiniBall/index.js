@@ -7,18 +7,26 @@ export class MiniBall extends THREE.Mesh {
 
         super(geometry, material);
 
-        this.translateX(x);
-        this.translateY(y - 2);
-        this.translateZ(z);
-
-        this.speed = 0.3;
+        this.speed = 0;
         this.radius = 0.5;
         this.evadeTime = 10;
 
-        this.angle = this.getRandomAngleToDown();
+        this.x = x;
+        this.y = y;
+        this.z = z;
+
+        this.startPosition(this.x, this.y, this.z);
+
+        this.angle = -Math.PI / 2;
         this.evadeMode = false;
 
         this.rotateZ(this.angle);
+    }
+
+    startPosition(x, y, z) {
+        this.translateX(x);
+        this.translateY(y);
+        this.translateZ(z);
     }
 
     getRandomAngleToDown = () => {
@@ -80,14 +88,6 @@ export class MiniBall extends THREE.Mesh {
             }
         });
     };
-
-    getAngleInQuadrant(angle) {
-        while (angle > Math.PI) {
-            angle -= Math.PI;
-        }
-
-        return angle;
-    }
 
     invertAngleHorizontally() {
         this.angle = Math.PI - this.angle;
@@ -165,7 +165,8 @@ export class MiniBall extends THREE.Mesh {
             const wallBoundingBox = new THREE.Box3().setFromObject(deathZone);
 
             if (ballBoundingBox.intersectsBox(wallBoundingBox)) {
-                this.speed = 0;
+                this.position.set(1, -12, 0);
+                this.speed = 0.3;
             }
         });
     }

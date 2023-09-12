@@ -14,6 +14,8 @@ class Engine {
         this.raycaster = new Raycaster();
         this.keyboardCommands = new KeyboardCommands();
         this.startListeners(camera, renderer);
+
+        this.pause();
     }
 
     startListeners = (camera, renderer) => {
@@ -26,6 +28,10 @@ class Engine {
         );
         window.addEventListener("mousemove", (event) => {
             this.raycaster.onMouseMove(event, this, camera);
+        });
+
+        window.addEventListener("mousedown", (event) => {
+            this.raycaster.onMouseDown(event, this);
         });
     };
 
@@ -46,6 +52,8 @@ class Engine {
         this.paused = !this.paused;
 
         if (this.miniBall) this.miniBall.pause();
+
+        if (this.hitter) this.hitter.pause();
     }
 
     keyboardUpdate = (level) => {

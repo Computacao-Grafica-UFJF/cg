@@ -1,6 +1,8 @@
 import * as THREE from "three";
 
 class Hitter extends THREE.Mesh {
+    paused = true;
+
     constructor(x, y, z) {
         const boxGeometry = new THREE.BoxGeometry(4, 0.5, 1);
         const boxMaterial = new THREE.MeshPhongMaterial({ color: "rgb(255,255,255)" });
@@ -13,6 +15,10 @@ class Hitter extends THREE.Mesh {
     }
 
     moveX = (x) => {
+        if (this.paused) {
+            return;
+        }
+
         this.position.x = x;
     };
 
@@ -28,12 +34,16 @@ class Hitter extends THREE.Mesh {
         return THREE.MathUtils.degToRad(Math.min(Math.max(outputValue, outputMin), outputMax));
     };
 
-    getReflexiveKickBallAngle = (relativeX, angle) => {
+    getReflexiveKickBallAngle = (relativeX) => {
         return this.getDirectlyKickBallAngle(relativeX);
     };
 
-    getKickBallAngle(relativeX, angle) {
+    getKickBallAngle(relativeX) {
         return this.getDirectlyKickBallAngle(relativeX);
+    }
+
+    pause() {
+        this.paused = !this.paused;
     }
 }
 

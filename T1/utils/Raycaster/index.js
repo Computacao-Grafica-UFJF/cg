@@ -39,6 +39,14 @@ class Raycaster extends THREE.Raycaster {
             hitter.moveX(pointX);
         }
     };
+
+    onMouseDown(event, level) {
+        if (event.button === 0) {
+            console.log("esquerdo");
+
+            level.pause();
+        }
+    }
 }
 
 export default Raycaster;

@@ -71,7 +71,7 @@ class Level1 extends Engine {
     }
 
     buildMiniBall() {
-        const miniBall = new MiniBall(0, 0, 0);
+        const miniBall = new MiniBall(1, -12, 0);
         return miniBall;
     }
 
@@ -121,10 +121,6 @@ const render = () => {
     level.moveMiniBall();
 
     requestAnimationFrame(render);
-
-    if (level.paused) {
-        return;
-    }
 
     renderer.render(scene, camera);
 };
