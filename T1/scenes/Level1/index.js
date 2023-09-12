@@ -93,9 +93,16 @@ class Level1 extends Engine {
         return [this.gamePlatform, this.platform, this.hitter, this.playablePlatform, this.miniBall, ...this.walls, ...this.blocks];
     }
 
+    finishedGame() {
+        console.log(this.blocks.length);
+        return this.blocks.length === 0;
+    }
+
     destroyBlock(block) {
         this.blocks = this.blocks.filter((b) => b !== block);
         this.scene.remove(block);
+
+        this.finishedGame() && setTimeout(() => this.finish(), 10);
     }
 
     moveMiniBall() {

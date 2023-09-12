@@ -9,6 +9,7 @@ class Engine {
         this.renderer = renderer;
         this.scene = scene;
         this.paused = false;
+        this.finished = false;
 
         this.raycaster = new Raycaster();
         this.keyboardCommands = new KeyboardCommands();
@@ -33,12 +34,18 @@ class Engine {
         this.start();
     }
 
+    finish() {
+        this.pause();
+
+        this.finished = true;
+    }
+
     pause() {
+        if (this.finished) return;
+
         this.paused = !this.paused;
 
         if (this.miniBall) this.miniBall.pause();
-
-        console.log(this.paused);
     }
 
     keyboardUpdate = (level) => {
