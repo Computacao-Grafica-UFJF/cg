@@ -94,7 +94,6 @@ class Level1 extends Engine {
     }
 
     finishedGame() {
-        console.log(this.blocks.length);
         return this.blocks.length === 0;
     }
 
