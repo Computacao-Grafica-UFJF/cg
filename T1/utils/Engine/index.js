@@ -1,4 +1,3 @@
-import * as THREE from "three";
 import Raycaster from "../Raycaster/index.js";
 import { onWindowResize } from "../../../libs/util/util.js";
 import KeyboardCommands from "../KeyboardCommands/index.js";

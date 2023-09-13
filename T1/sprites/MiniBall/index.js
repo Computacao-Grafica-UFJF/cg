@@ -173,7 +173,12 @@ export class MiniBall extends THREE.Mesh {
         });
     }
 
-    move() {
+    move(hitter) {
+        if (this.isRaycasterMode) {
+            this.position.set(hitter.position.x + 0.8, hitter.position.y + 1, hitter.position.z);
+            return;
+        }
+
         this.translateX(this.speed);
     }
 
@@ -194,7 +199,7 @@ export class MiniBall extends THREE.Mesh {
     }
 
     update(hitter, walls, blocks, deathZones, destroyBlock, death) {
-        this.move();
+        this.move(hitter);
 
         this.collisionWithHitter(hitter);
         this.collisionWithWalls(walls);
