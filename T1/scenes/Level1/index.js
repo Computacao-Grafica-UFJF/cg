@@ -116,9 +116,9 @@ class Level1 extends Engine {
 
     death() {
         this.miniBall.resetPosition();
-        this.hitter.resetPosition();
+        // this.hitter.resetPosition();
 
-        this.pause();
+        this.init();
     }
 }
 
