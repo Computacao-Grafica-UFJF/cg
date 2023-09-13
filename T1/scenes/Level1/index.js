@@ -4,7 +4,6 @@ import { TrackballControls } from "../../../build/jsm/controls/TrackballControls
 import { initRenderer, initDefaultBasicLight } from "../../../libs/util/util.js";
 
 import Hitter from "../../sprites/Hitter/index.js";
-import Block from "../../sprites/Block/index.js";
 import Platform from "../../sprites/Platform/index.js";
 import MiniBall from "../../sprites/MiniBall/index.js";
 import Wall from "../../sprites/Wall/index.js";
@@ -72,7 +71,7 @@ class Level1 extends Engine {
     }
 
     buildMiniBall() {
-        const positionStartX = 0;
+        const positionStartX = 0.8;
         const positionStartY = -12;
 
         const miniBall = new MiniBall(positionStartX, positionStartY, 0, "#fff");

@@ -24,8 +24,10 @@ class AngleHandler {
     }
 
     static limitAngle(angle) {
-        if (angle > 170) return 170;
-        if (angle < 10) return 10;
+        const degreeAngle = THREE.MathUtils.radToDeg(angle);
+
+        if (degreeAngle > 170) return THREE.MathUtils.degToRad(170);
+        if (degreeAngle < 10) return THREE.MathUtils.degToRad(10);
 
         return angle;
     }

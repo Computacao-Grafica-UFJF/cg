@@ -3,14 +3,14 @@ import AngleHandler from "../../utils/AngleHandler/index.js";
 
 export class MiniBall extends THREE.Mesh {
     constructor(x, y, z, color) {
-        const geometry = new THREE.SphereGeometry(0.1, 32, 32);
+        const geometry = new THREE.SphereGeometry(0.2, 32, 32);
         const material = new THREE.MeshPhongMaterial({ color });
 
         super(geometry, material);
 
         this.speed = 0;
         this.radius = 0.5;
-        this.evadeTime = 50;
+        this.evadeTime = 10;
 
         this.startX = x;
         this.startY = y;
@@ -65,9 +65,13 @@ export class MiniBall extends THREE.Mesh {
         const ballBoundingBox = new THREE.Box3().setFromObject(this);
         const hitterBoundingBox = new THREE.Box3().setFromObject(hitter);
 
-        if (ballBoundingBox.intersectsBox(hitterBoundingBox) && this.checkCollisionWithTopHitter(hitter) && this.evadeMode === false) {
+        if (this.angle > 0 && this.angle < Math.PI) return;
+
+        if (ballBoundingBox.intersectsBox(hitterBoundingBox) && this.checkCollisionWithTopHitter(hitter)) {
             const relativeX = this.position.x - hitter.position.x;
             const angle = hitter.getKickBallAngle(relativeX, this.angle);
+
+            console.log(THREE.MathUtils.radToDeg(angle));
             this.angle = angle;
             this.rotation.set(0, 0, angle);
         }
