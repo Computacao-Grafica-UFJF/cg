@@ -65,7 +65,6 @@ class Engine {
     }
 
     death() {
-        this.miniBall.resetPosition();
         this.miniBall.raycasterMode();
     }
 
