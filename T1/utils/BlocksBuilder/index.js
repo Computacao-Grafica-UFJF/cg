@@ -1,11 +1,11 @@
 import Block from "../../sprites/Block/index.js";
 
 class BlocksBuilder {
-    static horizontalSpace = 0.4;
-    static verticalSpace = 0.4;
+    static horizontalSpace = 0.1;
+    static verticalSpace = 0.1;
 
     static levelWidth = 14.0;
-    static blockHeight = 1.0;
+    static blockHeight = 0.5;
     static topMargin = 12;
 
     static getXPosition = (index, blockWidth, leftMargin) => {

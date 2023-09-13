@@ -153,7 +153,7 @@ export class MiniBall extends THREE.Mesh {
 
                 destroyBlock(block);
 
-                return;
+                return 1;
             }
         });
     };
