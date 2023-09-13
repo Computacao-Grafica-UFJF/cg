@@ -1,8 +1,8 @@
 import * as THREE from "three";
+import AngleHandler from "../../utils/AngleHandler/index.js";
 
 class Hitter extends THREE.Mesh {
     paused = false;
-    moviment = true;
 
     constructor(x, y, z, color) {
         const boxGeometry = new THREE.BoxGeometry(4, 0.5, 1);
@@ -23,25 +23,6 @@ class Hitter extends THREE.Mesh {
         this.position.x = x;
     };
 
-    getKickBallAngle = (relativeX, angle) => {
-        // const segment = this.getSegmentPositionByRelativeX(relativeX);
-
-        const inputMax = -2.5;
-        const inputMin = 2.5;
-
-        const outputMin = 10;
-        const outputMax = 170;
-
-        const outputValue = ((relativeX - inputMin) / (inputMax - inputMin)) * (outputMax - outputMin) + outputMin;
-
-        return THREE.MathUtils.degToRad(Math.min(Math.max(outputValue, outputMin), outputMax));
-    };
-
-    // getSegmentPosition(position) {
-    //     const width = this.geometry.parameters.width;
-    //     return (width / 5) * position;
-    // }
-
     getSegmentPositionByRelativeX(relativeX) {
         const width = this.geometry.parameters.width;
         const segmentWidth = width / 5;
@@ -51,14 +32,33 @@ class Hitter extends THREE.Mesh {
         return segment;
     }
 
-    pause() {
-        this.paused = !this.paused;
+    getAngleOffsetBySegment(segment) {
+        const angleOffsets = [120, 105, 90, 75, 60];
+        return angleOffsets[segment];
     }
 
-    move() {
-        this.moviment = !this.moviment;
+    getKickBallAngle = (relativeX, angle) => {
+        if (angle > 0 && angle < Math.PI) return angle;
 
-        if (this.paused) this.paused = false;
+        const invertedAngle = angle - Math.PI;
+        const segment = this.getSegmentPositionByRelativeX(relativeX);
+        const angleOffset = THREE.MathUtils.degToRad(this.getAngleOffsetBySegment(segment));
+
+        const returnAngle = AngleHandler.invertAngleAboutNormal(invertedAngle, angleOffset);
+
+        // console.log({
+        //     chegouEm: THREE.MathUtils.radToDeg(angle),
+        //     inverteu: THREE.MathUtils.radToDeg(invertedAngle),
+        //     normal: THREE.MathUtils.radToDeg(angleOffset),
+        //     return: THREE.MathUtils.radToDeg(returnAngle),
+        //     relativeX: relativeX,
+        // });
+
+        return AngleHandler.limitAngle(returnAngle);
+    };
+
+    pause() {
+        this.paused = !this.paused;
     }
 
     resetPosition() {

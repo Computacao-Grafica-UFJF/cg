@@ -4,7 +4,6 @@ import { TrackballControls } from "../../../build/jsm/controls/TrackballControls
 import { initRenderer, initDefaultBasicLight } from "../../../libs/util/util.js";
 
 import Hitter from "../../sprites/Hitter/index.js";
-import Block from "../../sprites/Block/index.js";
 import Platform from "../../sprites/Platform/index.js";
 import MiniBall from "../../sprites/MiniBall/index.js";
 import Wall from "../../sprites/Wall/index.js";
@@ -13,6 +12,7 @@ import game from "../../config/Game.js";
 import OrthographicCameraWrapper from "../../utils/OrthographicCameraWrapper/index.js";
 import Engine from "../../utils/Engine/index.js";
 import BlocksBuilder from "../../utils/BlocksBuilder/index.js";
+import Pause from "../../sprites/Pause/index.js";
 
 const scene = new THREE.Scene();
 const stats = new Stats();
@@ -20,7 +20,7 @@ const renderer = initRenderer();
 const camera = new OrthographicCameraWrapper();
 const trackballControls = new TrackballControls(camera, renderer.domElement);
 
-initDefaultBasicLight(scene);
+initDefaultBasicLight(scene, true, new THREE.Vector3(0, 0, 8));
 
 class Level1 extends Engine {
     constructor(camera, renderer, scene) {
@@ -58,6 +58,7 @@ class Level1 extends Engine {
 
     buildBlocks() {
         const matrix = [
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -112,13 +113,6 @@ class Level1 extends Engine {
         const deathZones = [this.walls[1]];
 
         this.miniBall.update(this.hitter, collisionWalls, this.blocks, deathZones, this.destroyBlock.bind(this), this.death.bind(this));
-    }
-
-    death() {
-        this.miniBall.resetPosition();
-        // this.hitter.resetPosition();
-
-        this.init();
     }
 }
 

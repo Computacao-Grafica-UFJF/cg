@@ -4,7 +4,7 @@ class BlocksBuilder {
     static horizontalSpace = 0.1;
     static verticalSpace = 0.1;
 
-    static levelWidth = 14.0;
+    static levelWidth = 15.0;
     static blockHeight = 0.5;
     static topMargin = 12;
 
@@ -19,7 +19,7 @@ class BlocksBuilder {
     static buildGamePlatform(matrix) {
         const blockWidth = (this.levelWidth - (matrix[0].length - 1) * this.horizontalSpace) / matrix[0].length;
 
-        const leftMargin = -7 + blockWidth / 2;
+        const leftMargin = -7.5 + blockWidth / 2;
 
         const blocks = [];
 

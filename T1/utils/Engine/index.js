@@ -1,7 +1,7 @@
-import * as THREE from "three";
 import Raycaster from "../Raycaster/index.js";
 import { onWindowResize } from "../../../libs/util/util.js";
 import KeyboardCommands from "../KeyboardCommands/index.js";
+import Pause from "../../sprites/Pause/index.js";
 
 class Engine {
     constructor(camera, renderer, scene) {
@@ -15,7 +15,6 @@ class Engine {
         this.keyboardCommands = new KeyboardCommands();
         this.startListeners(camera, renderer);
 
-        // this.pause();
         this.init();
     }
 
@@ -50,6 +49,8 @@ class Engine {
     pause() {
         if (this.finished) return;
 
+        this.paused ? this.scene.remove(...this.scene.children.filter((child) => child instanceof Pause)) : this.scene.add(new Pause());
+
         this.paused = !this.paused;
 
         if (this.miniBall) this.miniBall.pause();
@@ -58,13 +59,14 @@ class Engine {
     }
 
     init() {
-        if (this.finished) return;
+        if (this.finished || this.paused) return;
 
-        this.paused = !this.paused;
+        if (this.miniBall && this.miniBall.isRaycasterMode) this.miniBall.start();
+    }
 
-        if (this.miniBall) this.miniBall.pause();
-
-        if (this.hitter) this.hitter.move();
+    death() {
+        this.miniBall.resetPosition();
+        this.miniBall.raycasterMode();
     }
 
     keyboardUpdate = (level) => {
