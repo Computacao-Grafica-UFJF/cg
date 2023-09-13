@@ -24,10 +24,11 @@ class Hitter extends THREE.Mesh {
     };
 
     getSegmentPositionByRelativeX(relativeX) {
-        if (relativeX < -2.5) return 0;
-        if (relativeX > 2.5) return 4;
-
         const width = this.geometry.parameters.width;
+
+        if (relativeX <= -width / 2) return 0;
+        if (relativeX >= width / 2) return 4;
+
         const segmentWidth = width / 5;
         const absoluteX = relativeX + width / 2;
 
@@ -49,13 +50,13 @@ class Hitter extends THREE.Mesh {
 
         const returnAngle = AngleHandler.invertAngleAboutNormal(invertedAngle, angleOffset);
 
-        // console.log({
-        //     chegouEm: THREE.MathUtils.radToDeg(angle),
-        //     inverteu: THREE.MathUtils.radToDeg(invertedAngle),
-        //     normal: THREE.MathUtils.radToDeg(angleOffset),
-        //     return: THREE.MathUtils.radToDeg(returnAngle),
-        //     relativeX: relativeX,
-        // });
+        console.log({
+            chegouEm: THREE.MathUtils.radToDeg(angle),
+            inverteu: THREE.MathUtils.radToDeg(invertedAngle),
+            normal: THREE.MathUtils.radToDeg(angleOffset),
+            return: THREE.MathUtils.radToDeg(returnAngle),
+            relativeX: relativeX,
+        });
 
         return AngleHandler.limitAngle(returnAngle);
     };
