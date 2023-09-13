@@ -24,6 +24,9 @@ class Hitter extends THREE.Mesh {
     };
 
     getSegmentPositionByRelativeX(relativeX) {
+        if (relativeX < -2.5) return 0;
+        if (relativeX > 2.5) return 4;
+
         const width = this.geometry.parameters.width;
         const segmentWidth = width / 5;
         const absoluteX = relativeX + width / 2;
