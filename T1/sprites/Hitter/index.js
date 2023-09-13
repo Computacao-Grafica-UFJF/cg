@@ -1,7 +1,8 @@
 import * as THREE from "three";
 
 class Hitter extends THREE.Mesh {
-    paused = true;
+    paused = false;
+    moviment = true;
 
     constructor(x, y, z, color) {
         const boxGeometry = new THREE.BoxGeometry(4, 0.5, 1);
@@ -52,6 +53,12 @@ class Hitter extends THREE.Mesh {
 
     pause() {
         this.paused = !this.paused;
+    }
+
+    move() {
+        this.moviment = !this.moviment;
+
+        if (this.paused) this.paused = false;
     }
 
     resetPosition() {
