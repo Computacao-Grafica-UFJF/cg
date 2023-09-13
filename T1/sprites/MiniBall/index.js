@@ -72,7 +72,6 @@ export class MiniBall extends THREE.Mesh {
             const relativeX = this.position.x - hitter.position.x;
             const angle = hitter.getKickBallAngle(relativeX, this.angle);
 
-            console.log(THREE.MathUtils.radToDeg(angle));
             this.angle = angle;
             this.rotation.set(0, 0, angle);
         }
