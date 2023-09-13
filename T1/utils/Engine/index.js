@@ -1,6 +1,7 @@
 import Raycaster from "../Raycaster/index.js";
 import { onWindowResize } from "../../../libs/util/util.js";
 import KeyboardCommands from "../KeyboardCommands/index.js";
+import Pause from "../../sprites/Pause/index.js";
 
 class Engine {
     constructor(camera, renderer, scene) {
@@ -47,6 +48,8 @@ class Engine {
 
     pause() {
         if (this.finished) return;
+
+        this.paused ? this.scene.remove(...this.scene.children.filter((child) => child instanceof Pause)) : this.scene.add(new Pause());
 
         this.paused = !this.paused;
 

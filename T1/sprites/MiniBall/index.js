@@ -4,7 +4,7 @@ import AngleHandler from "../../utils/AngleHandler/index.js";
 export class MiniBall extends THREE.Mesh {
     constructor(x, y, z, color) {
         const geometry = new THREE.SphereGeometry(0.2, 32, 32);
-        const material = new THREE.MeshPhongMaterial({ color });
+        const material = new THREE.MeshLambertMaterial({ color });
 
         super(geometry, material);
 

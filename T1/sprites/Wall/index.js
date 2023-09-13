@@ -2,11 +2,11 @@ import * as THREE from "three";
 
 class Wall extends THREE.Mesh {
     constructor(x, y, z, width, height, type) {
-        const cylinderGeometry = new THREE.BoxGeometry(width, height);
+        const boxGeometry = new THREE.BoxGeometry(width, height);
 
-        const cylinderMaterial = new THREE.MeshBasicMaterial({ color: "#fff" });
+        const boxMaterial = new THREE.MeshLambertMaterial({ color: "#fff", shadowSide: THREE.DoubleSide });
 
-        super(cylinderGeometry, cylinderMaterial);
+        super(boxGeometry, boxMaterial);
 
         this.translateX(x);
         this.translateY(y);
