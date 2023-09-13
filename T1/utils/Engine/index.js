@@ -15,7 +15,6 @@ class Engine {
         this.keyboardCommands = new KeyboardCommands();
         this.startListeners(camera, renderer);
 
-        // this.pause();
         this.init();
     }
 
@@ -58,13 +57,14 @@ class Engine {
     }
 
     init() {
-        if (this.finished) return;
+        if (this.finished || this.paused) return;
 
-        this.paused = !this.paused;
+        if (this.miniBall && this.miniBall.isRaycasterMode) this.miniBall.start();
+    }
 
-        if (this.miniBall) this.miniBall.pause();
-
-        if (this.hitter) this.hitter.move();
+    death() {
+        this.miniBall.resetPosition();
+        this.miniBall.raycasterMode();
     }
 
     keyboardUpdate = (level) => {

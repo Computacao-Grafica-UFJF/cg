@@ -8,6 +8,7 @@ export class MiniBall extends THREE.Mesh {
 
         super(geometry, material);
 
+        this.isRaycasterMode = true;
         this.speed = 0;
         this.radius = 0.5;
         this.evadeTime = 10;
@@ -177,7 +178,19 @@ export class MiniBall extends THREE.Mesh {
     }
 
     pause() {
+        if (this.speed === 0 && this.isRaycasterMode) return;
+
         this.speed = this.speed === 0 ? 0.3 : 0;
+    }
+
+    start() {
+        this.speed = 0.3;
+        this.isRaycasterMode = false;
+    }
+
+    raycasterMode() {
+        this.speed = 0;
+        this.isRaycasterMode = true;
     }
 
     update(hitter, walls, blocks, deathZones, destroyBlock, death) {

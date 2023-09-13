@@ -113,13 +113,6 @@ class Level1 extends Engine {
 
         this.miniBall.update(this.hitter, collisionWalls, this.blocks, deathZones, this.destroyBlock.bind(this), this.death.bind(this));
     }
-
-    death() {
-        this.miniBall.resetPosition();
-        // this.hitter.resetPosition();
-
-        this.init();
-    }
 }
 
 const level = new Level1(camera, renderer, scene);
