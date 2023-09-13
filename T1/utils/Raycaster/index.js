@@ -42,7 +42,7 @@ class Raycaster extends THREE.Raycaster {
 
     onMouseDown(event, level) {
         if (event.button === 0) {
-            level.pause();
+            level.init();
         }
     }
 }
