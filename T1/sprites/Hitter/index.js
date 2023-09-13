@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import AngleHandler from "../../utils/AngleHandler/index.js";
 
 class Hitter extends THREE.Mesh {
     paused = true;
@@ -22,25 +23,6 @@ class Hitter extends THREE.Mesh {
         this.position.x = x;
     };
 
-    getKickBallAngle = (relativeX, angle) => {
-        // const segment = this.getSegmentPositionByRelativeX(relativeX);
-
-        const inputMax = -2.5;
-        const inputMin = 2.5;
-
-        const outputMin = 10;
-        const outputMax = 170;
-
-        const outputValue = ((relativeX - inputMin) / (inputMax - inputMin)) * (outputMax - outputMin) + outputMin;
-
-        return THREE.MathUtils.degToRad(Math.min(Math.max(outputValue, outputMin), outputMax));
-    };
-
-    // getSegmentPosition(position) {
-    //     const width = this.geometry.parameters.width;
-    //     return (width / 5) * position;
-    // }
-
     getSegmentPositionByRelativeX(relativeX) {
         const width = this.geometry.parameters.width;
         const segmentWidth = width / 5;
@@ -49,6 +31,28 @@ class Hitter extends THREE.Mesh {
         const segment = Math.floor(absoluteX / segmentWidth);
         return segment;
     }
+
+    getAngleOffsetBySegment(segment) {
+        const angleOffsets = [120, 105, 90, 75, 60];
+        return angleOffsets[segment];
+    }
+
+    getKickBallAngle = (relativeX, angle) => {
+        const degreeAngle = AngleHandler.invertAngleVertically(angle);
+        const segment = this.getSegmentPositionByRelativeX(relativeX);
+        const angleOffset = THREE.MathUtils.degToRad(this.getAngleOffsetBySegment(segment));
+
+        const returnAngle = AngleHandler.invertAngleAboutNormal(degreeAngle, angleOffset);
+
+        console.log({
+            angle: THREE.MathUtils.radToDeg(angle),
+            degreeAngle: THREE.MathUtils.radToDeg(degreeAngle),
+            angleOffset: THREE.MathUtils.radToDeg(angleOffset),
+            returnAngle: THREE.MathUtils.radToDeg(returnAngle),
+        });
+
+        return THREE.MathUtils.degToRad(returnAngle);
+    };
 
     pause() {
         this.paused = !this.paused;

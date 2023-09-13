@@ -63,6 +63,7 @@ class Level1 extends Engine {
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
         ];
 
         const blocks = BlocksBuilder.buildGamePlatform(matrix);
@@ -71,7 +72,7 @@ class Level1 extends Engine {
     }
 
     buildMiniBall() {
-        const positionStartX = 0.8;
+        const positionStartX = 0;
         const positionStartY = -12;
 
         const miniBall = new MiniBall(positionStartX, positionStartY, 0, "#fff");

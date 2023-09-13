@@ -1,32 +1,30 @@
 import * as THREE from "three";
+import AngleHandler from "../../utils/AngleHandler/index.js";
 
 export class MiniBall extends THREE.Mesh {
     constructor(x, y, z, color) {
-        const geometry = new THREE.SphereGeometry(0.5, 32, 32);
+        const geometry = new THREE.SphereGeometry(0.1, 32, 32);
         const material = new THREE.MeshPhongMaterial({ color });
 
         super(geometry, material);
 
         this.speed = 0;
         this.radius = 0.5;
-        this.evadeTime = 10;
+        this.evadeTime = 50;
 
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        this.startX = x;
+        this.startY = y;
+        this.startZ = z;
 
-        this.startPosition(this.x, this.y, this.z);
+        this.resetPosition();
 
-        this.angle = -Math.PI / 2;
         this.evadeMode = false;
-
-        this.rotateZ(this.angle);
     }
 
-    startPosition(x, y, z) {
-        this.translateX(x);
-        this.translateY(y);
-        this.translateZ(z);
+    resetPosition() {
+        this.position.set(this.startX, this.startY, this.startZ);
+        this.angle = THREE.MathUtils.degToRad(270);
+        this.rotation.set(0, 0, this.angle);
     }
 
     getRandomAngleToDown = () => {
@@ -67,7 +65,7 @@ export class MiniBall extends THREE.Mesh {
         const ballBoundingBox = new THREE.Box3().setFromObject(this);
         const hitterBoundingBox = new THREE.Box3().setFromObject(hitter);
 
-        if (ballBoundingBox.intersectsBox(hitterBoundingBox) && this.checkCollisionWithTopHitter(hitter)) {
+        if (ballBoundingBox.intersectsBox(hitterBoundingBox) && this.checkCollisionWithTopHitter(hitter) && this.evadeMode === false) {
             const relativeX = this.position.x - hitter.position.x;
             const angle = hitter.getKickBallAngle(relativeX, this.angle);
             this.angle = angle;
@@ -90,12 +88,12 @@ export class MiniBall extends THREE.Mesh {
     };
 
     invertAngleHorizontally() {
-        this.angle = Math.PI - this.angle;
+        this.angle = AngleHandler.invertAngleHorizontally(this.angle);
         this.rotation.set(0, 0, this.angle);
     }
 
     invertAngleVertically() {
-        this.angle = 2 * Math.PI - this.angle;
+        this.angle = AngleHandler.invertAngleVertically(this.angle);
         this.rotation.set(0, 0, this.angle);
     }
 
@@ -168,10 +166,6 @@ export class MiniBall extends THREE.Mesh {
                 death();
             }
         });
-    }
-
-    resetPosition() {
-        this.position.set(1, -12, 0);
     }
 
     move() {

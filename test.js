@@ -1,8 +1,10 @@
-function getSegmentPositionByRelativeX(relativeX) {
-    const width = 4;
-    const segmentWidth = width / 5;
-    const absoluteX = relativeX + width / 2;
+function invertAngleAboutNormal(angle, normalAngle) {
+    const degreeAngle = angle;
+    const degreeNormalAngle = normalAngle;
 
-    const segment = Math.floor(absoluteX / segmentWidth);
-    return segment;
+    const normalizedAngle = degreeAngle % 360;
+    const invertedAngle = (2 * degreeNormalAngle - normalizedAngle) % 360;
+    return invertedAngle < 0 ? invertedAngle + 360 : invertedAngle;
 }
+
+console.log(invertAngleAboutNormal(60, 75));
