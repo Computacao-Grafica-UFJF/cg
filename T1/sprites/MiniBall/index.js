@@ -193,6 +193,7 @@ export class MiniBall extends THREE.Mesh {
     }
 
     raycasterMode() {
+        this.resetPosition();
         this.speed = 0;
         this.isRaycasterMode = true;
     }

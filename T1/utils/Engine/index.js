@@ -38,6 +38,7 @@ class Engine {
     restart() {
         this.scene.remove(...this.getElements());
         this.start();
+        this.miniBall.resetPosition();
     }
 
     finish() {
