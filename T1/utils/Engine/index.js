@@ -22,7 +22,7 @@ class Engine {
         window.addEventListener(
             "resize",
             () => {
-                onWindowResize(camera, renderer, 40);
+                onWindowResize(camera, renderer, 31.5);
             },
             false
         );

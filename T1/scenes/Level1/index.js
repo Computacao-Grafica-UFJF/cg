@@ -12,7 +12,6 @@ import game from "../../config/Game.js";
 import OrthographicCameraWrapper from "../../utils/OrthographicCameraWrapper/index.js";
 import Engine from "../../utils/Engine/index.js";
 import BlocksBuilder from "../../utils/BlocksBuilder/index.js";
-import Pause from "../../sprites/Pause/index.js";
 
 const scene = new THREE.Scene();
 const stats = new Stats();
