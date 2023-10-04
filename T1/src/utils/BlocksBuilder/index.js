@@ -34,7 +34,7 @@ class BlocksBuilder {
         const y = this.getYPosition(i, this.blockHeight);
         const z = 0;
 
-        if (cell === 7) {
+        if (cell === 6) {
             return new DurableBlock(x, y, z, blockWidth, this.blockHeight, this.getBlockColor(cell));
         }
 
@@ -42,29 +42,17 @@ class BlocksBuilder {
     }
 
     static getBlockColor = (i) => {
-        if (i === 1) {
-            return "#8BEE36";
-        }
+        const indexColors = {
+            1: "#8BEE36",
+            2: "#E63559",
+            3: "#E6CB36",
+            4: "#338AF4",
+            5: "#ffa69e",
+        };
 
-        if (i === 2) {
-            return "#E63559";
-        }
+        if (!indexColors[i]) console.error(`Color for block with index ${i} not found`);
 
-        if (i === 3) {
-            return "#E68536";
-        }
-
-        if (i === 4) {
-            return "#E6CB36";
-        }
-
-        if (i === 5) {
-            return "#338AF4";
-        }
-
-        if (i === 6) {
-            return "#C635EF";
-        }
+        return indexColors[i];
     };
 }
 
