@@ -5,6 +5,7 @@ import PerspectiveCameraWrapper from "../../utils/PerspectiveCameraWrapper/index
 import { OrbitControls } from "../../../../build/jsm/controls/OrbitControls.js";
 import KeyboardCommands from "../../utils/KeyboardCommands/index.js";
 import Pause from "../../sprites/Pause/index.js";
+import DirectionalLight from "../../utils/DirectionalLight/index.js";
 
 class Game {
     static scene = new THREE.Scene();
@@ -15,7 +16,7 @@ class Game {
     static paused = false;
 
     static init() {
-        initDefaultBasicLight(this.scene, true, new THREE.Vector3(8, 0, 8));
+        this.initLight();
         this.fixCameraPosition();
     }
 
@@ -23,6 +24,11 @@ class Game {
         requestAnimationFrame(render);
         this.stats.update();
         this.renderer.render(this.scene, this.camera);
+    }
+
+    static initLight() {
+        const mainLight = new DirectionalLight(4, 3, 6);
+        this.scene.add(mainLight);
     }
 
     static fixCameraPosition() {

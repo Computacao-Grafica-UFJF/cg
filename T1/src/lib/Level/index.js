@@ -65,7 +65,7 @@ class Level {
     }
 
     buildHitter() {
-        const hitter = new Hitter(0, -13, 0, "rgb(255,255,255)");
+        const hitter = new Hitter(0, -13, 0, "#65ADBE");
         return hitter;
     }
 

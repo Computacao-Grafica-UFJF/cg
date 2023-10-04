@@ -4,7 +4,7 @@ class Wall extends THREE.Mesh {
     constructor(x, y, z, width, height, type) {
         const boxGeometry = new THREE.BoxGeometry(width, height);
 
-        const boxMaterial = new THREE.MeshLambertMaterial({ color: "#fff", shadowSide: THREE.DoubleSide });
+        const boxMaterial = new THREE.MeshLambertMaterial({ color: "#47454E", shadowSide: THREE.DoubleSide });
 
         super(boxGeometry, boxMaterial);
 
