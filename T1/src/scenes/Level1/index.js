@@ -1,27 +1,15 @@
-import * as THREE from "three";
-import Stats from "../../../../build/jsm/libs/stats.module.js";
-import { TrackballControls } from "../../../../build/jsm/controls/TrackballControls.js";
-import { initRenderer, initDefaultBasicLight } from "../../../../libs/util/util.js";
-
 import Hitter from "../../sprites/Hitter/index.js";
 import Platform from "../../sprites/Platform/index.js";
 import MiniBall from "../../sprites/MiniBall/index.js";
 import Wall from "../../sprites/Wall/index.js";
-import game from "../../config/Game.js";
+import gameConfig from "../../config/Game.js";
 
-import PerspectiveCameraWrapper from "../../utils/PerspectiveCameraWrapper/index.js";
-import Engine from "../../lib/Engine/index.js";
 import BlocksBuilder from "../../utils/BlocksBuilder/index.js";
+import AuxiliarPlatform from "../../sprites/AuxiliarPlatform/index.js";
+import Level from "../../lib/Level/index.js";
+import Game from "../../lib/Game/index.js";
 
-const scene = new THREE.Scene();
-const stats = new Stats();
-const renderer = initRenderer();
-const camera = new PerspectiveCameraWrapper();
-const trackballControls = new TrackballControls(camera, renderer.domElement);
-
-initDefaultBasicLight(scene, true, new THREE.Vector3(0, 0, 8));
-
-class Level1 extends Engine {
+class Level1 extends Level {
     constructor(camera, renderer, scene) {
         super(camera, renderer, scene);
 
@@ -37,17 +25,22 @@ class Level1 extends Engine {
         this.walls = [...this.buildWalls()];
         this.blocks = [...this.buildBlocks()];
 
-        this.scene.add(...this.getElements());
+        Game.scene.add(...this.getElements());
     }
 
     buildGamePlatform() {
-        const gamePlatform = new Platform(innerWidth, innerHeight, "#000");
+        const gamePlatform = new Platform(innerWidth, innerHeight, "#202030");
         return gamePlatform;
     }
 
     buildPlatform() {
-        const platform = new Platform(game.width, 2 * game.width, "#000");
+        const platform = new Platform(gameConfig.width, 2 * gameConfig.width, "#47454E");
         return platform;
+    }
+
+    buildPlayablePlatform() {
+        const playablePlatform = new AuxiliarPlatform(15 - this.hitter.geometry.parameters.width, 30);
+        return playablePlatform;
     }
 
     buildHitter() {
@@ -79,17 +72,12 @@ class Level1 extends Engine {
     }
 
     buildWalls() {
-        const wallTop = new Wall(0, game.width + 0.5, 0, game.width + 2, 1, "horizontal");
-        const wallBottom = new Wall(0, -game.width - 0.5, 0, game.width + 2, 1, "horizontal");
-        const wallLeft = new Wall(-game.width / 2 - 0.5, 0, 0, 1, 2 * game.width, "vertical");
-        const wallRight = new Wall(game.width / 2 + 0.5, 0, 0, 1, 2 * game.width, "vertical");
+        const wallTop = new Wall(0, gameConfig.width + 0.5, 0, gameConfig.width + 2, 1, "horizontal");
+        const wallBottom = new Wall(0, -gameConfig.width - 0.5, 0, gameConfig.width + 2, 1, "horizontal");
+        const wallLeft = new Wall(-gameConfig.width / 2 - 0.5, 0, 0, 1, 2 * gameConfig.width, "vertical");
+        const wallRight = new Wall(gameConfig.width / 2 + 0.5, 0, 0, 1, 2 * gameConfig.width, "vertical");
 
         return [wallTop, wallBottom, wallLeft, wallRight];
-    }
-
-    buildPlayablePlatform() {
-        const playablePlatform = new Platform(15 - this.hitter.geometry.parameters.width, 30, "#000");
-        return playablePlatform;
     }
 
     getElements() {
@@ -102,7 +90,7 @@ class Level1 extends Engine {
 
     destroyBlock(block) {
         this.blocks = this.blocks.filter((b) => b !== block);
-        this.scene.remove(block);
+        Game.scene.remove(block);
 
         this.finishedGame() && setTimeout(() => this.finish(), 10);
     }
@@ -115,17 +103,15 @@ class Level1 extends Engine {
     }
 }
 
-const level = new Level1(camera, renderer, scene);
+const level = new Level1(Game.camera, Game.renderer, Game.scene);
 
 const render = () => {
     level.keyboardUpdate(level);
-    stats.update();
-    trackballControls.update();
     level.moveMiniBall();
 
     requestAnimationFrame(render);
 
-    renderer.render(scene, camera);
+    Game.render();
 };
 
 export default render;

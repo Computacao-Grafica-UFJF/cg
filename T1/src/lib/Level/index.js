@@ -2,18 +2,16 @@ import Raycaster from "../../utils/Raycaster/index.js";
 import { onWindowResize } from "../../../../libs/util/util.js";
 import KeyboardCommands from "../../utils/KeyboardCommands/index.js";
 import Pause from "../../sprites/Pause/index.js";
+import Game from "../Game/index.js";
 
-class Engine {
-    constructor(camera, renderer, scene) {
-        this.camera = camera;
-        this.renderer = renderer;
-        this.scene = scene;
+class Level {
+    constructor() {
         this.paused = false;
         this.finished = false;
 
         this.raycaster = new Raycaster();
         this.keyboardCommands = new KeyboardCommands();
-        this.startListeners(camera, renderer);
+        this.startListeners(Game.camera, Game.renderer);
 
         this.init();
     }
@@ -36,7 +34,7 @@ class Engine {
     };
 
     restart() {
-        this.scene.remove(...this.getElements());
+        Game.scene.remove(...this.getElements());
         this.start();
         this.miniBall.resetPosition();
     }
@@ -50,7 +48,7 @@ class Engine {
     pause() {
         if (this.finished) return;
 
-        this.paused ? this.scene.remove(...this.scene.children.filter((child) => child instanceof Pause)) : this.scene.add(new Pause());
+        this.paused ? Game.scene.remove(...Game.scene.children.filter((child) => child instanceof Pause)) : Game.scene.add(new Pause());
 
         this.paused = !this.paused;
 
@@ -76,4 +74,4 @@ class Engine {
     };
 }
 
-export default Engine;
+export default Level;

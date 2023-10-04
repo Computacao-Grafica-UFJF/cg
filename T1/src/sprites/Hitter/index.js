@@ -5,7 +5,7 @@ class Hitter extends THREE.Mesh {
     paused = false;
 
     constructor(x, y, z, color) {
-        const boxGeometry = new THREE.BoxGeometry(4, 0.5, 1);
+        const boxGeometry = new THREE.BoxGeometry(4, 0.5, 2);
         const boxMaterial = new THREE.MeshLambertMaterial({ color: color });
 
         super(boxGeometry, boxMaterial);
