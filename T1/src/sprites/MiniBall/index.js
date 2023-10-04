@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import AngleHandler from "../../utils/AngleHandler/index.js";
+import Game from "../../lib/Game/index.js";
 
 export class MiniBall extends THREE.Mesh {
     constructor(x, y, z, color) {
@@ -181,12 +182,6 @@ export class MiniBall extends THREE.Mesh {
         this.translateX(this.speed);
     }
 
-    pause() {
-        if (this.speed === 0 && this.isRaycasterMode) return;
-
-        this.speed = this.speed === 0 ? 0.3 : 0;
-    }
-
     start() {
         this.speed = 0.3;
         this.isRaycasterMode = false;
@@ -199,6 +194,8 @@ export class MiniBall extends THREE.Mesh {
     }
 
     update(hitter, walls, blocks, deathZones, destroyBlock, death) {
+        if (Game.paused) return;
+
         this.move(hitter);
 
         this.collisionWithHitter(hitter);

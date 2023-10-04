@@ -29,12 +29,11 @@ class Level1 extends Level {
 const level = new Level1();
 
 const render = () => {
-    level.keyboardUpdate(level);
+    Game.keyboardUpdate(level);
+
     level.moveMiniBall();
 
-    requestAnimationFrame(render);
-
-    Game.render();
+    Game.render(render);
 };
 
 export default render;

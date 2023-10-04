@@ -1,6 +1,5 @@
 import Raycaster from "../../utils/Raycaster/index.js";
 import { onWindowResize } from "../../../../libs/util/util.js";
-import KeyboardCommands from "../../utils/KeyboardCommands/index.js";
 import Pause from "../../sprites/Pause/index.js";
 import Game from "../Game/index.js";
 import AuxiliarPlatform from "../../sprites/AuxiliarPlatform/index.js";
@@ -16,7 +15,6 @@ class Level {
         this.finished = false;
 
         this.raycaster = new Raycaster();
-        this.keyboardCommands = new KeyboardCommands();
         this.startListeners(Game.camera, Game.renderer);
 
         this.init();
@@ -117,21 +115,9 @@ class Level {
     }
 
     finish() {
-        this.pause();
+        Game.pause();
 
         this.finished = true;
-    }
-
-    pause() {
-        if (this.finished) return;
-
-        this.paused ? Game.scene.remove(...Game.scene.children.filter((child) => child instanceof Pause)) : Game.scene.add(new Pause());
-
-        this.paused = !this.paused;
-
-        if (this.miniBall) this.miniBall.pause();
-
-        if (this.hitter) this.hitter.pause();
     }
 
     init() {
@@ -143,12 +129,6 @@ class Level {
     death() {
         this.miniBall.raycasterMode();
     }
-
-    keyboardUpdate = (level) => {
-        const keyboard = this.keyboardCommands.keyboardState;
-        keyboard.update();
-        this.keyboardCommands.listenCommands(level);
-    };
 }
 
 export default Level;

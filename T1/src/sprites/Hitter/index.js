@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import AngleHandler from "../../utils/AngleHandler/index.js";
+import Game from "../../lib/Game/index.js";
 
 class Hitter extends THREE.Mesh {
     paused = false;
@@ -16,7 +17,7 @@ class Hitter extends THREE.Mesh {
     }
 
     moveX = (x) => {
-        if (this.paused) {
+        if (Game.paused) {
             return;
         }
 
@@ -50,20 +51,8 @@ class Hitter extends THREE.Mesh {
 
         const returnAngle = AngleHandler.invertAngleAboutNormal(invertedAngle, angleOffset);
 
-        console.log({
-            chegouEm: THREE.MathUtils.radToDeg(angle),
-            inverteu: THREE.MathUtils.radToDeg(invertedAngle),
-            normal: THREE.MathUtils.radToDeg(angleOffset),
-            return: THREE.MathUtils.radToDeg(returnAngle),
-            relativeX: relativeX,
-        });
-
         return AngleHandler.limitAngle(returnAngle);
     };
-
-    pause() {
-        this.paused = !this.paused;
-    }
 
     resetPosition() {
         this.position.set(0, -13, 0);

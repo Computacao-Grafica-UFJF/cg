@@ -1,4 +1,5 @@
 import KeyboardState from "../../../../libs/util/KeyboardState.js";
+import Game from "../../lib/Game/index.js";
 import FullScreenControl from "../FullScreenControl/index.js";
 
 class KeyboardCommands {
@@ -9,7 +10,7 @@ class KeyboardCommands {
 
     listenCommands(level) {
         if (this.keyboardState.down("R")) level.restart();
-        if (this.keyboardState.down("space")) level.pause();
+        if (this.keyboardState.down("space")) Game.pause();
         if (this.keyboardState.down("enter")) this.fullScreenControl.toggleFullScreen();
     }
 }
