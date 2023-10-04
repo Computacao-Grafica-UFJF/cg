@@ -1,4 +1,4 @@
-import KeyboardState from "../../../libs/util/KeyboardState.js";
+import KeyboardState from "../../../../libs/util/KeyboardState.js";
 import FullScreenControl from "../FullScreenControl/index.js";
 
 class KeyboardCommands {

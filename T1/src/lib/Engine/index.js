@@ -1,6 +1,6 @@
-import Raycaster from "../Raycaster/index.js";
-import { onWindowResize } from "../../../libs/util/util.js";
-import KeyboardCommands from "../KeyboardCommands/index.js";
+import Raycaster from "../../utils/Raycaster/index.js";
+import { onWindowResize } from "../../../../libs/util/util.js";
+import KeyboardCommands from "../../utils/KeyboardCommands/index.js";
 import Pause from "../../sprites/Pause/index.js";
 
 class Engine {

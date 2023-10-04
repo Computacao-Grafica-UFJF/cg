@@ -1,7 +1,7 @@
 import * as THREE from "three";
-import Stats from "../../../build/jsm/libs/stats.module.js";
-import { TrackballControls } from "../../../build/jsm/controls/TrackballControls.js";
-import { initRenderer, initDefaultBasicLight } from "../../../libs/util/util.js";
+import Stats from "../../../../build/jsm/libs/stats.module.js";
+import { TrackballControls } from "../../../../build/jsm/controls/TrackballControls.js";
+import { initRenderer, initDefaultBasicLight } from "../../../../libs/util/util.js";
 
 import Hitter from "../../sprites/Hitter/index.js";
 import Platform from "../../sprites/Platform/index.js";
@@ -9,14 +9,14 @@ import MiniBall from "../../sprites/MiniBall/index.js";
 import Wall from "../../sprites/Wall/index.js";
 import game from "../../config/Game.js";
 
-import OrthographicCameraWrapper from "../../utils/OrthographicCameraWrapper/index.js";
-import Engine from "../../utils/Engine/index.js";
+import PerspectiveCameraWrapper from "../../utils/PerspectiveCameraWrapper/index.js";
+import Engine from "../../lib/Engine/index.js";
 import BlocksBuilder from "../../utils/BlocksBuilder/index.js";
 
 const scene = new THREE.Scene();
 const stats = new Stats();
 const renderer = initRenderer();
-const camera = new OrthographicCameraWrapper();
+const camera = new PerspectiveCameraWrapper();
 const trackballControls = new TrackballControls(camera, renderer.domElement);
 
 initDefaultBasicLight(scene, true, new THREE.Vector3(0, 0, 8));

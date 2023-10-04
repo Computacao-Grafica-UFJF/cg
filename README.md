@@ -4,48 +4,59 @@ Files for the Computer Graphics course in Three.js
 
 # TODO
 
+## Classe Game
+
+-   [ ] Criar static class Game
+-   [ ] Ela ficará responsável por criar a cena, keyboardListener e Pause
+-   [ ] Enviar funções para a classe Engine
+-   [ ] Engine virar Level
+
 ## Camera
 
--   [x] Camera movement
--   [x] Camera Zoom Disable
+-   [ ] Criar camera em perspectiva
+-   [ ] Final - Ajustar camera bonitinha
+-   [ ] Luz direcional com sombras = céu com plano
 
-## Keyboard
+## Blocos
 
--   [x] Keyboard Listener
--   [x] Keyboard options
+-   [ ] Estilizar blocos 3D
+-   [ ] Vetor de criação de blocos receberá um int ao invés de bool
+-   [ ] Criar subclasse de bloco cinza que terá o dobro de HP
+-   [ ] Deixar um pouco transparente os blocos já atingidos
+-   [ ] Sombra dos bloquitos
+-   [ ] MeshLambertMaterial
 
-## Hitter
+## Bola
 
--   [x] Hitter structure
--   [x] Hitter movement
--   [x] Mouse Listener
--   [ ] Hitter collision with Mini Ball
+-   [ ] Bola 3D MeshPhongMaterial
+-   [ ] Bola lâmpada
+-   [ ] Final - Ajustar iluminação de acordo com as outras sombras
+-   [ ] Opção de criar segunda bola
+-   [ ] Velocidade da bola mudar e texto
+-   [ ] Posição inicial da bola
 
-## Wall
+## Teclado
 
--   [x] Wall structure
+-   [ ] G mudar de fase
 
-## Mini Ball
+## Power-Up
 
--   [x] Mini Ball structure
--   [x] Mini Ball movement
--   [x] Mini Ball collision with Block
--   [ ] Mini Ball collision with the Wall
--   [ ] Mini Ball collision with Bottom Wall
--   [ ] Mini Ball collision with the Hitter
+-   [ ] Power-up existir
+-   [ ] Existir no Level um contador de blocos destruídos
+-   [ ] Movimentar o power-up
+-   [ ] Colisão do power-up com o rebatedor
 
-## Block
+## Rebatedor
 
--   [x] Block structure
--   [x] Block collision with Mini Ball (O Bloco terá um HP)
--   [x] Block destruction
+-   [ ] Rebatedor 3D (também em arquivo separado na pasta STORIES)
+-   [ ] Rebatedor sombra
+-   [ ] Rebatedor MeshLabertMaterial
+-   [ ] Colisão do rebatedor com a bola utilizando o centro do rebatedor como o ponto 0 e onde a bola bate como o ângulo normal
+-   [ ] Colisão do rebatedor com o power up
 
-## Design
+## Levels
 
--   [ ] Design the game
--   [ ] Design the blocks
--   [ ] Design the hitter
--   [ ] Design the mini ball
--   [ ] Design the background
--   [ ] Insert the best audios
--   [x] Interseção do mouse com um plano invisível que ficará à frente do ambiente do jogo.
+-   [ ] Criar level 2
+-   [ ] Passar de level quando acabar o level 1
+
+## Sombra
