@@ -38,14 +38,14 @@ class BlocksBuilder {
             return new DurableBlock(x, y, z, blockWidth, this.blockHeight);
         }
 
-        return new Block(x, y, z, blockWidth, this.blockHeight, this.getBlockColor(cell));
+        return new Block(x, y, z, blockWidth, this.blockHeight, 1, this.getBlockColor(cell));
     }
 
     static getBlockColor = (i) => {
         const indexColors = {
             1: "#8BEE36",
             2: "#E63559",
-            3: "#E6CB36",
+            3: "#ffa556",
             4: "#338AF4",
             5: "#ffa69e",
         };
