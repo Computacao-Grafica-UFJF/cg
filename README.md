@@ -6,21 +6,22 @@ Files for the Computer Graphics course in Three.js
 
 ## Classe Game
 
--   [ ] Criar static class Game
--   [ ] Ela ficará responsável por criar a cena, keyboardListener e Pause
--   [ ] Enviar funções para a classe Engine
--   [ ] Engine virar Level
+-   [x] Criar static class Game
+-   [x] Ela ficará responsável por criar a cena, keyboardListener e Pause
+-   [x] Enviar funções para a classe Engine
+-   [x] Engine virar Level
 
 ## Camera
 
--   [ ] Criar camera em perspectiva
--   [ ] Final - Ajustar camera bonitinha
--   [ ] Luz direcional com sombras = céu com plano
+-   [x] Criar camera em perspectiva
+-   [x] Final - Ajustar camera bonitinha
+-   [x] Luz direcional com sombras = céu com plano
+-   [ ] Sombras funcionarem
 
 ## Blocos
 
--   [ ] Estilizar blocos 3D
--   [ ] Vetor de criação de blocos receberá um int ao invés de bool
+-   [x] Estilizar blocos 3D
+-   [x] Vetor de criação de blocos receberá um int ao invés de bool
 -   [ ] Criar subclasse de bloco cinza que terá o dobro de HP
 -   [ ] Deixar um pouco transparente os blocos já atingidos
 -   [ ] Sombra dos bloquitos
@@ -37,7 +38,7 @@ Files for the Computer Graphics course in Three.js
 
 ## Teclado
 
--   [ ] G mudar de fase
+-   [x] G mudar de fase
 
 ## Power-Up
 
