@@ -133,7 +133,7 @@ export class MiniBall extends THREE.Mesh {
         this.invertAngleVertically();
     }
 
-    collisionWithBlocks = (blocks, destroyBlock) => {
+    collisionWithBlocks = (blocks, hitBlock) => {
         const getBallBoundingBox = () => {
             const sphereCenter = this.position;
 
@@ -154,7 +154,7 @@ export class MiniBall extends THREE.Mesh {
 
                 this.activateEvadeMode();
 
-                destroyBlock(block);
+                hitBlock(block);
 
                 return 1;
             }
@@ -193,14 +193,14 @@ export class MiniBall extends THREE.Mesh {
         this.isRaycasterMode = true;
     }
 
-    update(hitter, walls, blocks, deathZones, destroyBlock, death) {
+    update(hitter, walls, blocks, deathZones, hitBlock, death) {
         if (Game.paused) return;
 
         this.move(hitter);
 
         this.collisionWithHitter(hitter);
         this.collisionWithWalls(walls);
-        this.collisionWithBlocks(blocks, destroyBlock);
+        this.collisionWithBlocks(blocks, hitBlock);
         this.collisionWithDeathZones(deathZones, death);
     }
 }

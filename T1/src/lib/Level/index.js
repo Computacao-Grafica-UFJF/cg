@@ -101,6 +101,12 @@ class Level {
         return this.blocks.length === 0;
     }
 
+    hitBlock(block) {
+        const destroyedOnHit = block.hit();
+
+        if (destroyedOnHit) this.destroyBlock(block);
+    }
+
     destroyBlock(block) {
         this.blocks = this.blocks.filter((b) => b !== block);
         Game.scene.remove(block);
@@ -112,7 +118,7 @@ class Level {
         const collisionWalls = [this.walls[0], this.walls[2], this.walls[3]];
         const deathZones = [this.walls[1]];
 
-        this.miniBall.update(this.hitter, collisionWalls, this.blocks, deathZones, this.destroyBlock.bind(this), this.death.bind(this));
+        this.miniBall.update(this.hitter, collisionWalls, this.blocks, deathZones, this.hitBlock.bind(this), this.death.bind(this));
     }
 
     render() {

@@ -11,6 +11,10 @@ class Block extends THREE.Mesh {
         this.translateY(y);
         this.translateZ(z);
     }
+
+    hit() {
+        return true;
+    }
 }
 
 export default Block;
