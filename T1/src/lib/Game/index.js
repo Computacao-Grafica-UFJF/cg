@@ -14,6 +14,7 @@ class Game {
     static camera = new PerspectiveCameraWrapper();
     static keyboardCommands = new KeyboardCommands();
     static paused = false;
+    static level = null;
 
     static init() {
         this.initLight();
@@ -21,6 +22,7 @@ class Game {
     }
 
     static render(render) {
+        this.level.moveMiniBall();
         requestAnimationFrame(render);
         this.stats.update();
         this.renderer.render(this.scene, this.camera);
