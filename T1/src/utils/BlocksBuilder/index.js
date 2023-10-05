@@ -35,7 +35,7 @@ class BlocksBuilder {
         const z = 0;
 
         if (cell === 6) {
-            return new DurableBlock(x, y, z, blockWidth, this.blockHeight, this.getBlockColor(cell));
+            return new DurableBlock(x, y, z, blockWidth, this.blockHeight);
         }
 
         return new Block(x, y, z, blockWidth, this.blockHeight, this.getBlockColor(cell));
