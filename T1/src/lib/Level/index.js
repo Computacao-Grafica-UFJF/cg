@@ -15,12 +15,7 @@ class Level {
         this.paused = false;
         this.finished = false;
 
-        this.raycaster = new Raycaster();
-        this.startListeners(Game.camera, Game.renderer);
-
         this.init();
-
-        this.build();
     }
 
     startListeners = (camera, renderer) => {
@@ -41,6 +36,9 @@ class Level {
     };
 
     build() {
+        this.raycaster = new Raycaster();
+        this.startListeners(Game.camera, Game.renderer);
+
         this.gamePlatform = this.buildGamePlatform();
         this.platform = this.buildPlatform();
         this.hitter = this.buildHitter();

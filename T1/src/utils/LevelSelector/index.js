@@ -1,23 +1,35 @@
 import Game from "../../lib/Game/index.js";
 import level1 from "../../scenes/Level1/index.js";
-import level2 from "../../scenes/Level1/index.js";
+import level2 from "../../scenes/Level2/index.js";
 
 class LevelSelector {
     static levels = [level1, level2];
     static currentLevelIndex = 0;
+    static currentLevel = null;
 
-    static getNextLevel() {
-        this.currentLevel = (this.currentLevel + 1) % this.levels.length;
-        return this.getLevel();
+    static nextLevel() {
+        this.currentLevelIndex++;
+
+        if (this.currentLevelIndex >= this.levels.length) {
+            this.currentLevelIndex = 0;
+        }
+
+        this.changeLevel();
     }
 
-    static getStartLevel() {
-        this.currentLevel = 0;
-        return this.getLevel();
+    static startLevel() {
+        this.currentLevelIndex = 0;
+        this.changeLevel();
+    }
+
+    static changeLevel() {
+        this.currentLevel = this.getLevel();
+        Game.changeLevel();
+        this.currentLevel.build();
     }
 
     static getLevel() {
-        return this.levels[this.currentLevel];
+        return this.levels[this.currentLevelIndex];
     }
 }
 

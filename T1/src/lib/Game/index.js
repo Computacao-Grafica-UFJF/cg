@@ -3,7 +3,6 @@ import Stats from "../../../../build/jsm/libs/stats.module.js";
 import { initRenderer } from "../../../../libs/util/util.js";
 import PerspectiveCameraWrapper from "../../utils/PerspectiveCameraWrapper/index.js";
 import { OrbitControls } from "../../../../build/jsm/controls/OrbitControls.js";
-import KeyboardCommands from "../../utils/KeyboardCommands/index.js";
 import Pause from "../../sprites/Pause/index.js";
 import DirectionalLight from "../../utils/DirectionalLight/index.js";
 
@@ -12,7 +11,6 @@ class Game {
     static stats = new Stats();
     static renderer = initRenderer();
     static camera = new PerspectiveCameraWrapper();
-    static keyboardCommands = new KeyboardCommands();
     static paused = false;
 
     static init() {
@@ -42,11 +40,10 @@ class Game {
         this.paused = !this.paused;
     }
 
-    static keyboardUpdate = (level) => {
-        const keyboard = this.keyboardCommands.keyboardState;
-        keyboard.update();
-        this.keyboardCommands.listenCommands(level);
-    };
+    static changeLevel() {
+        this.scene.remove(...this.scene.children);
+        this.init();
+    }
 }
 
 export default Game;
