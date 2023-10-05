@@ -1,6 +1,16 @@
 import Game from "./src/lib/Game/index.js";
-import level1 from "./src/scenes/Level1/index.js";
+import LevelSelector from "./src/utils/LevelSelector/index.js";
 
 Game.init();
 
-level1();
+const level = LevelSelector.getStartLevel();
+
+const render = () => {
+    Game.keyboardUpdate(level);
+
+    level.render();
+
+    Game.render(render);
+};
+
+render();

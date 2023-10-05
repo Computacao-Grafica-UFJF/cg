@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import Stats from "../../../../build/jsm/libs/stats.module.js";
-import { initRenderer, initDefaultBasicLight } from "../../../../libs/util/util.js";
+import { initRenderer } from "../../../../libs/util/util.js";
 import PerspectiveCameraWrapper from "../../utils/PerspectiveCameraWrapper/index.js";
 import { OrbitControls } from "../../../../build/jsm/controls/OrbitControls.js";
 import KeyboardCommands from "../../utils/KeyboardCommands/index.js";
@@ -14,7 +14,6 @@ class Game {
     static camera = new PerspectiveCameraWrapper();
     static keyboardCommands = new KeyboardCommands();
     static paused = false;
-    static level = null;
 
     static init() {
         this.initLight();
@@ -22,7 +21,6 @@ class Game {
     }
 
     static render(render) {
-        this.level.moveMiniBall();
         requestAnimationFrame(render);
         this.stats.update();
         this.renderer.render(this.scene, this.camera);

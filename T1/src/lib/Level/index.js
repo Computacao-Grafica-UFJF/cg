@@ -1,6 +1,5 @@
 import Raycaster from "../../utils/Raycaster/index.js";
 import { onWindowResize } from "../../../../libs/util/util.js";
-import Pause from "../../sprites/Pause/index.js";
 import Game from "../Game/index.js";
 import AuxiliarPlatform from "../../sprites/AuxiliarPlatform/index.js";
 import Hitter from "../../sprites/Hitter/index.js";
@@ -8,9 +7,11 @@ import Platform from "../../sprites/Platform/index.js";
 import MiniBall from "../../sprites/MiniBall/index.js";
 import Wall from "../../sprites/Wall/index.js";
 import gameConfig from "../../config/Game.js";
+import BlocksBuilder from "../../utils/BlocksBuilder/index.js";
 
 class Level {
-    constructor() {
+    constructor(matrix) {
+        this.matrix = matrix;
         this.paused = false;
         this.finished = false;
 
@@ -18,6 +19,8 @@ class Level {
         this.startListeners(Game.camera, Game.renderer);
 
         this.init();
+
+        this.build();
     }
 
     startListeners = (camera, renderer) => {
@@ -37,7 +40,7 @@ class Level {
         });
     };
 
-    start() {
+    build() {
         this.gamePlatform = this.buildGamePlatform();
         this.platform = this.buildPlatform();
         this.hitter = this.buildHitter();
@@ -86,6 +89,12 @@ class Level {
         return [wallTop, wallBottom, wallLeft, wallRight];
     }
 
+    buildBlocks() {
+        const blocks = BlocksBuilder.buildGamePlatform(this.matrix);
+
+        return blocks;
+    }
+
     getElements() {
         return [this.gamePlatform, this.platform, this.hitter, this.playablePlatform, this.miniBall, ...this.walls, ...this.blocks];
     }
@@ -108,9 +117,13 @@ class Level {
         this.miniBall.update(this.hitter, collisionWalls, this.blocks, deathZones, this.destroyBlock.bind(this), this.death.bind(this));
     }
 
+    render() {
+        this.moveMiniBall();
+    }
+
     restart() {
         Game.scene.remove(...this.getElements());
-        this.start();
+        this.build();
         this.miniBall.resetPosition();
     }
 
