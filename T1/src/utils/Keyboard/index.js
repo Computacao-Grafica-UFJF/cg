@@ -14,7 +14,7 @@ class KeyboardCommands {
         if (this.keyboardState.down("G")) LevelSelector.nextLevel();
     }
 
-    static keyboardUpdate = (level) => {
+    static keyboardListening = (level) => {
         this.keyboardState.update();
         this.listenCommands(level);
     };

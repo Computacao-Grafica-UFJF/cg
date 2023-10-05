@@ -1,13 +1,11 @@
 import Game from "./src/lib/Game/index.js";
 import LevelSelector from "./src/utils/LevelSelector/index.js";
-import KeyboardCommands from "./src/utils/KeyboardCommands/index.js";
-
-Game.init();
+import Keyboard from "./src/utils/Keyboard/index.js";
 
 LevelSelector.startLevel();
 
 const render = () => {
-    KeyboardCommands.keyboardUpdate(LevelSelector.currentLevel);
+    Keyboard.keyboardListening(LevelSelector.currentLevel);
 
     LevelSelector.currentLevel.render();
 
