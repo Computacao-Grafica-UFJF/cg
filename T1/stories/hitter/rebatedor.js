@@ -54,7 +54,7 @@ function buildObjects() {
     cubeCSG = CSG.fromMesh(cubeMesh);
     csgObject = sphereCSG.subtract(cubeCSG);
     mesh = CSG.toMesh(csgObject, auxMat);
-    mesh.material = new THREE.MeshPhongMaterial({ color: "lightblue" });
+    mesh.material = new THREE.MeshLambertMaterial({ color: "lightblue" });
     mesh.geometry.scale(1, 1, bulgingPercentage);
     mesh.position.set(0, 0, -cutSphereWithCube + 2 * bulgingPercentage);
 
