@@ -31,32 +31,33 @@ scene.add(axesHelper);
 
 var trackballControls = new TrackballControls(camera, renderer.domElement);
 
-let mesh;
+let mesh, mesh1, mesh2;
 
 buildInterface();
 buildObjects();
 render();
 
 function buildObjects() {
-    const radius = 2;
-    const cutSphereWithCube = 1;
-    const bulgingPercentage = 0.5;
     let auxMat = new THREE.Matrix4();
+    const radius = 1.05;
+    const cutCylinderWithCube = 1.3;
 
-    let sphereMesh = new THREE.Mesh(new THREE.SphereGeometry(radius, 50, 50));
-    let cubeMesh = new THREE.Mesh(new THREE.BoxGeometry(2 * radius, 2 * radius, 2 * radius));
+    let cubeMesh = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2));
+    let cylinderMesh = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius, radius / 2, 50));
 
-    let csgObject, cubeCSG, sphereCSG;
+    let csgObject, cubeCSG, cylinderCSG;
 
-    cubeMesh.position.set(0, 0, -radius * cutSphereWithCube);
+    cubeMesh.position.set(0, 0, radius * cutCylinderWithCube);
     updateObject(cubeMesh);
-    sphereCSG = CSG.fromMesh(sphereMesh);
     cubeCSG = CSG.fromMesh(cubeMesh);
-    csgObject = sphereCSG.subtract(cubeCSG);
+    cylinderCSG = CSG.fromMesh(cylinderMesh);
+    csgObject = cylinderCSG.intersect(cubeCSG);
+
     mesh = CSG.toMesh(csgObject, auxMat);
-    mesh.material = new THREE.MeshLambertMaterial({ color: "lightblue" });
-    mesh.geometry.scale(1, 1, bulgingPercentage);
-    mesh.position.set(0, 0, -cutSphereWithCube + 2 * bulgingPercentage);
+    mesh.material = new THREE.MeshPhongMaterial({ color: "lightblue" });
+    mesh.geometry.scale(1, 1, 0.5);
+
+    mesh.position.set(0, 0, -0.18);
 
     scene.add(mesh);
 }
