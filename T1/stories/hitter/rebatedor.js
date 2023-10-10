@@ -38,12 +38,14 @@ buildObjects();
 render();
 
 function buildObjects() {
-    let auxMat = new THREE.Matrix4();
-    const radius = 1.05;
-    const cutCylinderWithCube = 1.3;
+    const radius = 2;
+    const height = radius / 2;
 
-    let cubeMesh = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2));
-    let cylinderMesh = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius, radius / 2, 50));
+    const auxMat = new THREE.Matrix4();
+    const cutCylinderWithCube = 1;
+
+    const cubeMesh = new THREE.Mesh(new THREE.BoxGeometry(radius * 2, radius * 2, radius * 2));
+    const cylinderMesh = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius, height, 50));
 
     let csgObject, cubeCSG, cylinderCSG;
 
@@ -54,10 +56,11 @@ function buildObjects() {
     csgObject = cylinderCSG.intersect(cubeCSG);
 
     mesh = CSG.toMesh(csgObject, auxMat);
-    mesh.material = new THREE.MeshPhongMaterial({ color: "lightblue" });
+    mesh.material = new THREE.MeshLambertMaterial({ color: "lightblue" });
     mesh.geometry.scale(1, 1, 0.5);
 
-    mesh.position.set(0, 0, -0.18);
+    mesh.position.set(0, 0, 0);
+    // mesh.rotateX(THREE.MathUtils.degToRad(270));
 
     scene.add(mesh);
 }

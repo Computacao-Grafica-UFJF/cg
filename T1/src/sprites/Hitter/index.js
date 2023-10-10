@@ -1,15 +1,27 @@
 import * as THREE from "three";
 import AngleHandler from "../../utils/AngleHandler/index.js";
 import Game from "../../lib/Game/index.js";
+import HitterBuilder from "../../utils/HitterBuilder/index.js";
 
 class Hitter extends THREE.Mesh {
     paused = false;
 
     constructor(x, y, z, color) {
-        const boxGeometry = new THREE.BoxGeometry(4, 0.5, 2);
-        const boxMaterial = new THREE.MeshLambertMaterial({ color: color });
+        const radius = 2;
+        const height = radius / 4;
 
-        super(boxGeometry, boxMaterial);
+        const mesh = HitterBuilder.buildObjects(radius, height);
+        const material = new THREE.MeshLambertMaterial({ color });
+
+        super(mesh.geometry, material);
+
+        this.radius = radius;
+        this.height = height;
+        this.width = 2 * radius;
+
+        this.geometry.scale(1, 1, 0.5);
+
+        this.rotateX(THREE.MathUtils.degToRad(270));
 
         this.translateX(x);
         this.translateY(y);
@@ -25,13 +37,11 @@ class Hitter extends THREE.Mesh {
     };
 
     getSegmentPositionByRelativeX(relativeX) {
-        const width = this.geometry.parameters.width;
+        if (relativeX <= -this.width / 2) return 0;
+        if (relativeX >= this.width / 2) return 4;
 
-        if (relativeX <= -width / 2) return 0;
-        if (relativeX >= width / 2) return 4;
-
-        const segmentWidth = width / 5;
-        const absoluteX = relativeX + width / 2;
+        const segmentWidth = this.width / 5;
+        const absoluteX = relativeX + this.width / 2;
 
         const segment = Math.floor(absoluteX / segmentWidth);
         return segment;

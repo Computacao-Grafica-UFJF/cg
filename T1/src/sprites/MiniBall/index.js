@@ -44,10 +44,10 @@ export class MiniBall extends THREE.Mesh {
         const ballTop = this.position.y + this.radius;
         const ballBottom = this.position.y - this.radius;
 
-        const hitterLeft = hitter.position.x - hitter.geometry.parameters.width / 2;
-        const hitterRight = hitter.position.x + hitter.geometry.parameters.width / 2;
-        const hitterTop = hitter.position.y + hitter.geometry.parameters.height / 2;
-        const hitterBottom = hitter.position.y - hitter.geometry.parameters.height / 2;
+        const hitterLeft = hitter.position.x - hitter.width / 2;
+        const hitterRight = hitter.position.x + hitter.width / 2;
+        const hitterTop = hitter.position.y + hitter.height / 2;
+        const hitterBottom = hitter.position.y - hitter.height / 2;
 
         const leftCollisionDistance = Math.abs(ballLeft - hitterRight);
         const rightCollisionDistance = Math.abs(ballRight - hitterLeft);
@@ -136,26 +136,18 @@ export class MiniBall extends THREE.Mesh {
     collisionWithBlocks = (blocks, hitBlock) => {
         const getBallBoundingBox = () => {
             const sphereCenter = this.position;
-
             const min = new THREE.Vector3(sphereCenter.x - this.radius, sphereCenter.y - this.radius, sphereCenter.z - this.radius);
             const max = new THREE.Vector3(sphereCenter.x + this.radius, sphereCenter.y + this.radius, sphereCenter.z + this.radius);
             const ballBoundingBox = new THREE.Box3(min, max);
-
             return ballBoundingBox;
         };
-
         const ballBoundingBox = getBallBoundingBox();
-
         blocks.find((block) => {
             const blockBoundingBox = new THREE.Box3().setFromObject(block);
-
             if (ballBoundingBox.intersectsBox(blockBoundingBox) && this.evadeMode === false) {
                 this.checkCollisionsWithBlocks(block);
-
                 this.activateEvadeMode();
-
                 hitBlock(block);
-
                 return 1;
             }
         });
@@ -163,10 +155,8 @@ export class MiniBall extends THREE.Mesh {
 
     collisionWithDeathZones(deathZones, death) {
         const ballBoundingBox = new THREE.Box3().setFromObject(this);
-
         deathZones.forEach((deathZone) => {
             const wallBoundingBox = new THREE.Box3().setFromObject(deathZone);
-
             if (ballBoundingBox.intersectsBox(wallBoundingBox)) {
                 death();
             }
