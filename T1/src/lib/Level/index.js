@@ -62,12 +62,12 @@ class Level {
     }
 
     buildPlayablePlatform() {
-        const playablePlatform = new AuxiliarPlatform(15 - this.hitter.geometry.parameters.width, 30);
+        const playablePlatform = new AuxiliarPlatform(15 - this.hitter.width, 30);
         return playablePlatform;
     }
 
     buildHitter() {
-        const hitter = new Hitter(0, -13, 0, "#65ADBE");
+        const hitter = new Hitter(0, 0, -13, "#65ADBE");
         return hitter;
     }
 
