@@ -6,38 +6,34 @@ import { initRenderer, initCamera, initDefaultBasicLight, createGroundPlane, onW
 
 import { CSG } from "../../../libs/other/CSGMesh.js";
 
-var scene = new THREE.Scene();
-var stats = new Stats();
+const scene = new THREE.Scene();
+const stats = new Stats();
 
-var renderer = initRenderer();
+const renderer = initRenderer();
 renderer.setClearColor("rgb(30, 30, 40)");
-var camera = initCamera(new THREE.Vector3(4, -8, 8));
+const camera = initCamera(new THREE.Vector3(4, -8, 8));
 camera.up.set(0, 0, 1);
 
 window.addEventListener(
     "resize",
-    function () {
+    () => {
         onWindowResize(camera, renderer);
     },
     false
 );
 initDefaultBasicLight(scene, true, new THREE.Vector3(12, -15, 20), 28, 1024);
 
-var groundPlane = createGroundPlane(20, 20);
+const groundPlane = createGroundPlane(20, 20);
 scene.add(groundPlane);
 
-var axesHelper = new THREE.AxesHelper(12);
+const axesHelper = new THREE.AxesHelper(12);
 scene.add(axesHelper);
 
-var trackballControls = new TrackballControls(camera, renderer.domElement);
+const trackballControls = new TrackballControls(camera, renderer.domElement);
 
-let mesh, mesh1, mesh2;
+let mesh;
 
-buildInterface();
-buildObjects();
-render();
-
-function buildObjects() {
+const buildObjects = () => {
     const radius = 2;
     const height = radius / 2;
 
@@ -60,18 +56,20 @@ function buildObjects() {
     mesh.geometry.scale(1, 1, 0.5);
 
     mesh.position.set(0, 0, 0);
+
+    // Como fica no jogo
     // mesh.rotateX(THREE.MathUtils.degToRad(270));
 
     scene.add(mesh);
-}
+};
 
-function updateObject(mesh) {
+const updateObject = (mesh) => {
     mesh.matrixAutoUpdate = false;
     mesh.updateMatrix();
-}
+};
 
-function buildInterface() {
-    var controls = new (function () {
+const buildInterface = () => {
+    const controls = new (function () {
         this.wire = false;
 
         this.onWireframeMode = function () {
@@ -79,18 +77,21 @@ function buildInterface() {
         };
     })();
 
-    // GUI interface
-    var gui = new GUI();
+    const gui = new GUI();
     gui.add(controls, "wire", false)
         .name("Wireframe")
-        .onChange(function (e) {
+        .onChange((e) => {
             controls.onWireframeMode();
         });
-}
+};
 
-function render() {
+const render = () => {
     stats.update();
     trackballControls.update();
     requestAnimationFrame(render);
     renderer.render(scene, camera);
-}
+};
+
+buildInterface();
+buildObjects();
+render();
