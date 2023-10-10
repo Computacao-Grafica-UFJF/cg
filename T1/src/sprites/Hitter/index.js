@@ -8,7 +8,7 @@ class Hitter extends THREE.Mesh {
 
     constructor(x, y, z, color) {
         const radius = 2;
-        const height = radius / 4;
+        const height = radius / 2;
 
         const mesh = HitterBuilder.buildObjects(radius, height);
         const material = new THREE.MeshLambertMaterial({ color });
