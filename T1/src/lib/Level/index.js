@@ -9,6 +9,7 @@ import Wall from "../../sprites/Wall/index.js";
 import gameConfig from "../../config/Game.js";
 import BlocksBuilder from "../../utils/BlocksBuilder/index.js";
 import Plane from "../../sprites/Plane/index.js";
+import * as THREE from "three";
 
 class Level {
     constructor(matrix) {
@@ -49,6 +50,64 @@ class Level {
         this.blocks = [...this.buildBlocks()];
 
         Game.scene.add(...this.getElements());
+
+        // Obtém as coordenadas da geometria
+        const positions = this.hitter.geometry.attributes.position.array;
+
+        // let minX = Infinity;
+        // let minY = Infinity;
+        // let minZ = Infinity;
+        // let maxX = -Infinity;
+        // let maxY = -Infinity;
+        // let maxZ = -Infinity;
+
+        // // Itera sobre as coordenadas da geometria e atualiza os limites
+        // for (let i = 0; i < positions.length; i += 3) {
+        //     const x = positions[i];
+        //     const y = positions[i + 1] - 13;
+        //     const z = positions[i + 2];
+
+        //     if (minX > x && minY > y) {
+        //         minX = x;
+        //         minY = y;
+        //         minZ = z;
+        //     }
+        //     if (maxX < x) {
+        //         maxX = x;
+        //         maxY = y;
+        //         maxZ = z;
+        //     }
+        // }
+        // const sphereGeometry1 = new THREE.SphereGeometry(0.1, 8, 8);
+        // const sphereMaterial1 = new THREE.MeshBasicMaterial({ color: "blue" });
+        // const sphere1 = new THREE.Mesh(sphereGeometry1, sphereMaterial1);
+
+        // sphere1.position.set(minX, minY, minZ);
+
+        // Game.scene.add(sphere1);
+
+        // const sphereGeometry2 = new THREE.SphereGeometry(0.2, 8, 8);
+        // const sphereMaterial2 = new THREE.MeshBasicMaterial({ color: "green" });
+        // const sphere2 = new THREE.Mesh(sphereGeometry2, sphereMaterial2);
+
+        // sphere2.position.set(maxX, maxY, maxZ);
+
+        // Game.scene.add(sphere2);
+
+        // Todos os pontos
+        // for (let i = 0; i < positions.length; i += 3) {
+        //     const x = positions[i];
+        //     const y = positions[i + 1] + 0.2;
+        //     const z = positions[i + 2] - 13;
+
+        //     const sphereGeometry = new THREE.SphereGeometry(0.1, 8, 8);
+        //     const sphereMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+        //     const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+
+        //     sphere.position.set(x, z, y);
+
+        //     Game.scene.add(sphere);
+        // }
     }
 
     buildGamePlatform() {
@@ -72,8 +131,8 @@ class Level {
     }
 
     buildMiniBall() {
-        const positionStartX = 0.8;
-        const positionStartY = -12;
+        const positionStartX = 0;
+        const positionStartY = -11.5;
 
         const miniBall = new MiniBall(positionStartX, positionStartY, 0, "#fff");
         return miniBall;

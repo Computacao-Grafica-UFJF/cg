@@ -50,21 +50,75 @@ class Hitter extends THREE.Mesh {
         return segment;
     }
 
-    getAngleOffsetBySegment(segment) {
-        const angleOffsets = [120, 105, 90, 75, 60];
-        return angleOffsets[segment];
-    }
+    // getAngleOffsetBySegment(segment) {
+    //     const angleOffsets = [120, 105, 90, 75, 60];
+    //     return angleOffsets[segment];
+    // }
 
-    getKickBallAngle = (relativeX, angle) => {
+    // getKickBallAngle = (relativeX, angle) => {
+    //     if (angle > 0 && angle < Math.PI) return angle;
+
+    //     const invertedAngle = angle - Math.PI;
+    //     const segment = this.getSegmentPositionByRelativeX(relativeX);
+    //     const angleOffset = THREE.MathUtils.degToRad(this.getAngleOffsetBySegment(segment));
+
+    //     const returnAngle = AngleHandler.invertAngleAboutNormal(invertedAngle, angleOffset);
+
+    //     return AngleHandler.limitAngle(returnAngle);
+    // };
+
+    getKickBallAngle = (angleNormal, angle) => {
         if (angle > 0 && angle < Math.PI) return angle;
 
         const invertedAngle = angle - Math.PI;
-        const segment = this.getSegmentPositionByRelativeX(relativeX);
-        const angleOffset = THREE.MathUtils.degToRad(this.getAngleOffsetBySegment(segment));
 
-        const returnAngle = AngleHandler.invertAngleAboutNormal(invertedAngle, angleOffset);
+        const returnAngle = AngleHandler.invertAngleAboutNormal(invertedAngle, angleNormal);
 
         return AngleHandler.limitAngle(returnAngle);
+    };
+
+    getIndexOfPointOfIntersection(positionCollisionBall) {
+        const vertexPositions = this.geometry.attributes.position.array;
+        let collisionIndex = -1,
+            minDistance = Infinity;
+
+        for (let i = 0; i < vertexPositions.length; i += 3) {
+            const axisDisplacement = -13;
+
+            const xOfVertex = vertexPositions[i];
+            const distanceRelative = Math.abs(xOfVertex - positionCollisionBall.x);
+
+            if (distanceRelative < minDistance) {
+                minDistance = distanceRelative;
+                collisionIndex = i / 3;
+
+                console.log("entrou: ", minDistance);
+            }
+        }
+
+        console.log(minDistance, collisionIndex); //990
+
+        return collisionIndex;
+    }
+
+    getNormalOfPointIntersect = (positionCollisionBallWithHitter) => {
+        const collisionPointIndex = this.getIndexOfPointOfIntersection(positionCollisionBallWithHitter);
+
+        console.log("Ponto de intersecção: ", this.geometry.attributes.position.array[collisionPointIndex]);
+
+        const vertexNormals = this.geometry.attributes.normal.array;
+
+        const normal = new THREE.Vector3( // Normal correspondente ao ponto de colisão
+            vertexNormals[collisionPointIndex * 3],
+            vertexNormals[collisionPointIndex * 3 + 1],
+            vertexNormals[collisionPointIndex * 3 + 2]
+        );
+
+        normal.applyMatrix4(this.matrixWorld);
+
+        // console.log("normal:", normal);
+
+        return normal;
     };
 
     resetPosition() {
