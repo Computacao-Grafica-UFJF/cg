@@ -30,6 +30,7 @@ class Game {
 
         this.renderer.shadowMap.enabled = true;
         this.renderer.shadowMap.type = THREE.PCFShadowMap;
+
         this.scene.add(mainLight, ambientLight);
     }
 
