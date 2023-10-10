@@ -14,6 +14,8 @@ export class MiniBall extends THREE.Mesh {
         this.radius = 0.5;
         this.evadeTime = 10;
 
+        this.castShadow = true;
+
         this.startX = x;
         this.startY = y;
         this.startZ = z;

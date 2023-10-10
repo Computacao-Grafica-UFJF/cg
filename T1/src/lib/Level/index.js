@@ -8,6 +8,7 @@ import MiniBall from "../../sprites/MiniBall/index.js";
 import Wall from "../../sprites/Wall/index.js";
 import gameConfig from "../../config/Game.js";
 import BlocksBuilder from "../../utils/BlocksBuilder/index.js";
+import Plane from "../../sprites/Plane/index.js";
 
 class Level {
     constructor(matrix) {
@@ -56,7 +57,7 @@ class Level {
     }
 
     buildPlatform() {
-        const platform = new Platform(gameConfig.width, 2 * gameConfig.width, "#47454E");
+        const platform = new Plane();
         return platform;
     }
 

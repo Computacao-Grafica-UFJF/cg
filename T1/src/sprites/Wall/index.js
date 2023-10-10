@@ -13,6 +13,7 @@ class Wall extends THREE.Mesh {
         this.translateZ(z);
 
         this.type = type;
+        this.castShadow = true;
     }
 }
 

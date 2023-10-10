@@ -43,11 +43,11 @@ class BlocksBuilder {
 
     static getBlockColor = (i) => {
         const indexColors = {
-            1: "#8BEE36",
-            2: "#E63559",
-            3: "#ffa556",
-            4: "#338AF4",
-            5: "#ffa69e",
+            1: "#6BCE16",
+            2: "#C61539",
+            3: "#Df8536",
+            4: "#136AC4",
+            5: "#cf867e",
         };
 
         if (!indexColors[i]) console.error(`Color for block with index ${i} not found`);

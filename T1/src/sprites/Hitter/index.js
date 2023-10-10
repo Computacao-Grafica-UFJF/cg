@@ -11,6 +11,9 @@ class Hitter extends THREE.Mesh {
 
         super(boxGeometry, boxMaterial);
 
+        this.receiveShadow = true;
+        this.castShadow = true;
+
         this.translateX(x);
         this.translateY(y);
         this.translateZ(z);

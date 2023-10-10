@@ -25,8 +25,12 @@ class Game {
     }
 
     static initLight() {
-        const mainLight = new DirectionalLight(4, 3, 6);
-        this.scene.add(mainLight);
+        const mainLight = new DirectionalLight();
+        const ambientLight = new THREE.AmbientLight("#333");
+
+        this.renderer.shadowMap.enabled = true;
+        this.renderer.shadowMap.type = THREE.PCFShadowMap;
+        this.scene.add(mainLight, ambientLight);
     }
 
     static fixCameraPosition() {

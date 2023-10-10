@@ -1,34 +1,27 @@
 import * as THREE from "three";
 
 class DirectionalLight extends THREE.DirectionalLight {
-    constructor(x, y, z) {
+    constructor(x = 4, y = 6, z = 10) {
         super(0xffffff);
         this.intensity = 1;
         this.position.copy(new THREE.Vector3(x, y, z));
 
-        this.sizeConfig();
         this.shadowConfig();
-    }
-
-    sizeConfig() {
-        this.shadow.mapSize.width = 4092;
-        this.shadow.mapSize.height = 4092;
-        this.shadow.camera.left = -400;
-        this.shadow.camera.right = 400;
-        this.shadow.camera.top = 400;
-        this.shadow.camera.bottom = -400;
     }
 
     shadowConfig() {
         this.castShadow = true;
-        this.shadow.mapSize.width = 512;
-        this.shadow.mapSize.height = 512;
+        this.shadow.mapSize.width = 2048;
+        this.shadow.mapSize.height = 2048;
         this.shadow.camera.near = 0.5;
-        this.shadow.camera.far = 1000;
-        this.shadow.camera.left = -16 / 2;
-        this.shadow.camera.right = 16 / 2;
-        this.shadow.camera.bottom = -16 / 2;
-        this.shadow.camera.top = 16 / 2;
+        this.shadow.camera.far = 30;
+        this.shadow.camera.left = -50;
+        this.shadow.camera.right = 50;
+        this.shadow.camera.top = 50;
+        this.shadow.camera.bottom = -50;
+        this.shadow.radius = 4;
+        this.shadow.bias = -0.0005;
+        this.shadow.color = new THREE.Color(0xf0f);
     }
 }
 

@@ -7,6 +7,10 @@ class Block extends THREE.Mesh {
 
         super(blockGeometry, blockMaterial);
 
+        this.castShadow = true;
+
+        this.shadowColor = new THREE.Color("red");
+
         this.translateX(x);
         this.translateY(y);
         this.translateZ(z);
