@@ -10,6 +10,8 @@ import gameConfig from "../../config/Game.js";
 import BlocksBuilder from "../../utils/BlocksBuilder/index.js";
 import Plane from "../../sprites/Plane/index.js";
 
+import * as THREE from "three";
+
 class Level {
     constructor(matrix) {
         this.matrix = matrix;

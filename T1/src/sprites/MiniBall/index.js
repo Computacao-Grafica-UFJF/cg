@@ -69,13 +69,23 @@ export class MiniBall extends THREE.Mesh {
         const ballBoundingBox = new THREE.Box3().setFromObject(this);
         const hitterBoundingBox = new THREE.Box3().setFromObject(hitter);
 
-        if (this.angle > 0 && this.angle < Math.PI) return;
-
         if (ballBoundingBox.intersectsBox(hitterBoundingBox) && this.checkCollisionWithTopHitter(hitter)) {
-            const relativeX = this.position.x - hitter.position.x;
-            const angle = hitter.getKickBallAngle(relativeX, this.angle);
+            const centerHitter = hitter.position;
+
+            const axis = new THREE.Vector3(1, 0, 0);
+            const normal = new THREE.Vector3();
+            normal.subVectors(this.position, centerHitter);
+
+            const angleNormal = normal.angleTo(axis);
+
+            const angle = hitter.getKickBallAngle(this.angle, angleNormal);
+
+            console.log("Angulo de entrada: ", THREE.MathUtils.radToDeg(this.angle));
+            console.log("Angulo da normal: ", THREE.MathUtils.radToDeg(angleNormal));
+            console.log("Angulo de saida: ", THREE.MathUtils.radToDeg(angle));
 
             this.angle = angle;
+
             this.rotation.set(0, 0, angle);
         }
     };
@@ -167,7 +177,7 @@ export class MiniBall extends THREE.Mesh {
 
     move(hitter) {
         if (this.isRaycasterMode) {
-            this.position.set(hitter.position.x, hitter.position.y + 1.2, hitter.position.z);
+            this.position.set(hitter.position.x, hitter.position.y + 1.21, hitter.position.z);
             return;
         }
 
