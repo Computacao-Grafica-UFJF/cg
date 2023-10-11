@@ -3,21 +3,29 @@ import AngleHandler from "../../utils/AngleHandler/index.js";
 import Game from "../../lib/Game/index.js";
 
 export class MiniBall extends THREE.Mesh {
-    constructor(x, y, z, color) {
+    constructor(x, y, z, color, startSpeed = 0) {
         const geometry = new THREE.SphereGeometry(0.2, 32, 32);
         const material = new THREE.MeshLambertMaterial({ color });
 
         super(geometry, material);
 
         this.isRaycasterMode = true;
-        this.speed = 0;
+        this.minSpeed = 0.2;
+        this.maxSpeed = 0.6;
+        this.speed = startSpeed;
         this.radius = 0.5;
+        this.dead = false;
 
         this.castShadow = true;
 
         this.startX = x;
         this.startY = y;
         this.startZ = z;
+
+        if (startSpeed) {
+            this.increaseSpeedGradually();
+            return;
+        }
 
         this.resetPosition();
     }
@@ -36,6 +44,26 @@ export class MiniBall extends THREE.Mesh {
 
         return THREE.MathUtils.degToRad(randomAngle);
     };
+
+    increaseSpeedGradually() {
+        const duration = 15000;
+        const increment = ((this.maxSpeed - this.minSpeed) / duration) * 1000;
+
+        const increase = () => {
+            console.log(this.speed);
+
+            if (this.speed < this.maxSpeed) {
+                if (!this.isRaycasterMode && !Game.paused) this.speed += increment;
+
+                setTimeout(increase, 1000);
+                return;
+            }
+
+            this.speed = this.maxSpeed;
+        };
+
+        increase();
+    }
 
     checkCollisionWithTopHitter(hitter) {
         const ballLeft = this.position.x - this.radius;
@@ -159,9 +187,14 @@ export class MiniBall extends THREE.Mesh {
         deathZones.forEach((deathZone) => {
             const wallBoundingBox = new THREE.Box3().setFromObject(deathZone);
             if (ballBoundingBox.intersectsBox(wallBoundingBox)) {
-                death();
+                this.die(death);
             }
         });
+    }
+
+    die(death) {
+        this.dead = true;
+        death();
     }
 
     move(hitter) {
@@ -174,8 +207,10 @@ export class MiniBall extends THREE.Mesh {
     }
 
     start() {
-        this.speed = 0.3;
+        this.died = false;
+        this.speed = this.minSpeed;
         this.isRaycasterMode = false;
+        this.increaseSpeedGradually();
     }
 
     raycasterMode() {
