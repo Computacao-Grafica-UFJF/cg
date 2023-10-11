@@ -26,8 +26,7 @@ export class MiniBall extends THREE.Mesh {
     }
 
     resetPosition() {
-        this.position.set(this.startX, this.startY, this.startZ);
-        this.angle = THREE.MathUtils.degToRad(270);
+        this.angle = THREE.MathUtils.degToRad(90);
         this.rotation.set(0, 0, this.angle);
     }
 
@@ -65,15 +64,65 @@ export class MiniBall extends THREE.Mesh {
         return false;
     }
 
+    getAngleToXAxis(normal) {
+        const xAxis = new THREE.Vector3(1, 0, 0).normalize(); // Vetor representando o eixo x
+
+        // Certifique-se de que os vetores são normalizados
+        normal.normalize();
+
+        // Calcula o ângulo entre a normal e o eixo x
+        const angleToXAxis = normal.angleTo(xAxis);
+
+        // // Verifica o sinal da componente z para determinar a orientação do ângulo
+        // const crossProduct = new THREE.Vector3().crossVectors(normal, xAxis);
+        // if (crossProduct.z < 0) {
+        //     return -angleToXAxis; // Se a componente z do produto cruzado for negativa, inverte o sinal
+        // } else {
+        //     return angleToXAxis;
+        // }
+
+        return angleToXAxis;
+    }
+
     collisionWithHitter = (hitter) => {
         const ballBoundingBox = new THREE.Box3().setFromObject(this);
         const hitterBoundingBox = new THREE.Box3().setFromObject(hitter);
 
         if (this.angle > 0 && this.angle < Math.PI) return;
 
-        if (ballBoundingBox.intersectsBox(hitterBoundingBox) && this.checkCollisionWithTopHitter(hitter)) {
-            const relativeX = this.position.x - hitter.position.x;
-            const angle = hitter.getKickBallAngle(relativeX, this.angle);
+        // if (ballBoundingBox.intersectsBox(hitterBoundingBox) && this.checkCollisionWithTopHitter(hitter)) {
+        //     console.log("bateu");
+
+        //     const relativeX = this.position.x - hitter.position.x;
+        //     const angle = hitter.getKickBallAngle(relativeX, this.angle);
+
+        //     this.angle = angle;
+        //     this.rotation.set(0, 0, angle);
+        // }
+
+        // Atualizar a matriz do mundo para garantir que as posições estejam corretas
+        this.position.copy(this.position);
+        hitter.position.copy(hitter.position);
+        this.updateMatrixWorld();
+        hitter.updateMatrixWorld();
+
+        // Criar um raio que parte da posição da bola na direção do hitter
+        const directionVector = new THREE.Vector3().copy(hitter.position).sub(this.position).normalize();
+        const ray = new THREE.Raycaster(this.position, directionVector, 0, 0.45);
+
+        // Verificar se o raio intersecta a geometria do hitter
+        const collisionResults = ray.intersectObject(hitter);
+
+        if (collisionResults.length > 0) {
+            const normalOfCollsion = hitter.getNormalCollision(this.position);
+            const angleNormal = this.getAngleToXAxis(normalOfCollsion);
+
+            console.log(angleNormal);
+
+            // const relativeX = this.position.x - hitter.position.x;
+            const angle = hitter.getKickBallAngle(angleNormal, this.angle);
+
+            console.log(angle);
 
             this.angle = angle;
             this.rotation.set(0, 0, angle);
@@ -167,7 +216,7 @@ export class MiniBall extends THREE.Mesh {
 
     move(hitter) {
         if (this.isRaycasterMode) {
-            this.position.set(hitter.position.x + 0.8, hitter.position.y + 1, hitter.position.z);
+            this.position.set(hitter.position.x, hitter.position.y + hitter.height + 0.3, hitter.position.z);
             return;
         }
 

@@ -10,6 +10,8 @@ import gameConfig from "../../config/Game.js";
 import BlocksBuilder from "../../utils/BlocksBuilder/index.js";
 import Plane from "../../sprites/Plane/index.js";
 
+import * as THREE from "three";
+
 class Level {
     constructor(matrix) {
         this.matrix = matrix;
@@ -49,6 +51,23 @@ class Level {
         this.blocks = [...this.buildBlocks()];
 
         Game.scene.add(...this.getElements());
+
+        // const positions = this.hitter.geometry.attributes.position.array;
+        // let i;
+        // for (i = 0; i < positions.length - 499; i += 3) {
+        //     const x = positions[i];
+        //     const y = positions[i + 1] + 0.1;
+        //     const z = positions[i + 2] - 13;
+
+        //     const sphereGeometry = new THREE.SphereGeometry(0.1, 8, 8);
+        //     const sphereMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+        //     const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+
+        //     sphere.position.set(x, z, y);
+
+        //     Game.scene.add(sphere);
+        // }
+        // console.log(i);
     }
 
     buildGamePlatform() {
