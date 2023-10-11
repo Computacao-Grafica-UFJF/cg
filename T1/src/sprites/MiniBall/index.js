@@ -27,18 +27,18 @@ export class MiniBall extends THREE.Mesh {
 
     resetPosition() {
         this.position.set(this.startX, this.startY, this.startZ);
-        this.angle = THREE.MathUtils.degToRad(270);
+        this.angle = THREE.MathUtils.degToRad(90);
         this.rotation.set(0, 0, this.angle);
     }
 
-    getRandomAngleToDown = () => {
-        const min = 10;
-        const max = 170;
+    // getRandomAngleToDown = () => {
+    //     const min = 10;
+    //     const max = 170;
 
-        const randomAngle = Math.random() * (max - min) + min + 180;
+    //     const randomAngle = Math.random() * (max - min) + min + 180;
 
-        return THREE.MathUtils.degToRad(randomAngle);
-    };
+    //     return THREE.MathUtils.degToRad(randomAngle);
+    // };
 
     checkCollisionWithTopHitter(hitter) {
         const ballLeft = this.position.x - this.radius;
@@ -167,7 +167,7 @@ export class MiniBall extends THREE.Mesh {
 
     move(hitter) {
         if (this.isRaycasterMode) {
-            this.position.set(hitter.position.x + 0.8, hitter.position.y + 1, hitter.position.z);
+            this.position.set(hitter.position.x, hitter.position.y + 1.2, hitter.position.z);
             return;
         }
 
