@@ -12,7 +12,6 @@ export class MiniBall extends THREE.Mesh {
         this.isRaycasterMode = true;
         this.speed = 0;
         this.radius = 0.5;
-        this.evadeTime = 10;
 
         this.castShadow = true;
 
@@ -21,19 +20,17 @@ export class MiniBall extends THREE.Mesh {
         this.startZ = z;
 
         this.resetPosition();
-
-        this.evadeMode = false;
     }
 
     resetPosition() {
         this.position.set(this.startX, this.startY, this.startZ);
-        this.angle = THREE.MathUtils.degToRad(270);
+        this.angle = THREE.MathUtils.degToRad(90);
         this.rotation.set(0, 0, this.angle);
     }
 
     getRandomAngleToDown = () => {
-        const min = 10;
-        const max = 170;
+        const min = 30;
+        const max = 150;
 
         const randomAngle = Math.random() * (max - min) + min + 180;
 
@@ -94,22 +91,23 @@ export class MiniBall extends THREE.Mesh {
         });
     };
 
-    invertAngleHorizontally() {
-        this.angle = AngleHandler.invertAngleHorizontally(this.angle);
+    invertAngleHorizontally(angle) {
+        const oldAngle = angle;
+        this.angle = AngleHandler.invertAngleHorizontally(angle);
+
+        if (oldAngle === angle) {
+            this.angle = -angle;
+        }
+
         this.rotation.set(0, 0, this.angle);
     }
 
-    invertAngleVertically() {
-        this.angle = AngleHandler.invertAngleVertically(this.angle);
+    invertAngleVertically(angle) {
+        this.angle = AngleHandler.invertAngleVertically(angle);
         this.rotation.set(0, 0, this.angle);
     }
 
-    activateEvadeMode() {
-        this.evadeMode = true;
-        setTimeout(() => (this.evadeMode = false), this.evadeTime);
-    }
-
-    checkCollisionsWithBlocks(block) {
+    changeAngleByBlock(block, angle) {
         const ballLeft = this.position.x - this.radius;
         const ballRight = this.position.x + this.radius;
         const ballTop = this.position.y + this.radius;
@@ -128,11 +126,11 @@ export class MiniBall extends THREE.Mesh {
         const minCollisionDistance = Math.min(leftCollisionDistance, rightCollisionDistance, topCollisionDistance, bottomCollisionDistance);
 
         if (minCollisionDistance === leftCollisionDistance || minCollisionDistance === rightCollisionDistance) {
-            this.invertAngleHorizontally();
+            this.invertAngleHorizontally(angle);
             return;
         }
 
-        this.invertAngleVertically();
+        this.invertAngleVertically(angle);
     }
 
     collisionWithBlocks = (blocks, hitBlock) => {
@@ -144,12 +142,13 @@ export class MiniBall extends THREE.Mesh {
             return ballBoundingBox;
         };
         const ballBoundingBox = getBallBoundingBox();
+
         blocks.find((block) => {
             const blockBoundingBox = new THREE.Box3().setFromObject(block);
-            if (ballBoundingBox.intersectsBox(blockBoundingBox) && this.evadeMode === false) {
-                this.checkCollisionsWithBlocks(block);
-                this.activateEvadeMode();
+            if (ballBoundingBox.intersectsBox(blockBoundingBox)) {
+                this.changeAngleByBlock(block, this.angle);
                 hitBlock(block);
+
                 return 1;
             }
         });
