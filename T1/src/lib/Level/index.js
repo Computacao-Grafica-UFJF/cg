@@ -14,7 +14,6 @@ class Level {
     constructor(matrix) {
         this.matrix = matrix;
         this.paused = false;
-        this.finished = false;
 
         this.init();
     }
@@ -36,7 +35,8 @@ class Level {
         });
     };
 
-    build() {
+    build(nextLevel) {
+        this.nextLevel = nextLevel;
         this.raycaster = new Raycaster();
         this.startListeners(Game.camera, Game.renderer);
 
@@ -133,13 +133,11 @@ class Level {
     }
 
     finish() {
-        Game.pause();
-
-        this.finished = true;
+        if (this.nextLevel) this.nextLevel();
     }
 
     init() {
-        if (this.finished || this.paused) return;
+        if (this.paused) return;
 
         if (this.miniBall && this.miniBall.isRaycasterMode) this.miniBall.start();
     }
