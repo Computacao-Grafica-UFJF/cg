@@ -66,10 +66,83 @@ export class MiniBall extends THREE.Mesh {
     }
 
     collisionWithHitter = (hitter) => {
-        const ballBoundingBox = new THREE.Box3().setFromObject(this);
-        const hitterBoundingBox = new THREE.Box3().setFromObject(hitter);
+        const createBoundingBoxes = () => {
+            const hitterCenterMiddle = hitter.position;
 
-        if (ballBoundingBox.intersectsBox(hitterBoundingBox) && this.checkCollisionWithTopHitter(hitter)) {
+            const leftLeftMin = new THREE.Vector3(
+                hitterCenterMiddle.x - hitter.radius,
+                hitterCenterMiddle.y,
+                hitterCenterMiddle.z - hitter.radius / 4
+            );
+            const leftLeftMax = new THREE.Vector3(
+                hitterCenterMiddle.x - hitter.radius / 1.2,
+                hitterCenterMiddle.y + hitter.radius / 4,
+                hitterCenterMiddle.z + hitter.radius / 4
+            );
+            const leftLeftBoundingBox = new THREE.Box3(leftLeftMin, leftLeftMax);
+
+            const leftMin = new THREE.Vector3(
+                hitterCenterMiddle.x - hitter.radius / 1.2,
+                hitterCenterMiddle.y,
+                hitterCenterMiddle.z - hitter.radius / 4
+            );
+            const leftMax = new THREE.Vector3(
+                hitterCenterMiddle.x - hitter.radius / 1.5,
+                hitterCenterMiddle.y + hitter.radius / 3,
+                hitterCenterMiddle.z + hitter.radius / 4
+            );
+            const leftBoundingBox = new THREE.Box3(leftMin, leftMax);
+
+            const middleMin = new THREE.Vector3(
+                hitterCenterMiddle.x - hitter.radius / 1.5,
+                hitterCenterMiddle.y,
+                hitterCenterMiddle.z - hitter.radius / 4
+            );
+            const middleMax = new THREE.Vector3(
+                hitterCenterMiddle.x + hitter.radius / 1.5,
+                hitterCenterMiddle.y + hitter.radius / 2,
+                hitterCenterMiddle.z + hitter.radius / 4
+            );
+            const middleBoundingBox = new THREE.Box3(middleMin, middleMax);
+
+            const rightMin = new THREE.Vector3(
+                hitterCenterMiddle.x + hitter.radius / 1.5,
+                hitterCenterMiddle.y,
+                hitterCenterMiddle.z - hitter.radius / 4
+            );
+            const rightMax = new THREE.Vector3(
+                hitterCenterMiddle.x + hitter.radius / 1.2,
+                hitterCenterMiddle.y + hitter.radius / 3,
+                hitterCenterMiddle.z + hitter.radius / 4
+            );
+            const rightBoundingBox = new THREE.Box3(rightMin, rightMax);
+
+            const rightRightMin = new THREE.Vector3(
+                hitterCenterMiddle.x + hitter.radius / 1.2,
+                hitterCenterMiddle.y,
+                hitterCenterMiddle.z - hitter.radius / 4
+            );
+            const rightRightMax = new THREE.Vector3(
+                hitterCenterMiddle.x + hitter.radius,
+                hitterCenterMiddle.y + hitter.radius / 4,
+                hitterCenterMiddle.z + hitter.radius / 4
+            );
+            const rightRightBoundingBox = new THREE.Box3(rightRightMin, rightRightMax);
+
+            return { leftLeftBoundingBox, leftBoundingBox, middleBoundingBox, rightBoundingBox, rightRightBoundingBox };
+        };
+
+        const { leftLeftBoundingBox, leftBoundingBox, middleBoundingBox, rightBoundingBox, rightRightBoundingBox } = createBoundingBoxes(hitter);
+
+        const ballBoundingBox = new THREE.Box3().setFromObject(this);
+
+        if (
+            ballBoundingBox.intersectsBox(leftLeftBoundingBox) ||
+            ballBoundingBox.intersectsBox(leftBoundingBox) ||
+            ballBoundingBox.intersectsBox(middleBoundingBox) ||
+            ballBoundingBox.intersectsBox(rightBoundingBox) ||
+            ballBoundingBox.intersectsBox(rightRightBoundingBox)
+        ) {
             const centerHitter = hitter.position;
 
             const axis = new THREE.Vector3(1, 0, 0);
@@ -89,6 +162,43 @@ export class MiniBall extends THREE.Mesh {
             this.rotation.set(0, 0, angle);
         }
     };
+
+    // collisionWithHitter = (hitter) => {
+    //     // Atualizar a matriz do mundo para garantir que as posições estejam corretas
+    //     this.position.copy(this.position);
+    //     hitter.position.copy(hitter.position);
+    //     this.updateMatrixWorld();
+    //     hitter.updateMatrixWorld();
+
+    //     // Criar um raio que parte da posição da bola na direção do hitter
+    //     const directionVector = new THREE.Vector3().copy(hitter.position).sub(this.position).normalize();
+    //     // const distance = this.position.distanceTo(hitter.position);
+    //     const ray = new THREE.Raycaster(this.position, directionVector, this.radius + hitter.radius, this.radius + hitter.height);
+
+    //     // console.log(ray);
+
+    //     // Verificar se o raio intersecta a geometria do hitter
+    //     const collisionResults = ray.intersectObject(hitter);
+
+    //     if (collisionResults.length > 0) {
+    //         console.log(bater);
+    //         const axis = new THREE.Vector3(1, 0, 0);
+    //         const normal = new THREE.Vector3();
+    //         normal.subVectors(this.position, hitter.position);
+
+    //         const angleNormal = normal.angleTo(axis);
+
+    //         const angle = hitter.getKickBallAngle(this.angle, angleNormal);
+
+    //         console.log("Angulo de entrada: ", THREE.MathUtils.radToDeg(this.angle));
+    //         console.log("Angulo da normal: ", THREE.MathUtils.radToDeg(angleNormal));
+    //         console.log("Angulo de saida: ", THREE.MathUtils.radToDeg(angle));
+
+    //         this.angle = angle;
+
+    //         this.rotation.set(0, 0, angle);
+    //     }
+    // };
 
     collisionWithWalls = (walls) => {
         const ballBoundingBox = new THREE.Box3().setFromObject(this);
@@ -177,7 +287,7 @@ export class MiniBall extends THREE.Mesh {
 
     move(hitter) {
         if (this.isRaycasterMode) {
-            this.position.set(hitter.position.x, hitter.position.y + 1.21, hitter.position.z);
+            this.position.set(hitter.position.x, hitter.position.y + 1.25, hitter.position.z);
             return;
         }
 
