@@ -9,11 +9,16 @@ import Wall from "../../sprites/Wall/index.js";
 import gameConfig from "../../config/Game.js";
 import BlocksBuilder from "../../utils/BlocksBuilder/index.js";
 import Plane from "../../sprites/Plane/index.js";
+import PowerUp from "../../sprites/PowerUp/index.js";
 
 class Level {
+    powerUp;
+
     constructor(matrix) {
         this.matrix = matrix;
         this.paused = false;
+        this.blocksDestroyed = 0;
+        this.activePowerUp = false;
 
         this.init();
     }
@@ -108,7 +113,41 @@ class Level {
         if (destroyedOnHit) this.destroyBlock(block);
     }
 
+    createPowerUp(block) {
+        const getBlockPosition = () => {
+            return block.position;
+        };
+
+        const position = getBlockPosition();
+
+        this.powerUp = new PowerUp(position.x, position.y, position.z, this.destroyPowerUp.bind(this));
+        this.activePowerUp = true;
+        Game.scene.add(this.powerUp);
+    }
+
+    destroyPowerUp(collideWithHitter) {
+        if (collideWithHitter) {
+            console.log("collideWithHitter");
+        }
+
+        this.activePowerUp = false;
+        Game.scene.remove(this.powerUp);
+        this.powerUp = null;
+        this.blocksDestroyed = 0;
+    }
+
+    checkPowerUp(block) {
+        if (this.activePowerUp) return;
+
+        this.blocksDestroyed++;
+
+        if (this.blocksDestroyed >= 2) {
+            this.createPowerUp(block);
+        }
+    }
+
     destroyBlock(block) {
+        this.checkPowerUp(block);
         this.blocks = this.blocks.filter((b) => b !== block);
         Game.scene.remove(block);
 
@@ -124,12 +163,18 @@ class Level {
 
     render() {
         this.moveMiniBall();
+
+        if (this.powerUp) {
+            this.powerUp.move(this.hitter);
+        }
     }
 
     restart() {
         Game.scene.remove(...this.getElements());
         this.build();
         this.miniBall.resetPosition();
+        this.activePowerUp = false;
+        this.blocksDestroyed = 0;
     }
 
     finish() {

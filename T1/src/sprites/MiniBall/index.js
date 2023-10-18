@@ -50,8 +50,6 @@ export class MiniBall extends THREE.Mesh {
         const increment = ((this.maxSpeed - this.minSpeed) / duration) * 1000;
 
         const increase = () => {
-            console.log(this.speed);
-
             if (this.speed < this.maxSpeed) {
                 if (!this.isRaycasterMode && !Game.paused) this.speed += increment;
 
