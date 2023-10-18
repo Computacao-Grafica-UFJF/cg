@@ -51,64 +51,6 @@ class Level {
         this.blocks = [...this.buildBlocks()];
 
         Game.scene.add(...this.getElements());
-
-        // // Obtém as coordenadas da geometria
-        // const positions = this.hitter.geometry.attributes.position.array;
-
-        // let minX = Infinity;
-        // let minY = Infinity;
-        // let minZ = Infinity;
-        // let maxX = -Infinity;
-        // let maxY = -Infinity;
-        // let maxZ = -Infinity;
-
-        // // Itera sobre as coordenadas da geometria e atualiza os limites
-        // for (let i = 0; i < positions.length; i += 3) {
-        //     const x = positions[i];
-        //     const y = positions[i + 1] - 13;
-        //     const z = positions[i + 2] + 0.2;
-
-        //     if (minX > x && minY > y) {
-        //         minX = x;
-        //         minY = y;
-        //         minZ = z;
-        //     }
-        //     if (maxX < x) {
-        //         maxX = x;
-        //         maxY = y;
-        //         maxZ = z;
-        //     }
-        // }
-
-        // const sphereGeometry1 = new THREE.SphereGeometry(0.1, 8, 8);
-        // const sphereMaterial1 = new THREE.MeshBasicMaterial({ color: "blue" });
-        // const sphere1 = new THREE.Mesh(sphereGeometry1, sphereMaterial1);
-        // const sphere2 = new THREE.Mesh(sphereGeometry1, sphereMaterial1);
-
-        // const hitterCenter = this.miniBall.position;
-        // sphere1.position.set(hitterCenter.x - this.miniBall.radius, hitterCenter.y - this.miniBall.radius, hitterCenter.z - this.miniBall.radius);
-        // sphere2.position.set(hitterCenter.x + this.miniBall.radius, hitterCenter.y + this.miniBall.radius, hitterCenter.z + this.miniBall.radius);
-
-        // Game.scene.add(sphere1);
-        // Game.scene.add(sphere2);
-
-        // const sphereGeometry1 = new THREE.SphereGeometry(0.1, 8, 8);
-        // const sphereMaterial1 = new THREE.MeshBasicMaterial({ color: "blue" });
-        // const sphere1 = new THREE.Mesh(sphereGeometry1, sphereMaterial1);
-        // const sphere2 = new THREE.Mesh(sphereGeometry1, sphereMaterial1);
-
-        // const hitterCenter1 = this.hitter.position;
-        // sphere1.position.set(hitterCenter1.x - this.hitter.radius / 2, hitterCenter1.y, hitterCenter1.z - this.hitter.radius / 4);
-        // sphere2.position.set(
-        //     hitterCenter1.x + this.hitter.radius / 2,
-        //     hitterCenter1.y + this.hitter.radius / 2,
-        //     hitterCenter1.z + this.hitter.radius / 4
-        // );
-
-        // Game.scene.add(sphere1);
-        // Game.scene.add(sphere2);
-
-        // this.viewBoundingBox();
     }
 
     viewBoundingBox() {
