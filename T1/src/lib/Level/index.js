@@ -18,6 +18,7 @@ class Level {
         this.matrix = matrix;
         this.paused = false;
         this.blocksDestroyed = 0;
+        this.blocksDestroyedLimit = 10;
         this.activePowerUp = false;
 
         this.init();
@@ -120,7 +121,7 @@ class Level {
 
         const position = getBlockPosition();
 
-        this.powerUp = new PowerUp(position.x, position.y, position.z, this.destroyPowerUp.bind(this));
+        this.powerUp = new PowerUp(position.x, position.y + 5, position.z + 0.5, this.destroyPowerUp.bind(this));
         this.activePowerUp = true;
         Game.scene.add(this.powerUp);
     }
@@ -141,7 +142,7 @@ class Level {
 
         this.blocksDestroyed++;
 
-        if (this.blocksDestroyed >= 2) {
+        if (this.blocksDestroyed >= this.blocksDestroyedLimit) {
             this.createPowerUp(block);
         }
     }
