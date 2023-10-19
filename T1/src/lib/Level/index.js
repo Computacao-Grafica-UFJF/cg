@@ -11,6 +11,8 @@ import BlocksBuilder from "../../utils/BlocksBuilder/index.js";
 import Plane from "../../sprites/Plane/index.js";
 import PowerUp from "../../sprites/PowerUp/index.js";
 
+import * as THREE from "three";
+
 class Level {
     powerUp;
 
@@ -55,6 +57,102 @@ class Level {
         this.blocks = [...this.buildBlocks()];
 
         Game.scene.add(...this.getElements());
+
+        // this.viewBoundingBox();
+    }
+
+    viewBoundingBox() {
+        const createBoundingBoxes = () => {
+            const hitterCenterMiddle = this.hitter.position;
+
+            const leftLeftMin = new THREE.Vector3(
+                hitterCenterMiddle.x - this.hitter.radius,
+                hitterCenterMiddle.y,
+                hitterCenterMiddle.z - this.hitter.radius / 4
+            );
+            const leftLeftMax = new THREE.Vector3(
+                hitterCenterMiddle.x - this.hitter.radius / 1.2,
+                hitterCenterMiddle.y + this.hitter.radius / 4,
+                hitterCenterMiddle.z + this.hitter.radius / 4
+            );
+            const leftLeftBoundingBox = new THREE.Box3(leftLeftMin, leftLeftMax);
+
+            const leftMin = new THREE.Vector3(
+                hitterCenterMiddle.x - this.hitter.radius / 1.2,
+                hitterCenterMiddle.y,
+                hitterCenterMiddle.z - this.hitter.radius / 4
+            );
+            const leftMax = new THREE.Vector3(
+                hitterCenterMiddle.x - this.hitter.radius / 1.5,
+                hitterCenterMiddle.y + this.hitter.radius / 3,
+                hitterCenterMiddle.z + this.hitter.radius / 4
+            );
+            const leftBoundingBox = new THREE.Box3(leftMin, leftMax);
+
+            const middleMin = new THREE.Vector3(
+                hitterCenterMiddle.x - this.hitter.radius / 1.5,
+                hitterCenterMiddle.y,
+                hitterCenterMiddle.z - this.hitter.radius / 4
+            );
+            const middleMax = new THREE.Vector3(
+                hitterCenterMiddle.x + this.hitter.radius / 1.5,
+                hitterCenterMiddle.y + this.hitter.radius / 2,
+                hitterCenterMiddle.z + this.hitter.radius / 4
+            );
+            const middleBoundingBox = new THREE.Box3(middleMin, middleMax);
+
+            const rightMin = new THREE.Vector3(
+                hitterCenterMiddle.x + this.hitter.radius / 1.5,
+                hitterCenterMiddle.y,
+                hitterCenterMiddle.z - this.hitter.radius / 4
+            );
+            const rightMax = new THREE.Vector3(
+                hitterCenterMiddle.x + this.hitter.radius / 1.2,
+                hitterCenterMiddle.y + this.hitter.radius / 3,
+                hitterCenterMiddle.z + this.hitter.radius / 4
+            );
+            const rightBoundingBox = new THREE.Box3(rightMin, rightMax);
+
+            const rightRightMin = new THREE.Vector3(
+                hitterCenterMiddle.x + this.hitter.radius / 1.2,
+                hitterCenterMiddle.y,
+                hitterCenterMiddle.z - this.hitter.radius / 4
+            );
+            const rightRightMax = new THREE.Vector3(
+                hitterCenterMiddle.x + this.hitter.radius,
+                hitterCenterMiddle.y + this.hitter.radius / 4,
+                hitterCenterMiddle.z + this.hitter.radius / 4
+            );
+            const rightRightBoundingBox = new THREE.Box3(rightRightMin, rightRightMax);
+
+            return { leftLeftBoundingBox, leftBoundingBox, middleBoundingBox, rightRightBoundingBox, rightBoundingBox };
+        };
+
+        const { leftLeftBoundingBox, leftBoundingBox, middleBoundingBox, rightRightBoundingBox, rightBoundingBox } = createBoundingBoxes();
+        const hitterBoundingBoxHelper1 = new THREE.Box3Helper(leftLeftBoundingBox, 0xffaaff);
+        const hitterBoundingBoxHelper3 = new THREE.Box3Helper(leftBoundingBox, 0x000);
+        const hitterBoundingBoxHelper2 = new THREE.Box3Helper(middleBoundingBox, 0xffff00);
+        const hitterBoundingBoxHelper4 = new THREE.Box3Helper(rightRightBoundingBox, 0xfc0303);
+        const hitterBoundingBoxHelper5 = new THREE.Box3Helper(rightBoundingBox, 0x0352fc);
+
+        Game.scene.add(hitterBoundingBoxHelper1);
+        Game.scene.add(hitterBoundingBoxHelper2);
+        Game.scene.add(hitterBoundingBoxHelper3);
+        Game.scene.add(hitterBoundingBoxHelper4);
+        Game.scene.add(hitterBoundingBoxHelper5);
+
+        const ballBoundingBox = new THREE.Box3().setFromObject(this.miniBall);
+        const ballBoundingBoxHelper = new THREE.Box3Helper(ballBoundingBox, 0xffff00);
+        Game.scene.add(ballBoundingBoxHelper);
+
+        const sphereGeometry1 = new THREE.SphereGeometry(0.1, 8, 8);
+        const sphereMaterial1 = new THREE.MeshBasicMaterial({ color: "green" });
+        const sphere1 = new THREE.Mesh(sphereGeometry1, sphereMaterial1);
+
+        const hitterCenter1 = this.hitter.position;
+        sphere1.position.set(hitterCenter1.x, hitterCenter1.y, hitterCenter1.z);
+
+        Game.scene.add(sphere1);
     }
 
     buildGamePlatform() {
@@ -78,7 +176,7 @@ class Level {
     }
 
     buildMiniBall() {
-        const positionStartX = 0.8;
+        const positionStartX = 0.0;
         const positionStartY = -12;
 
         const miniBall = new MiniBall(positionStartX, positionStartY, 0, "#fff");
