@@ -25,7 +25,7 @@ class LevelSelector {
     static changeLevel() {
         this.currentLevel = this.getLevel();
         Game.changeLevel();
-        this.currentLevel.build();
+        this.currentLevel.build(this.nextLevel.bind(this));
     }
 
     static getLevel() {

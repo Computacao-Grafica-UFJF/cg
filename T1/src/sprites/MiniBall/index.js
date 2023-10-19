@@ -3,17 +3,22 @@ import AngleHandler from "../../utils/AngleHandler/index.js";
 import Game from "../../lib/Game/index.js";
 
 export class MiniBall extends THREE.Mesh {
-    constructor(x, y, z, color) {
+    constructor(x, y, z, color, startSpeed = 0) {
         const geometry = new THREE.SphereGeometry(0.2, 32, 32);
         const material = new THREE.MeshLambertMaterial({ color });
 
         super(geometry, material);
 
         this.isRaycasterMode = true;
-        this.speed = 0;
+        this.minSpeed = 0.2;
+        this.maxSpeed = 0.6;
+        this.speed = startSpeed;
         this.radius = 0.5;
-        this.evadeTime = 10;
+        this.dead = false;
         this.evadeTimeHitter = 100;
+
+        this.evadeModeBlock = false;
+        this.evadeModeHitter = false;
 
         this.castShadow = true;
 
@@ -21,16 +26,70 @@ export class MiniBall extends THREE.Mesh {
         this.startY = y;
         this.startZ = z;
 
-        this.resetPosition();
+        if (startSpeed) {
+            this.increaseSpeedGradually();
+            return;
+        }
 
-        this.evadeModeBlock = false;
-        this.evadeModeHitter = false;
+        this.resetPosition();
     }
 
     resetPosition() {
         this.position.set(this.startX, this.startY, this.startZ);
         this.angle = THREE.MathUtils.degToRad(90);
         this.rotation.set(0, 0, this.angle);
+    }
+
+    getRandomAngleToDown = () => {
+        const min = 30;
+        const max = 150;
+
+        const randomAngle = Math.random() * (max - min) + min + 180;
+
+        return THREE.MathUtils.degToRad(randomAngle);
+    };
+
+    increaseSpeedGradually() {
+        const duration = 15000;
+        const increment = ((this.maxSpeed - this.minSpeed) / duration) * 1000;
+
+        const increase = () => {
+            if (this.speed < this.maxSpeed) {
+                if (!this.isRaycasterMode && !Game.paused) this.speed += increment;
+
+                setTimeout(increase, 1000);
+                return;
+            }
+
+            this.speed = this.maxSpeed;
+        };
+
+        increase();
+    }
+
+    checkCollisionWithTopHitter(hitter) {
+        const ballLeft = this.position.x - this.radius;
+        const ballRight = this.position.x + this.radius;
+        const ballTop = this.position.y + this.radius;
+        const ballBottom = this.position.y - this.radius;
+
+        const hitterLeft = hitter.position.x - hitter.width / 2;
+        const hitterRight = hitter.position.x + hitter.width / 2;
+        const hitterTop = hitter.position.y + hitter.height / 2;
+        const hitterBottom = hitter.position.y - hitter.height / 2;
+
+        const leftCollisionDistance = Math.abs(ballLeft - hitterRight);
+        const rightCollisionDistance = Math.abs(ballRight - hitterLeft);
+        const topCollisionDistance = Math.abs(ballTop - hitterBottom);
+        const bottomCollisionDistance = Math.abs(ballBottom - hitterTop);
+
+        const minCollisionDistance = Math.min(leftCollisionDistance, rightCollisionDistance, topCollisionDistance, bottomCollisionDistance);
+
+        if (minCollisionDistance === bottomCollisionDistance) {
+            return true;
+        }
+
+        return false;
     }
 
     activateEvadeModeHitter() {
@@ -130,7 +189,7 @@ export class MiniBall extends THREE.Mesh {
 
             // console.log("Angulo de entrada: ", THREE.MathUtils.radToDeg(this.angle - Math.PI));
             // console.log("Angulo da normal: ", THREE.MathUtils.radToDeg(angleNormal));
-            // console.log("Angulo de saida: ", THREE.MathUtils.radToDeg(angle));
+            // console.log("Angulo de saída: ", THREE.MathUtils.radToDeg(angle));
 
             this.angle = angle;
 
@@ -152,22 +211,23 @@ export class MiniBall extends THREE.Mesh {
         });
     };
 
-    invertAngleHorizontally() {
-        this.angle = AngleHandler.invertAngleHorizontally(this.angle);
+    invertAngleHorizontally(angle) {
+        const oldAngle = angle;
+        this.angle = AngleHandler.invertAngleHorizontally(angle);
+
+        if (oldAngle === angle) {
+            this.angle = -angle;
+        }
+
         this.rotation.set(0, 0, this.angle);
     }
 
-    invertAngleVertically() {
-        this.angle = AngleHandler.invertAngleVertically(this.angle);
+    invertAngleVertically(angle) {
+        this.angle = AngleHandler.invertAngleVertically(angle);
         this.rotation.set(0, 0, this.angle);
     }
 
-    activateEvadeModeBlock() {
-        this.evadeModeBlock = true;
-        setTimeout(() => (this.evadeModeBlock = false), this.evadeTime);
-    }
-
-    checkCollisionsWithBlocks(block) {
+    changeAngleByBlock(block, angle) {
         const ballLeft = this.position.x - this.radius;
         const ballRight = this.position.x + this.radius;
         const ballTop = this.position.y + this.radius;
@@ -186,11 +246,11 @@ export class MiniBall extends THREE.Mesh {
         const minCollisionDistance = Math.min(leftCollisionDistance, rightCollisionDistance, topCollisionDistance, bottomCollisionDistance);
 
         if (minCollisionDistance === leftCollisionDistance || minCollisionDistance === rightCollisionDistance) {
-            this.invertAngleHorizontally();
+            this.invertAngleHorizontally(angle);
             return;
         }
 
-        this.invertAngleVertically();
+        this.invertAngleVertically(angle);
     }
 
     collisionWithBlocks = (blocks, hitBlock) => {
@@ -202,12 +262,14 @@ export class MiniBall extends THREE.Mesh {
             return ballBoundingBox;
         };
         const ballBoundingBox = getBallBoundingBox();
+        const currentAngle = this.angle;
+
         blocks.find((block) => {
             const blockBoundingBox = new THREE.Box3().setFromObject(block);
             if (ballBoundingBox.intersectsBox(blockBoundingBox) && this.evadeModeBlock === false) {
-                this.checkCollisionsWithBlocks(block);
-                this.activateEvadeModeBlock();
+                this.changeAngleByBlock(block, currentAngle);
                 hitBlock(block);
+
                 return 1;
             }
         });
@@ -218,9 +280,14 @@ export class MiniBall extends THREE.Mesh {
         deathZones.forEach((deathZone) => {
             const wallBoundingBox = new THREE.Box3().setFromObject(deathZone);
             if (ballBoundingBox.intersectsBox(wallBoundingBox)) {
-                death();
+                this.die(death);
             }
         });
+    }
+
+    die(death) {
+        this.dead = true;
+        death();
     }
 
     move(hitter) {
@@ -233,8 +300,10 @@ export class MiniBall extends THREE.Mesh {
     }
 
     start() {
-        this.speed = 0.3;
+        this.died = false;
+        this.speed = this.minSpeed;
         this.isRaycasterMode = false;
+        this.increaseSpeedGradually();
     }
 
     raycasterMode() {
