@@ -138,6 +138,15 @@ class Level {
         const ballBoundingBox = new THREE.Box3().setFromObject(this.miniBall);
         const ballBoundingBoxHelper = new THREE.Box3Helper(ballBoundingBox, 0xffff00);
         Game.scene.add(ballBoundingBoxHelper);
+
+        const sphereGeometry1 = new THREE.SphereGeometry(0.1, 8, 8);
+        const sphereMaterial1 = new THREE.MeshBasicMaterial({ color: "green" });
+        const sphere1 = new THREE.Mesh(sphereGeometry1, sphereMaterial1);
+
+        const hitterCenter1 = this.hitter.position;
+        sphere1.position.set(hitterCenter1.x, hitterCenter1.y, hitterCenter1.z);
+
+        Game.scene.add(sphere1);
     }
 
     buildGamePlatform() {
