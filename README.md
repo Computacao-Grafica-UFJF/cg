@@ -24,8 +24,9 @@ Files for the Computer Graphics course in Three.js
 -   [x] Vetor de criação de blocos receberá um int ao invés de bool
 -   [x] Criar subclasse de bloco cinza que terá o dobro de HP
 -   [x] Deixar um pouco mais claros os blocos já atingidos
--   [x] Sombra dos bloquitos
+-   [x] Sombra dos blocos
 -   [x] MeshLambertMaterial
+-   [ ] Resolver problema de colisão em velocidade alta
 
 ## Bola
 
@@ -52,7 +53,7 @@ Files for the Computer Graphics course in Three.js
 
 -   [x] Rebatedor 3D (também em arquivo separado na pasta STORIES)
 -   [x] Rebatedor sombra
--   [x] Rebatedor MeshLabertMaterial
+-   [x] Rebatedor MeshLambertMaterial
 -   [x] Colisão do rebatedor com a bola utilizando o centro do rebatedor como o ponto 0 e onde a bola bate como o ângulo normal
 -   [x] Colisão do rebatedor com o power up
 
@@ -60,5 +61,7 @@ Files for the Computer Graphics course in Three.js
 
 -   [x] Criar level 2
 -   [ ] Passar de level quando acabar o level 1
+-   [ ] Resolver raycaster
+-   [ ] Aumentar o zoom para ocupar a tela toda
 
 ## Sombra
