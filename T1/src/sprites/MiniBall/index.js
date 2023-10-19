@@ -13,6 +13,7 @@ export class MiniBall extends THREE.Mesh {
         this.speed = 0;
         this.radius = 0.5;
         this.evadeTime = 10;
+        this.evadeTimeHitter = 100;
 
         this.castShadow = true;
 
@@ -22,7 +23,8 @@ export class MiniBall extends THREE.Mesh {
 
         this.resetPosition();
 
-        this.evadeMode = false;
+        this.evadeModeBlock = false;
+        this.evadeModeHitter = false;
     }
 
     resetPosition() {
@@ -31,38 +33,9 @@ export class MiniBall extends THREE.Mesh {
         this.rotation.set(0, 0, this.angle);
     }
 
-    // getRandomAngleToDown = () => {
-    //     const min = 10;
-    //     const max = 170;
-
-    //     const randomAngle = Math.random() * (max - min) + min + 180;
-
-    //     return THREE.MathUtils.degToRad(randomAngle);
-    // };
-
-    checkCollisionWithTopHitter(hitter) {
-        const ballLeft = this.position.x - this.radius;
-        const ballRight = this.position.x + this.radius;
-        const ballTop = this.position.y + this.radius;
-        const ballBottom = this.position.y - this.radius;
-
-        const hitterLeft = hitter.position.x - hitter.width / 2;
-        const hitterRight = hitter.position.x + hitter.width / 2;
-        const hitterTop = hitter.position.y + hitter.height / 2;
-        const hitterBottom = hitter.position.y - hitter.height / 2;
-
-        const leftCollisionDistance = Math.abs(ballLeft - hitterRight);
-        const rightCollisionDistance = Math.abs(ballRight - hitterLeft);
-        const topCollisionDistance = Math.abs(ballTop - hitterBottom);
-        const bottomCollisionDistance = Math.abs(ballBottom - hitterTop);
-
-        const minCollisionDistance = Math.min(leftCollisionDistance, rightCollisionDistance, topCollisionDistance, bottomCollisionDistance);
-
-        if (minCollisionDistance === bottomCollisionDistance) {
-            return true;
-        }
-
-        return false;
+    activateEvadeModeHitter() {
+        this.evadeModeHitter = true;
+        setTimeout(() => (this.evadeModeHitter = false), this.evadeTimeHitter);
     }
 
     collisionWithHitter = (hitter) => {
@@ -137,12 +110,14 @@ export class MiniBall extends THREE.Mesh {
         const ballBoundingBox = new THREE.Box3().setFromObject(this);
 
         if (
-            ballBoundingBox.intersectsBox(leftLeftBoundingBox) ||
-            ballBoundingBox.intersectsBox(leftBoundingBox) ||
-            ballBoundingBox.intersectsBox(middleBoundingBox) ||
-            ballBoundingBox.intersectsBox(rightBoundingBox) ||
-            ballBoundingBox.intersectsBox(rightRightBoundingBox)
+            (ballBoundingBox.intersectsBox(leftLeftBoundingBox) ||
+                ballBoundingBox.intersectsBox(leftBoundingBox) ||
+                ballBoundingBox.intersectsBox(middleBoundingBox) ||
+                ballBoundingBox.intersectsBox(rightBoundingBox) ||
+                ballBoundingBox.intersectsBox(rightRightBoundingBox)) &&
+            this.evadeModeHitter === false
         ) {
+            this.activateEvadeModeHitter();
             const centerHitter = hitter.position;
 
             const axis = new THREE.Vector3(1, 0, 0);
@@ -153,52 +128,17 @@ export class MiniBall extends THREE.Mesh {
 
             const angle = hitter.getKickBallAngle(this.angle, angleNormal);
 
-            console.log("Angulo de entrada: ", THREE.MathUtils.radToDeg(this.angle));
-            console.log("Angulo da normal: ", THREE.MathUtils.radToDeg(angleNormal));
-            console.log("Angulo de saida: ", THREE.MathUtils.radToDeg(angle));
+            // console.log("Angulo de entrada: ", THREE.MathUtils.radToDeg(this.angle - Math.PI));
+            // console.log("Angulo da normal: ", THREE.MathUtils.radToDeg(angleNormal));
+            // console.log("Angulo de saida: ", THREE.MathUtils.radToDeg(angle));
 
             this.angle = angle;
 
             this.rotation.set(0, 0, angle);
+
+            return 1;
         }
     };
-
-    // collisionWithHitter = (hitter) => {
-    //     // Atualizar a matriz do mundo para garantir que as posições estejam corretas
-    //     this.position.copy(this.position);
-    //     hitter.position.copy(hitter.position);
-    //     this.updateMatrixWorld();
-    //     hitter.updateMatrixWorld();
-
-    //     // Criar um raio que parte da posição da bola na direção do hitter
-    //     const directionVector = new THREE.Vector3().copy(hitter.position).sub(this.position).normalize();
-    //     // const distance = this.position.distanceTo(hitter.position);
-    //     const ray = new THREE.Raycaster(this.position, directionVector, this.radius + hitter.radius, this.radius + hitter.height);
-
-    //     // console.log(ray);
-
-    //     // Verificar se o raio intersecta a geometria do hitter
-    //     const collisionResults = ray.intersectObject(hitter);
-
-    //     if (collisionResults.length > 0) {
-    //         console.log(bater);
-    //         const axis = new THREE.Vector3(1, 0, 0);
-    //         const normal = new THREE.Vector3();
-    //         normal.subVectors(this.position, hitter.position);
-
-    //         const angleNormal = normal.angleTo(axis);
-
-    //         const angle = hitter.getKickBallAngle(this.angle, angleNormal);
-
-    //         console.log("Angulo de entrada: ", THREE.MathUtils.radToDeg(this.angle));
-    //         console.log("Angulo da normal: ", THREE.MathUtils.radToDeg(angleNormal));
-    //         console.log("Angulo de saida: ", THREE.MathUtils.radToDeg(angle));
-
-    //         this.angle = angle;
-
-    //         this.rotation.set(0, 0, angle);
-    //     }
-    // };
 
     collisionWithWalls = (walls) => {
         const ballBoundingBox = new THREE.Box3().setFromObject(this);
@@ -224,9 +164,9 @@ export class MiniBall extends THREE.Mesh {
         this.rotation.set(0, 0, this.angle);
     }
 
-    activateEvadeMode() {
-        this.evadeMode = true;
-        setTimeout(() => (this.evadeMode = false), this.evadeTime);
+    activateEvadeModeBlock() {
+        this.evadeModeBlock = true;
+        setTimeout(() => (this.evadeModeBlock = false), this.evadeTime);
     }
 
     checkCollisionsWithBlocks(block) {
@@ -266,9 +206,9 @@ export class MiniBall extends THREE.Mesh {
         const ballBoundingBox = getBallBoundingBox();
         blocks.find((block) => {
             const blockBoundingBox = new THREE.Box3().setFromObject(block);
-            if (ballBoundingBox.intersectsBox(blockBoundingBox) && this.evadeMode === false) {
+            if (ballBoundingBox.intersectsBox(blockBoundingBox) && this.evadeModeBlock === false) {
                 this.checkCollisionsWithBlocks(block);
-                this.activateEvadeMode();
+                this.activateEvadeModeBlock();
                 hitBlock(block);
                 return 1;
             }

@@ -51,6 +51,8 @@ class Level {
         this.blocks = [...this.buildBlocks()];
 
         Game.scene.add(...this.getElements());
+
+        // this.viewBoundingBox();
     }
 
     viewBoundingBox() {
