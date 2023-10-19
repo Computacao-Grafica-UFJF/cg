@@ -49,10 +49,10 @@ Files for the Computer Graphics course in Three.js
 
 ## Rebatedor
 
--   [ ] Rebatedor 3D (também em arquivo separado na pasta STORIES)
--   [ ] Rebatedor sombra
--   [ ] Rebatedor MeshLabertMaterial
--   [ ] Colisão do rebatedor com a bola utilizando o centro do rebatedor como o ponto 0 e onde a bola bate como o ângulo normal
+-   [x] Rebatedor 3D (também em arquivo separado na pasta STORIES)
+-   [x] Rebatedor sombra
+-   [x] Rebatedor MeshLabertMaterial
+-   [x] Colisão do rebatedor com a bola utilizando o centro do rebatedor como o ponto 0 e onde a bola bate como o ângulo normal
 -   [ ] Colisão do rebatedor com o power up
 
 ## Levels
