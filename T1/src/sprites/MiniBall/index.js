@@ -227,7 +227,7 @@ export class MiniBall extends THREE.Mesh {
         this.rotation.set(0, 0, this.angle);
     }
 
-    changeAngleByBlock(block) {
+    changeAngleByBlock(block, angle) {
         const ballLeft = this.position.x - this.radius;
         const ballRight = this.position.x + this.radius;
         const ballTop = this.position.y + this.radius;
@@ -262,12 +262,12 @@ export class MiniBall extends THREE.Mesh {
             return ballBoundingBox;
         };
         const ballBoundingBox = getBallBoundingBox();
+        const currentAngle = this.angle;
 
         blocks.find((block) => {
             const blockBoundingBox = new THREE.Box3().setFromObject(block);
             if (ballBoundingBox.intersectsBox(blockBoundingBox) && this.evadeModeBlock === false) {
-                this.checkCollisionsWithBlocks(block);
-                this.activateEvadeModeBlock();
+                this.changeAngleByBlock(block, currentAngle);
                 hitBlock(block);
 
                 return 1;

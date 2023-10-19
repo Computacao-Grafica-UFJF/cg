@@ -18,7 +18,6 @@ class Level {
 
     constructor(matrix) {
         this.matrix = matrix;
-        this.paused = false;
         this.blocksDestroyed = 0;
         this.blocksDestroyedLimit = 10;
         this.activePowerUp = false;
@@ -52,7 +51,7 @@ class Level {
         this.platform = this.buildPlatform();
         this.hitter = this.buildHitter();
         this.playablePlatform = this.buildPlayablePlatform();
-        this.miniBall = this.buildMiniBall();
+        this.miniBalls = [this.buildMiniBall()];
         this.walls = [...this.buildWalls()];
         this.blocks = [...this.buildBlocks()];
 
@@ -141,9 +140,11 @@ class Level {
         Game.scene.add(hitterBoundingBoxHelper4);
         Game.scene.add(hitterBoundingBoxHelper5);
 
-        const ballBoundingBox = new THREE.Box3().setFromObject(this.miniBall);
-        const ballBoundingBoxHelper = new THREE.Box3Helper(ballBoundingBox, 0xffff00);
-        Game.scene.add(ballBoundingBoxHelper);
+        this.miniBalls.forEach((miniBall) => {
+            const ballBoundingBox = new THREE.Box3().setFromObject(miniBall);
+            const ballBoundingBoxHelper = new THREE.Box3Helper(ballBoundingBox, "purple");
+            Game.scene.add(ballBoundingBoxHelper);
+        });
 
         const sphereGeometry1 = new THREE.SphereGeometry(0.1, 8, 8);
         const sphereMaterial1 = new THREE.MeshBasicMaterial({ color: "green" });
@@ -199,7 +200,7 @@ class Level {
     }
 
     getElements() {
-        return [this.gamePlatform, this.platform, this.hitter, this.playablePlatform, this.miniBall, ...this.walls, ...this.blocks];
+        return [this.gamePlatform, this.platform, this.hitter, this.playablePlatform, ...this.miniBalls, ...this.walls, ...this.blocks];
     }
 
     finishedLevel() {
@@ -210,6 +211,10 @@ class Level {
         const destroyedOnHit = block.hit();
 
         if (destroyedOnHit) this.destroyBlock(block);
+    }
+
+    createNewBall() {
+        console.log("collideWithHitter");
     }
 
     createPowerUp(block) {
@@ -226,7 +231,7 @@ class Level {
 
     destroyPowerUp(collideWithHitter) {
         if (collideWithHitter) {
-            console.log("collideWithHitter");
+            this.createNewBall();
         }
 
         this.activePowerUp = false;
@@ -257,7 +262,9 @@ class Level {
         const collisionWalls = [this.walls[0], this.walls[2], this.walls[3]];
         const deathZones = [this.walls[1]];
 
-        this.miniBall.update(this.hitter, collisionWalls, this.blocks, deathZones, this.hitBlock.bind(this), this.death.bind(this));
+        this.miniBalls.forEach((miniBall) => {
+            miniBall.update(this.hitter, collisionWalls, this.blocks, deathZones, this.hitBlock.bind(this), this.death.bind(this));
+        });
     }
 
     render() {
@@ -271,7 +278,11 @@ class Level {
     restart() {
         Game.scene.remove(...this.getElements());
         this.build();
-        this.miniBall.resetPosition();
+
+        this.miniBalls.forEach((miniBall) => {
+            miniBall.resetPosition();
+        });
+
         this.activePowerUp = false;
         this.blocksDestroyed = 0;
     }
@@ -281,13 +292,19 @@ class Level {
     }
 
     init() {
-        if (this.paused) return;
+        if (Game.paused) return;
 
-        if (this.miniBall && this.miniBall.isRaycasterMode) this.miniBall.start();
+        if (this.miniBalls) {
+            this.miniBalls.forEach((miniBall) => {
+                if (miniBall.isRaycasterMode) miniBall.start();
+            });
+        }
     }
 
     death() {
-        this.miniBall.raycasterMode();
+        this.miniBalls.forEach((miniBall) => {
+            miniBall.raycasterMode();
+        });
     }
 }
 
