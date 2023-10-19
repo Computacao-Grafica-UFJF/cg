@@ -15,7 +15,8 @@ class AngleHandler {
 
         const normalizedAngle = degreeAngle % 360;
         const invertedAngle = (2 * degreeNormalAngle - normalizedAngle) % 360;
-        return THREE.MathUtils.degToRad(invertedAngle < 0 ? invertedAngle + 360 : invertedAngle);
+
+        return THREE.MathUtils.degToRad(invertedAngle);
     }
 
     static invertAngleReflectionLaw(angle, normalAngle) {
@@ -26,8 +27,8 @@ class AngleHandler {
     static limitAngle(angle) {
         const degreeAngle = THREE.MathUtils.radToDeg(angle);
 
-        if (degreeAngle > 150) return THREE.MathUtils.degToRad(150);
-        if (degreeAngle < 30) return THREE.MathUtils.degToRad(30);
+        if (degreeAngle > 150 && degreeAngle < 270) return THREE.MathUtils.degToRad(150);
+        if (degreeAngle < 30 || degreeAngle > 270) return THREE.MathUtils.degToRad(30);
 
         return angle;
     }

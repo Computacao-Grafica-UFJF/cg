@@ -55,18 +55,6 @@ class Hitter extends THREE.Mesh {
         return angleOffsets[segment];
     }
 
-    oldGetKickBallAngle = (relativeX, angle) => {
-        if (angle > 0 && angle < Math.PI) return angle;
-
-        const invertedAngle = angle - Math.PI;
-        const segment = this.getSegmentPositionByRelativeX(relativeX);
-        const angleOffset = THREE.MathUtils.degToRad(this.getAngleOffsetBySegment(segment));
-
-        const returnAngle = AngleHandler.invertAngleAboutNormal(invertedAngle, angleOffset);
-
-        return AngleHandler.limitAngle(returnAngle);
-    };
-
     getKickBallAngle = (angle, angleNormal) => {
         const invertedAngle = angle - Math.PI;
 

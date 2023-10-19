@@ -135,8 +135,6 @@ export class MiniBall extends THREE.Mesh {
             this.angle = angle;
 
             this.rotation.set(0, 0, angle);
-
-            return 1;
         }
     };
 
