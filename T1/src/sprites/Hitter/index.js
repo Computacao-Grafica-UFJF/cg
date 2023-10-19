@@ -8,7 +8,7 @@ class Hitter extends THREE.Mesh {
 
     constructor(x, y, z, color) {
         const radius = 2;
-        const height = radius / 4;
+        const height = radius / 2;
 
         const mesh = HitterBuilder.buildObjects(radius, height);
         const material = new THREE.MeshLambertMaterial({ color });
@@ -55,7 +55,7 @@ class Hitter extends THREE.Mesh {
         return angleOffsets[segment];
     }
 
-    getKickBallAngle = (relativeX, angle) => {
+    oldGetKickBallAngle = (relativeX, angle) => {
         if (angle > 0 && angle < Math.PI) return angle;
 
         const invertedAngle = angle - Math.PI;
@@ -63,6 +63,14 @@ class Hitter extends THREE.Mesh {
         const angleOffset = THREE.MathUtils.degToRad(this.getAngleOffsetBySegment(segment));
 
         const returnAngle = AngleHandler.invertAngleAboutNormal(invertedAngle, angleOffset);
+
+        return AngleHandler.limitAngle(returnAngle);
+    };
+
+    getKickBallAngle = (angle, angleNormal) => {
+        const invertedAngle = angle - Math.PI;
+
+        const returnAngle = AngleHandler.invertAngleAboutNormal(invertedAngle, angleNormal);
 
         return AngleHandler.limitAngle(returnAngle);
     };
