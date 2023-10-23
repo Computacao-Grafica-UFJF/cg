@@ -12,6 +12,7 @@ import Plane from "../../sprites/Plane/index.js";
 import PowerUp from "../../sprites/PowerUp/index.js";
 
 import * as THREE from "three";
+import CurrentSpeedText from "../../sprites/CurrentSpeedText/index.js";
 
 class Level {
     powerUp;
@@ -51,6 +52,7 @@ class Level {
         this.platform = this.buildPlatform();
         this.hitter = this.buildHitter();
         this.playablePlatform = this.buildPlayablePlatform();
+        this.currentSpeedText = this.buildCurrentSpeedText();
         this.miniBalls = [this.buildMiniBall()];
         this.walls = [...this.buildWalls()];
         this.blocks = [...this.buildBlocks()];
@@ -84,7 +86,7 @@ class Level {
         const positionStartX = 0.0;
         const positionStartY = -12;
 
-        const miniBall = new MiniBall(positionStartX, positionStartY, 0, "#fff");
+        const miniBall = new MiniBall(positionStartX, positionStartY, 0, "#fff", this.currentSpeedText);
         return miniBall;
     }
 
@@ -103,8 +105,23 @@ class Level {
         return blocks;
     }
 
+    buildCurrentSpeedText() {
+        const currentSpeedText = new CurrentSpeedText();
+
+        return currentSpeedText;
+    }
+
     getElements() {
-        return [this.gamePlatform, this.platform, this.hitter, this.playablePlatform, ...this.miniBalls, ...this.walls, ...this.blocks];
+        return [
+            this.gamePlatform,
+            this.platform,
+            this.hitter,
+            this.playablePlatform,
+            this.currentSpeedText,
+            ...this.miniBalls,
+            ...this.walls,
+            ...this.blocks,
+        ];
     }
 
     finishedLevel() {
@@ -203,7 +220,7 @@ class Level {
 
         if (this.miniBalls) {
             this.miniBalls.forEach((miniBall) => {
-                if (miniBall.isRaycasterMode) miniBall.start();
+                if (miniBall.isRaycasterMode) miniBall.start(this.currentSpeedText);
             });
         }
     }
@@ -213,6 +230,7 @@ class Level {
         this.miniBalls.forEach((miniBall) => {
             miniBall.raycasterMode();
         });
+        this.currentSpeedText.updateSpeed(0);
     }
 
     viewBoundingBox() {
