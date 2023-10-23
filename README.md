@@ -32,11 +32,11 @@ Files for the Computer Graphics course in Three.js
 
 -   [x] Bola 3D MeshPhongMaterial
 -   [x] Final - Ajustar iluminação de acordo com as outras sombras
--   [ ] Opção de criar segunda bola
+-   [x] Opção de criar segunda bola
 -   [x] Velocidade da bola mudar
--   [ ] Texto da velocidade
+-   [x] Texto da velocidade
 -   [x] Posição inicial da bola
--   [ ] Bola lâmpada (Perguntar ao professor)
+-   [x] Bola lâmpada (Perguntar ao professor)
 
 ## Teclado
 
@@ -60,8 +60,8 @@ Files for the Computer Graphics course in Three.js
 ## Levels
 
 -   [x] Criar level 2
--   [ ] Passar de level quando acabar o level 1
--   [ ] Resolver raycaster
--   [ ] Aumentar o zoom para ocupar a tela toda
+-   [x] Passar de level quando acabar o level 1
+-   [x] Resolver raycaster
+-   [x] Aumentar o zoom para ocupar a tela toda
 
 ## Sombra
