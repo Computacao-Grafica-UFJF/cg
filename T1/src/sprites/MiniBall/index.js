@@ -12,7 +12,7 @@ export class MiniBall extends THREE.Mesh {
         this.isRaycasterMode = startSpeed === 0 ? true : false;
         this.minSpeed = 0.2;
         this.maxSpeed = 0.4;
-        this.speed = startSpeed;
+        this.speed = startSpeed || this.minSpeed;
         this.radius = 0.5;
         this.evadeTimeHitter = 100;
 
@@ -59,7 +59,7 @@ export class MiniBall extends THREE.Mesh {
             this.speed = this.maxSpeed;
         };
 
-        this.speed = this.minSpeed - increment;
+        this.speed = this.speed - increment;
 
         increase();
     }
