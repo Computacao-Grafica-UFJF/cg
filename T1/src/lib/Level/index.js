@@ -164,6 +164,14 @@ class Level {
         this.blocksDestroyed = 0;
     }
 
+    destroyPowerUpOnEndGame() {
+        if (!this.powerUp) return;
+
+        Game.scene.remove(this.powerUp);
+        this.powerUp.destructor();
+        this.powerUp = null;
+    }
+
     checkPowerUp(block) {
         if (this.activePowerUp || this.miniBalls.length > 1) return;
 
@@ -229,13 +237,17 @@ class Level {
     }
 
     endGame() {
-        this.miniBalls.forEach((miniBall) => {
-            miniBall.raycasterMode();
-        });
-
-        Game.scene.remove(this.powerUp);
+        this.destroyPowerUpOnEndGame();
 
         Logs.updateCurrentSpeed(0);
+
+        setTimeout(
+            () =>
+                this.miniBalls.forEach((miniBall) => {
+                    miniBall.raycasterMode();
+                }),
+            500
+        );
     }
 
     death(miniBall) {
@@ -357,8 +369,6 @@ class Level {
         });
 
         this.hitter.destructor();
-
-        this.powerUp.destructor();
 
         this.blocks.forEach((block) => {
             block.destructor();

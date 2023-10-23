@@ -10,6 +10,7 @@ export class MiniBall extends THREE.Mesh {
 
         super(geometry, material);
 
+        this.died = false;
         this.destroyed = false;
         this.isRaycasterMode = startSpeed === 0 ? true : false;
         this.minSpeed = 0.2;
@@ -42,11 +43,12 @@ export class MiniBall extends THREE.Mesh {
     }
 
     increaseSpeedGradually() {
-        const duration = 15000;
+        const duration = 30000;
         const increment = ((this.maxSpeed - this.minSpeed) / duration) * 1000;
 
         const increase = () => {
-            if (this.destroyed) return;
+            console.log("Speed: ", this.speed);
+            if (this.destroyed || this.died) return;
 
             if (this.speed < this.maxSpeed - increment) {
                 if (!this.isRaycasterMode && !Game.paused) {
@@ -54,7 +56,7 @@ export class MiniBall extends THREE.Mesh {
                     Logs.updateCurrentSpeed(this.speed);
                 }
 
-                setTimeout(increase, 1000);
+                setTimeout(increase, 500);
                 return;
             }
 
@@ -287,6 +289,7 @@ export class MiniBall extends THREE.Mesh {
     }
 
     die(death) {
+        this.died = true;
         death(this);
     }
 
@@ -300,6 +303,7 @@ export class MiniBall extends THREE.Mesh {
     }
 
     start() {
+        this.died = false;
         this.speed = this.minSpeed;
         this.isRaycasterMode = false;
         this.increaseSpeedGradually();
