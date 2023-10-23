@@ -4,7 +4,7 @@ class PerspectiveCameraWrapper extends THREE.PerspectiveCamera {
     constructor() {
         super();
 
-        const fov = 75;
+        const fov = 73;
         const aspect = window.innerWidth / window.innerHeight;
         const near = 0.1;
         const far = 1000;

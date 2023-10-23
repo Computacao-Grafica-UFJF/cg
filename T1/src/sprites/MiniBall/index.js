@@ -3,7 +3,7 @@ import AngleHandler from "../../utils/AngleHandler/index.js";
 import Game from "../../lib/Game/index.js";
 
 export class MiniBall extends THREE.Mesh {
-    constructor(x, y, z, color, startSpeed = 0) {
+    constructor(x, y, z, color, currentSpeedText, startSpeed = 0) {
         const geometry = new THREE.SphereGeometry(0.2, 32, 32);
         const material = new THREE.MeshLambertMaterial({ color });
 
@@ -11,7 +11,7 @@ export class MiniBall extends THREE.Mesh {
 
         this.isRaycasterMode = true;
         this.minSpeed = 0.2;
-        this.maxSpeed = 0.6;
+        this.maxSpeed = 0.4;
         this.speed = startSpeed;
         this.radius = 0.5;
         this.dead = false;
@@ -27,7 +27,7 @@ export class MiniBall extends THREE.Mesh {
         this.startZ = z;
 
         if (startSpeed) {
-            this.increaseSpeedGradually();
+            this.increaseSpeedGradually(currentSpeedText);
             return;
         }
 
@@ -40,22 +40,18 @@ export class MiniBall extends THREE.Mesh {
         this.rotation.set(0, 0, this.angle);
     }
 
-    getRandomAngleToDown = () => {
-        const min = 30;
-        const max = 150;
-
-        const randomAngle = Math.random() * (max - min) + min + 180;
-
-        return THREE.MathUtils.degToRad(randomAngle);
-    };
-
-    increaseSpeedGradually() {
+    increaseSpeedGradually(currentSpeedText) {
         const duration = 15000;
         const increment = ((this.maxSpeed - this.minSpeed) / duration) * 1000;
 
         const increase = () => {
-            if (this.speed < this.maxSpeed) {
-                if (!this.isRaycasterMode && !Game.paused) this.speed += increment;
+            if (this.speed < this.maxSpeed - increment) {
+                if (!this.isRaycasterMode && !Game.paused) {
+                    this.speed += increment;
+
+                    const formattedSpeed = this.speed.toFixed(4);
+                    currentSpeedText.changeMessage("Speed: " + formattedSpeed);
+                }
 
                 setTimeout(increase, 1000);
                 return;
@@ -63,6 +59,8 @@ export class MiniBall extends THREE.Mesh {
 
             this.speed = this.maxSpeed;
         };
+
+        this.speed = this.minSpeed - increment;
 
         increase();
     }
@@ -299,11 +297,11 @@ export class MiniBall extends THREE.Mesh {
         this.translateX(this.speed);
     }
 
-    start() {
+    start(currentSpeedText) {
         this.died = false;
         this.speed = this.minSpeed;
         this.isRaycasterMode = false;
-        this.increaseSpeedGradually();
+        this.increaseSpeedGradually(currentSpeedText);
     }
 
     raycasterMode() {
