@@ -3,21 +3,19 @@ import AngleHandler from "../../utils/AngleHandler/index.js";
 import Game from "../../lib/Game/index.js";
 
 export class MiniBall extends THREE.Mesh {
-    constructor(x, y, z, color, currentSpeedText, startSpeed = 0) {
+    constructor(x, y, z, color, currentSpeedText, startSpeed = 0, startAngle = 0) {
         const geometry = new THREE.SphereGeometry(0.2, 32, 32);
         const material = new THREE.MeshLambertMaterial({ color });
 
         super(geometry, material);
 
-        this.isRaycasterMode = true;
+        this.isRaycasterMode = startSpeed === 0 ? true : false;
         this.minSpeed = 0.2;
         this.maxSpeed = 0.4;
         this.speed = startSpeed;
         this.radius = 0.5;
-        this.dead = false;
         this.evadeTimeHitter = 100;
 
-        this.evadeModeBlock = false;
         this.evadeModeHitter = false;
 
         this.castShadow = true;
@@ -26,7 +24,9 @@ export class MiniBall extends THREE.Mesh {
         this.startY = y;
         this.startZ = z;
 
-        if (startSpeed) {
+        if (startSpeed && startAngle) {
+            this.position.set(this.startX, this.startY, this.startZ);
+            this.rotate(startAngle);
             this.increaseSpeedGradually(currentSpeedText);
             return;
         }
@@ -36,8 +36,7 @@ export class MiniBall extends THREE.Mesh {
 
     resetPosition() {
         this.position.set(this.startX, this.startY, this.startZ);
-        this.angle = THREE.MathUtils.degToRad(90);
-        this.rotation.set(0, 0, this.angle);
+        this.rotate(THREE.MathUtils.degToRad(90));
     }
 
     increaseSpeedGradually(currentSpeedText) {
@@ -88,6 +87,11 @@ export class MiniBall extends THREE.Mesh {
         }
 
         return false;
+    }
+
+    rotate(angle) {
+        this.angle = angle;
+        this.rotation.set(0, 0, this.angle);
     }
 
     activateEvadeModeHitter() {
@@ -189,9 +193,7 @@ export class MiniBall extends THREE.Mesh {
             // console.log("Angulo da normal: ", THREE.MathUtils.radToDeg(angleNormal));
             // console.log("Angulo de saída: ", THREE.MathUtils.radToDeg(angle));
 
-            this.angle = angle;
-
-            this.rotation.set(0, 0, angle);
+            this.rotate(angle);
         }
     };
 
@@ -202,8 +204,8 @@ export class MiniBall extends THREE.Mesh {
             const wallBoundingBox = new THREE.Box3().setFromObject(wall);
 
             if (ballBoundingBox.intersectsBox(wallBoundingBox)) {
-                this.angle = wall.type === "horizontal" ? -this.angle : Math.PI - this.angle;
-                this.rotation.set(0, 0, this.angle);
+                const newAngle = wall.type === "horizontal" ? -this.angle : Math.PI - this.angle;
+                this.rotate(newAngle);
                 return;
             }
         });
@@ -217,12 +219,11 @@ export class MiniBall extends THREE.Mesh {
             this.angle = -angle;
         }
 
-        this.rotation.set(0, 0, this.angle);
+        this.rotate(this.angle);
     }
 
     invertAngleVertically(angle) {
-        this.angle = AngleHandler.invertAngleVertically(angle);
-        this.rotation.set(0, 0, this.angle);
+        this.rotate(AngleHandler.invertAngleVertically(angle));
     }
 
     changeAngleByBlock(block, angle) {
@@ -264,7 +265,7 @@ export class MiniBall extends THREE.Mesh {
 
         blocks.find((block) => {
             const blockBoundingBox = new THREE.Box3().setFromObject(block);
-            if (ballBoundingBox.intersectsBox(blockBoundingBox) && this.evadeModeBlock === false) {
+            if (ballBoundingBox.intersectsBox(blockBoundingBox)) {
                 this.changeAngleByBlock(block, currentAngle);
                 hitBlock(block);
 
@@ -284,8 +285,7 @@ export class MiniBall extends THREE.Mesh {
     }
 
     die(death) {
-        this.dead = true;
-        death();
+        death(this);
     }
 
     move(hitter) {
@@ -298,7 +298,6 @@ export class MiniBall extends THREE.Mesh {
     }
 
     start(currentSpeedText) {
-        this.died = false;
         this.speed = this.minSpeed;
         this.isRaycasterMode = false;
         this.increaseSpeedGradually(currentSpeedText);

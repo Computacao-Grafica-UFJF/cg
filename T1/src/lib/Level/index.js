@@ -113,7 +113,7 @@ class Level {
             this.platform,
             this.hitter,
             this.playablePlatform,
-            this.currentSpeedText,
+            // this.currentSpeedText,
             ...this.miniBalls,
             ...this.walls,
             ...this.blocks,
@@ -131,15 +131,24 @@ class Level {
     }
 
     createNewBall() {
-        console.log("collideWithHitter");
+        const existentMiniBall = this.miniBalls[0];
+
+        const newMiniBall = new MiniBall(
+            existentMiniBall.position.x,
+            existentMiniBall.position.y,
+            0,
+            "#fff",
+            this.currentSpeedText,
+            existentMiniBall.speed,
+            existentMiniBall.angle - Math.PI / 2
+        );
+
+        this.miniBalls.push(newMiniBall);
+        Game.scene.add(newMiniBall);
     }
 
     createPowerUp(block) {
-        const getBlockPosition = () => {
-            return block.position;
-        };
-
-        const position = getBlockPosition();
+        const position = block.position;
 
         this.powerUp = new PowerUp(position.x, position.y, position.z + 0.6, this.destroyPowerUp.bind(this));
         this.activePowerUp = true;
@@ -148,20 +157,25 @@ class Level {
 
     destroyPowerUp(collideWithHitter) {
         if (collideWithHitter) {
+            if (this.miniBalls.length > 1) {
+                return;
+            }
+
+            this.activePowerUp = true;
             Game.scene.remove(this.powerUp);
             this.createNewBall();
-            this.activePowerUp = true;
             return;
         }
 
-        this.activePowerUp = false;
         Game.scene.remove(this.powerUp);
+        this.activePowerUp = false;
         this.powerUp = null;
         this.blocksDestroyed = 0;
     }
 
     checkPowerUp(block) {
-        if (this.activePowerUp) return;
+        console.log(this.activePowerUp, this.miniBalls.length);
+        if (this.activePowerUp || this.miniBalls.length > 1) return;
 
         this.blocksDestroyed++;
 
@@ -208,7 +222,10 @@ class Level {
     }
 
     finish() {
-        if (this.nextLevel) this.nextLevel();
+        if (!this.nextLevel) return;
+
+        delete this.currentSpeedText;
+        this.nextLevel();
     }
 
     init() {
@@ -221,13 +238,25 @@ class Level {
         }
     }
 
-    death() {
-        this.activePowerUp = false;
+    endGame() {
         this.miniBalls.forEach((miniBall) => {
             miniBall.raycasterMode();
         });
 
         this.currentSpeedText.changeMessage("Speed: 0.0000");
+    }
+
+    death(miniBall) {
+        this.activePowerUp = false;
+        this.blocksDestroyed = 0;
+
+        if (this.miniBalls.length > 1) {
+            Game.scene.remove(miniBall);
+            this.miniBalls = this.miniBalls.filter((ball) => ball.id !== miniBall.id);
+            return;
+        }
+
+        this.endGame();
     }
 
     viewBoundingBox() {
@@ -316,14 +345,14 @@ class Level {
             Game.scene.add(ballBoundingBoxHelper);
         });
 
-        const sphereGeometry1 = new THREE.SphereGeometry(0.1, 8, 8);
-        const sphereMaterial1 = new THREE.MeshBasicMaterial({ color: "green" });
-        const sphere1 = new THREE.Mesh(sphereGeometry1, sphereMaterial1);
+        const sphereGeometry = new THREE.SphereGeometry(0.1, 8, 8);
+        const sphereMaterial = new THREE.MeshBasicMaterial({ color: "green" });
+        const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
 
-        const hitterCenter1 = this.hitter.position;
-        sphere1.position.set(hitterCenter1.x, hitterCenter1.y, hitterCenter1.z);
+        const hitterCenter = this.hitter.position;
+        sphere.position.set(hitterCenter.x, hitterCenter.y, hitterCenter.z);
 
-        Game.scene.add(sphere1);
+        Game.scene.add(sphere);
     }
 }
 
