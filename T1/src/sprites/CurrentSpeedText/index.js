@@ -7,7 +7,7 @@ class CurrentSpeedText extends THREE.Sprite {
         canvas.width = 576;
         canvas.height = 320;
         context.fillStyle = "white";
-        context.font = "72px Roboto";
+        context.font = "72px sans-serif";
         context.fillText("Speed: 0", 120, 150);
 
         const texture = new THREE.CanvasTexture(canvas);
@@ -31,7 +31,7 @@ class CurrentSpeedText extends THREE.Sprite {
         context.clearRect(0, 0, canvas.width, canvas.height);
 
         context.fillStyle = "white";
-        context.font = "72px Roboto";
+        context.font = "72px sans-serif";
         context.fillText("Speed: " + formattedSpeed, 120, 150);
 
         this.material.map.needsUpdate = true;

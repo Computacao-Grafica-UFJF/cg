@@ -1,5 +1,5 @@
 import Raycaster from "../../utils/Raycaster/index.js";
-import { onWindowResize } from "../../../../libs/util/util.js";
+import { SecondaryBox, onWindowResize } from "../../../../libs/util/util.js";
 import Game from "../Game/index.js";
 import AuxiliarPlatform from "../../sprites/AuxiliarPlatform/index.js";
 import Hitter from "../../sprites/Hitter/index.js";
@@ -12,7 +12,6 @@ import Plane from "../../sprites/Plane/index.js";
 import PowerUp from "../../sprites/PowerUp/index.js";
 
 import * as THREE from "three";
-import CurrentSpeedText from "../../sprites/CurrentSpeedText/index.js";
 
 class Level {
     powerUp;
@@ -52,7 +51,10 @@ class Level {
         this.platform = this.buildPlatform();
         this.hitter = this.buildHitter();
         this.playablePlatform = this.buildPlayablePlatform();
-        this.currentSpeedText = this.buildCurrentSpeedText();
+
+        this.currentSpeedText = new SecondaryBox("");
+        this.currentSpeedText.changeMessage("Speed: 0.0000");
+
         this.miniBalls = [this.buildMiniBall()];
         this.walls = [...this.buildWalls()];
         this.blocks = [...this.buildBlocks()];
@@ -103,12 +105,6 @@ class Level {
         const blocks = BlocksBuilder.buildGamePlatform(this.matrix);
 
         return blocks;
-    }
-
-    buildCurrentSpeedText() {
-        const currentSpeedText = new CurrentSpeedText();
-
-        return currentSpeedText;
     }
 
     getElements() {
@@ -230,7 +226,8 @@ class Level {
         this.miniBalls.forEach((miniBall) => {
             miniBall.raycasterMode();
         });
-        this.currentSpeedText.updateSpeed(0);
+
+        this.currentSpeedText.changeMessage("Speed: 0.0000");
     }
 
     viewBoundingBox() {

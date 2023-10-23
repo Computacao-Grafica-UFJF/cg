@@ -48,7 +48,9 @@ export class MiniBall extends THREE.Mesh {
             if (this.speed < this.maxSpeed - increment) {
                 if (!this.isRaycasterMode && !Game.paused) {
                     this.speed += increment;
-                    currentSpeedText.updateSpeed(this.speed);
+
+                    const formattedSpeed = this.speed.toFixed(4);
+                    currentSpeedText.changeMessage("Speed: " + formattedSpeed);
                 }
 
                 setTimeout(increase, 1000);
