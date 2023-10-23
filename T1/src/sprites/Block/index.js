@@ -19,6 +19,11 @@ class Block extends THREE.Mesh {
     hit() {
         return true;
     }
+
+    destructor() {
+        this.geometry.dispose();
+        this.material.dispose();
+    }
 }
 
 export default Block;

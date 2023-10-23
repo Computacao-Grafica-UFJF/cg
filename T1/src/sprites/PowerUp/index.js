@@ -43,6 +43,11 @@ class PowerUp extends THREE.Mesh {
             this.destroy(false);
         }
     };
+
+    destructor() {
+        this.geometry.dispose();
+        this.material.dispose();
+    }
 }
 
 export default PowerUp;

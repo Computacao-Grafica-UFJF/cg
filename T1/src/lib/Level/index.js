@@ -1,5 +1,7 @@
+import { onWindowResize } from "../../../../libs/util/util.js";
+
 import Raycaster from "../../utils/Raycaster/index.js";
-import { SecondaryBox, onWindowResize } from "../../../../libs/util/util.js";
+import Logs from "../../utils/Logs/index.js";
 import Game from "../Game/index.js";
 import AuxiliarPlatform from "../../sprites/AuxiliarPlatform/index.js";
 import Hitter from "../../sprites/Hitter/index.js";
@@ -52,8 +54,7 @@ class Level {
         this.hitter = this.buildHitter();
         this.playablePlatform = this.buildPlayablePlatform();
 
-        this.currentSpeedText = new SecondaryBox("");
-        this.currentSpeedText.changeMessage("Speed: 0.0000");
+        Logs.updateCurrentSpeed(0);
 
         this.miniBalls = [this.buildMiniBall()];
         this.walls = [...this.buildWalls()];
@@ -88,7 +89,7 @@ class Level {
         const positionStartX = 0.0;
         const positionStartY = -12;
 
-        const miniBall = new MiniBall(positionStartX, positionStartY, 0, "#fff", this.currentSpeedText);
+        const miniBall = new MiniBall(positionStartX, positionStartY, 0, "#fff");
         return miniBall;
     }
 
@@ -108,16 +109,7 @@ class Level {
     }
 
     getElements() {
-        return [
-            this.gamePlatform,
-            this.platform,
-            this.hitter,
-            this.playablePlatform,
-            // this.currentSpeedText,
-            ...this.miniBalls,
-            ...this.walls,
-            ...this.blocks,
-        ];
+        return [this.gamePlatform, this.platform, this.hitter, this.playablePlatform, ...this.miniBalls, ...this.walls, ...this.blocks];
     }
 
     finishedLevel() {
@@ -138,9 +130,8 @@ class Level {
             existentMiniBall.position.y,
             0,
             "#fff",
-            this.currentSpeedText,
             existentMiniBall.speed,
-            existentMiniBall.angle - Math.PI / 2
+            existentMiniBall.angle - Math.PI
         );
 
         this.miniBalls.push(newMiniBall);
@@ -174,7 +165,6 @@ class Level {
     }
 
     checkPowerUp(block) {
-        console.log(this.activePowerUp, this.miniBalls.length);
         if (this.activePowerUp || this.miniBalls.length > 1) return;
 
         this.blocksDestroyed++;
@@ -210,7 +200,8 @@ class Level {
     }
 
     restart() {
-        Game.scene.remove(...this.getElements());
+        this.destructor();
+
         this.build();
 
         this.miniBalls.forEach((miniBall) => {
@@ -224,7 +215,6 @@ class Level {
     finish() {
         if (!this.nextLevel) return;
 
-        delete this.currentSpeedText;
         this.nextLevel();
     }
 
@@ -233,7 +223,7 @@ class Level {
 
         if (this.miniBalls) {
             this.miniBalls.forEach((miniBall) => {
-                if (miniBall.isRaycasterMode) miniBall.start(this.currentSpeedText);
+                if (miniBall.isRaycasterMode) miniBall.start();
             });
         }
     }
@@ -243,7 +233,9 @@ class Level {
             miniBall.raycasterMode();
         });
 
-        this.currentSpeedText.changeMessage("Speed: 0.0000");
+        Game.scene.remove(this.powerUp);
+
+        Logs.updateCurrentSpeed(0);
     }
 
     death(miniBall) {
@@ -253,6 +245,7 @@ class Level {
         if (this.miniBalls.length > 1) {
             Game.scene.remove(miniBall);
             this.miniBalls = this.miniBalls.filter((ball) => ball.id !== miniBall.id);
+            miniBall.destructor();
             return;
         }
 
@@ -353,6 +346,27 @@ class Level {
         sphere.position.set(hitterCenter.x, hitterCenter.y, hitterCenter.z);
 
         Game.scene.add(sphere);
+    }
+
+    destructor() {
+        Game.scene.remove(...this.getElements());
+        if (this.powerUp) Game.scene.remove(this.powerUp);
+
+        this.miniBalls.forEach((miniBall) => {
+            miniBall.destructor();
+        });
+
+        this.hitter.destructor();
+
+        this.powerUp.destructor();
+
+        this.blocks.forEach((block) => {
+            block.destructor();
+        });
+
+        this.walls.forEach((wall) => {
+            wall.destructor();
+        });
     }
 }
 

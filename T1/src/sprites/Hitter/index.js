@@ -61,6 +61,11 @@ class Hitter extends THREE.Mesh {
     resetPosition() {
         this.position.set(0, -13, 0);
     }
+
+    destructor() {
+        this.geometry.dispose();
+        this.material.dispose();
+    }
 }
 
 export default Hitter;

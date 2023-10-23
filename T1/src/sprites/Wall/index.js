@@ -15,6 +15,11 @@ class Wall extends THREE.Mesh {
         this.type = type;
         this.castShadow = true;
     }
+
+    destructor() {
+        this.geometry.dispose();
+        this.material.dispose();
+    }
 }
 
 export default Wall;
