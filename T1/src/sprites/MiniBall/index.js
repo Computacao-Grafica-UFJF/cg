@@ -21,6 +21,7 @@ export class MiniBall extends THREE.Mesh {
         this.evadeTimeBlock = 20;
 
         this.evadeModeHitter = false;
+        this.evadeModeBlock = false;
 
         this.castShadow = true;
 
@@ -101,6 +102,11 @@ export class MiniBall extends THREE.Mesh {
     activateEvadeModeHitter() {
         this.evadeModeHitter = true;
         setTimeout(() => (this.evadeModeHitter = false), this.evadeTimeHitter);
+    }
+
+    activateEvadeModeBlock() {
+        this.evadeModeBlock = true;
+        setTimeout(() => (this.evadeModeBlock = false), this.evadeTimeBlock);
     }
 
     collisionWithHitter = (hitter) => {
@@ -250,11 +256,10 @@ export class MiniBall extends THREE.Mesh {
 
         if (minCollisionDistance === leftCollisionDistance || minCollisionDistance === rightCollisionDistance) {
             this.invertAngleHorizontally(angle);
-            return true;
+            return;
         }
 
         this.invertAngleVertically(angle);
-        return true;
     }
 
     collisionWithBlocks = (blocks, hitBlock) => {
@@ -263,8 +268,10 @@ export class MiniBall extends THREE.Mesh {
 
         blocks.find((block) => {
             const blockBoundingBox = new THREE.Box3().setFromObject(block);
-            if (ballBoundingBox.intersectsBox(blockBoundingBox)) {
-                if (this.changeAngleByBlock(block, currentAngle)) hitBlock(block);
+            if (ballBoundingBox.intersectsBox(blockBoundingBox) && this.evadeModeBlock === false) {
+                this.changeAngleByBlock(block, currentAngle);
+                hitBlock(block);
+                this.activateEvadeModeBlock();
 
                 return 1;
             }
