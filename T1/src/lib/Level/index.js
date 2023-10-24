@@ -21,7 +21,7 @@ class Level {
     constructor(matrix) {
         this.matrix = matrix;
         this.blocksDestroyed = 0;
-        this.blocksDestroyedLimit = 2;
+        this.blocksDestroyedLimit = 10;
         this.activePowerUp = false;
 
         this.init();
