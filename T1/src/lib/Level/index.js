@@ -112,10 +112,6 @@ class Level {
         return [this.gamePlatform, this.platform, this.hitter, this.playablePlatform, ...this.miniBalls, ...this.walls, ...this.blocks];
     }
 
-    finishedLevel() {
-        return this.blocks.length === 0;
-    }
-
     hitBlock(block) {
         const destroyedOnHit = block.hit();
 
@@ -187,7 +183,9 @@ class Level {
         this.blocks = this.blocks.filter((b) => b !== block);
         Game.scene.remove(block);
 
-        this.finishedLevel() && setTimeout(() => this.finish(), 10);
+        if (this.blocks.length === 0) {
+            this.finish();
+        }
     }
 
     moveMiniBall() {
@@ -210,7 +208,7 @@ class Level {
     restart() {
         this.destructor();
 
-        this.build();
+        this.build(this.nextLevel.bind(this));
 
         this.miniBalls.forEach((miniBall) => {
             miniBall.resetPosition();
@@ -221,8 +219,6 @@ class Level {
     }
 
     finish() {
-        if (!this.nextLevel) return;
-
         this.nextLevel();
     }
 
@@ -236,7 +232,7 @@ class Level {
         }
     }
 
-    endGame() {
+    gameOver() {
         this.destroyPowerUpOnEndGame();
 
         Logs.updateCurrentSpeed(0);
@@ -261,7 +257,7 @@ class Level {
             return;
         }
 
-        this.endGame();
+        this.gameOver();
     }
 
     viewBoundingBox() {
