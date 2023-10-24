@@ -6,7 +6,7 @@ import Logs from "../../utils/Logs/index.js";
 export class MiniBall extends THREE.Mesh {
     constructor(x, y, z, color, startSpeed = 0, startAngle = 0) {
         const geometry = new THREE.SphereGeometry(0.2, 32, 32);
-        const material = new THREE.MeshLambertMaterial({ color });
+        const material = new THREE.MeshPhongMaterial({ color });
 
         super(geometry, material);
 
@@ -201,14 +201,21 @@ export class MiniBall extends THREE.Mesh {
     };
 
     collisionWithWalls = (walls) => {
+        const invertAngleByWallDirection = (wall) => {
+            if (AngleHandler.checkWallDirectionIsCorrect(this.angle, wall.type)) {
+                if (wall.type === "top" || wall.type === "bottom") this.invertAngleVertically(this.angle);
+                if (wall.type === "left" || wall.type === "right") this.invertAngleHorizontally(this.angle);
+                return;
+            }
+        };
+
         const ballBoundingBox = new THREE.Box3().setFromObject(this);
 
         walls.forEach((wall) => {
             const wallBoundingBox = new THREE.Box3().setFromObject(wall);
 
             if (ballBoundingBox.intersectsBox(wallBoundingBox)) {
-                const newAngle = wall.type === "horizontal" ? -this.angle : Math.PI - this.angle;
-                this.rotate(newAngle);
+                invertAngleByWallDirection(wall);
                 return;
             }
         });
