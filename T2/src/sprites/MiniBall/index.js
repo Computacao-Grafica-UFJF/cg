@@ -6,20 +6,22 @@ import Logs from "../../utils/Logs/index.js";
 export class MiniBall extends THREE.Mesh {
     constructor(x, y, z, color, startSpeed = 0, startAngle = 0) {
         const geometry = new THREE.SphereGeometry(0.2, 32, 32);
-        const material = new THREE.MeshLambertMaterial({ color });
+        const material = new THREE.MeshPhongMaterial({ color });
 
         super(geometry, material);
 
         this.died = false;
         this.destroyed = false;
         this.isRaycasterMode = startSpeed === 0 ? true : false;
-        this.minSpeed = 0.2;
-        this.maxSpeed = 0.4;
+        this.minSpeed = 0.15;
+        this.maxSpeed = this.minSpeed * 2;
         this.speed = startSpeed || this.minSpeed;
         this.radius = 0.5;
         this.evadeTimeHitter = 100;
+        this.evadeTimeBlock = 20;
 
         this.evadeModeHitter = false;
+        this.evadeModeBlock = false;
 
         this.castShadow = true;
 
@@ -47,10 +49,9 @@ export class MiniBall extends THREE.Mesh {
         const increment = ((this.maxSpeed - this.minSpeed) / duration) * 1000;
 
         const increase = () => {
-            console.log("Speed: ", this.speed);
             if (this.destroyed || this.died) return;
 
-            if (this.speed < this.maxSpeed - increment) {
+            if (this.speed < this.maxSpeed) {
                 if (!this.isRaycasterMode && !Game.paused) {
                     this.speed += increment;
                     Logs.updateCurrentSpeed(this.speed);
@@ -101,6 +102,11 @@ export class MiniBall extends THREE.Mesh {
     activateEvadeModeHitter() {
         this.evadeModeHitter = true;
         setTimeout(() => (this.evadeModeHitter = false), this.evadeTimeHitter);
+    }
+
+    activateEvadeModeBlock() {
+        this.evadeModeBlock = true;
+        setTimeout(() => (this.evadeModeBlock = false), this.evadeTimeBlock);
     }
 
     collisionWithHitter = (hitter) => {
@@ -202,28 +208,28 @@ export class MiniBall extends THREE.Mesh {
     };
 
     collisionWithWalls = (walls) => {
+        const invertAngleByWallDirection = (wall) => {
+            if (AngleHandler.checkWallDirectionIsCorrect(this.angle, wall.type)) {
+                if (wall.type === "top" || wall.type === "bottom") this.invertAngleVertically(this.angle);
+                if (wall.type === "left" || wall.type === "right") this.invertAngleHorizontally(this.angle);
+                return;
+            }
+        };
+
         const ballBoundingBox = new THREE.Box3().setFromObject(this);
 
         walls.forEach((wall) => {
             const wallBoundingBox = new THREE.Box3().setFromObject(wall);
 
             if (ballBoundingBox.intersectsBox(wallBoundingBox)) {
-                const newAngle = wall.type === "horizontal" ? -this.angle : Math.PI - this.angle;
-                this.rotate(newAngle);
+                invertAngleByWallDirection(wall);
                 return;
             }
         });
     };
 
     invertAngleHorizontally(angle) {
-        const oldAngle = angle;
-        this.angle = AngleHandler.invertAngleHorizontally(angle);
-
-        if (oldAngle === angle) {
-            this.angle = -angle;
-        }
-
-        this.rotate(this.angle);
+        this.rotate(AngleHandler.invertAngleHorizontally(angle));
     }
 
     invertAngleVertically(angle) {
@@ -257,21 +263,15 @@ export class MiniBall extends THREE.Mesh {
     }
 
     collisionWithBlocks = (blocks, hitBlock) => {
-        const getBallBoundingBox = () => {
-            const sphereCenter = this.position;
-            const min = new THREE.Vector3(sphereCenter.x - this.radius, sphereCenter.y - this.radius, sphereCenter.z - this.radius);
-            const max = new THREE.Vector3(sphereCenter.x + this.radius, sphereCenter.y + this.radius, sphereCenter.z + this.radius);
-            const ballBoundingBox = new THREE.Box3(min, max);
-            return ballBoundingBox;
-        };
-        const ballBoundingBox = getBallBoundingBox();
+        const ballBoundingBox = new THREE.Box3().setFromObject(this);
         const currentAngle = this.angle;
 
         blocks.find((block) => {
             const blockBoundingBox = new THREE.Box3().setFromObject(block);
-            if (ballBoundingBox.intersectsBox(blockBoundingBox)) {
+            if (ballBoundingBox.intersectsBox(blockBoundingBox) && this.evadeModeBlock === false) {
                 this.changeAngleByBlock(block, currentAngle);
                 hitBlock(block);
+                this.activateEvadeModeBlock();
 
                 return 1;
             }

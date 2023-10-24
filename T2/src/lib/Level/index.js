@@ -21,7 +21,7 @@ class Level {
     constructor(matrix) {
         this.matrix = matrix;
         this.blocksDestroyed = 0;
-        this.blocksDestroyedLimit = 2;
+        this.blocksDestroyedLimit = 10;
         this.activePowerUp = false;
 
         this.init();
@@ -94,10 +94,10 @@ class Level {
     }
 
     buildWalls() {
-        const wallTop = new Wall(0, gameConfig.width + 0.5, 0, gameConfig.width + 2, 1, "horizontal");
-        const wallBottom = new Wall(0, -gameConfig.width - 0.5, 0, gameConfig.width + 2, 1, "horizontal");
-        const wallLeft = new Wall(-gameConfig.width / 2 - 0.5, 0, 0, 1, 2 * gameConfig.width, "vertical");
-        const wallRight = new Wall(gameConfig.width / 2 + 0.5, 0, 0, 1, 2 * gameConfig.width, "vertical");
+        const wallTop = new Wall(0, gameConfig.width + 0.5, 0, gameConfig.width + 2, 1, "top");
+        const wallBottom = new Wall(0, -gameConfig.width - 0.5, 0, gameConfig.width + 2, 1, "bottom");
+        const wallLeft = new Wall(-gameConfig.width / 2 - 0.5, 0, 0, 1, 2 * gameConfig.width, "left");
+        const wallRight = new Wall(gameConfig.width / 2 + 0.5, 0, 0, 1, 2 * gameConfig.width, "right");
 
         return [wallTop, wallBottom, wallLeft, wallRight];
     }
@@ -110,10 +110,6 @@ class Level {
 
     getElements() {
         return [this.gamePlatform, this.platform, this.hitter, this.playablePlatform, ...this.miniBalls, ...this.walls, ...this.blocks];
-    }
-
-    finishedLevel() {
-        return this.blocks.length === 0;
     }
 
     hitBlock(block) {
@@ -187,7 +183,9 @@ class Level {
         this.blocks = this.blocks.filter((b) => b !== block);
         Game.scene.remove(block);
 
-        this.finishedLevel() && setTimeout(() => this.finish(), 10);
+        if (this.blocks.length === 0) {
+            this.finish();
+        }
     }
 
     moveMiniBall() {
@@ -210,7 +208,7 @@ class Level {
     restart() {
         this.destructor();
 
-        this.build();
+        this.build(this.nextLevel.bind(this));
 
         this.miniBalls.forEach((miniBall) => {
             miniBall.resetPosition();
@@ -221,8 +219,6 @@ class Level {
     }
 
     finish() {
-        if (!this.nextLevel) return;
-
         this.nextLevel();
     }
 
@@ -236,7 +232,7 @@ class Level {
         }
     }
 
-    endGame() {
+    gameOver() {
         this.destroyPowerUpOnEndGame();
 
         Logs.updateCurrentSpeed(0);
@@ -261,11 +257,11 @@ class Level {
             return;
         }
 
-        this.endGame();
+        this.gameOver();
     }
 
     viewBoundingBox() {
-        const createBoundingBoxes = () => {
+        const createHitterBoundingBoxes = () => {
             const hitterCenterMiddle = this.hitter.position;
 
             const leftLeftMin = new THREE.Vector3(
@@ -328,36 +324,52 @@ class Level {
             );
             const rightRightBoundingBox = new THREE.Box3(rightRightMin, rightRightMax);
 
-            return { leftLeftBoundingBox, leftBoundingBox, middleBoundingBox, rightRightBoundingBox, rightBoundingBox };
+            const hitterBoundingBoxHelper1 = new THREE.Box3Helper(leftLeftBoundingBox, 0xffaaff);
+            const hitterBoundingBoxHelper3 = new THREE.Box3Helper(leftBoundingBox, 0x000);
+            const hitterBoundingBoxHelper2 = new THREE.Box3Helper(middleBoundingBox, 0xffff00);
+            const hitterBoundingBoxHelper4 = new THREE.Box3Helper(rightRightBoundingBox, 0xfc0303);
+            const hitterBoundingBoxHelper5 = new THREE.Box3Helper(rightBoundingBox, 0x0352fc);
+
+            Game.scene.add(
+                hitterBoundingBoxHelper1,
+                hitterBoundingBoxHelper2,
+                hitterBoundingBoxHelper3,
+                hitterBoundingBoxHelper4,
+                hitterBoundingBoxHelper5
+            );
         };
 
-        const { leftLeftBoundingBox, leftBoundingBox, middleBoundingBox, rightRightBoundingBox, rightBoundingBox } = createBoundingBoxes();
-        const hitterBoundingBoxHelper1 = new THREE.Box3Helper(leftLeftBoundingBox, 0xffaaff);
-        const hitterBoundingBoxHelper3 = new THREE.Box3Helper(leftBoundingBox, 0x000);
-        const hitterBoundingBoxHelper2 = new THREE.Box3Helper(middleBoundingBox, 0xffff00);
-        const hitterBoundingBoxHelper4 = new THREE.Box3Helper(rightRightBoundingBox, 0xfc0303);
-        const hitterBoundingBoxHelper5 = new THREE.Box3Helper(rightBoundingBox, 0x0352fc);
+        const createMiniBallBoundingBoxes = () => {
+            this.miniBalls.forEach((miniBall) => {
+                const ballBoundingBox = new THREE.Box3().setFromObject(miniBall);
+                const ballBoundingBoxHelper = new THREE.Box3Helper(ballBoundingBox, "purple");
+                Game.scene.add(ballBoundingBoxHelper);
+            });
+        };
 
-        Game.scene.add(hitterBoundingBoxHelper1);
-        Game.scene.add(hitterBoundingBoxHelper2);
-        Game.scene.add(hitterBoundingBoxHelper3);
-        Game.scene.add(hitterBoundingBoxHelper4);
-        Game.scene.add(hitterBoundingBoxHelper5);
+        const createAuxiliarSphere = () => {
+            const sphereGeometry = new THREE.SphereGeometry(0.1, 8, 8);
+            const sphereMaterial = new THREE.MeshBasicMaterial({ color: "green" });
+            const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
 
-        this.miniBalls.forEach((miniBall) => {
-            const ballBoundingBox = new THREE.Box3().setFromObject(miniBall);
-            const ballBoundingBoxHelper = new THREE.Box3Helper(ballBoundingBox, "purple");
-            Game.scene.add(ballBoundingBoxHelper);
-        });
+            const hitterCenter = this.hitter.position;
+            sphere.position.set(hitterCenter.x, hitterCenter.y, hitterCenter.z);
 
-        const sphereGeometry = new THREE.SphereGeometry(0.1, 8, 8);
-        const sphereMaterial = new THREE.MeshBasicMaterial({ color: "green" });
-        const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+            Game.scene.add(sphere);
+        };
 
-        const hitterCenter = this.hitter.position;
-        sphere.position.set(hitterCenter.x, hitterCenter.y, hitterCenter.z);
+        const createBlockBoundingBoxes = () => {
+            this.blocks.forEach((block) => {
+                const blockBoundingBox = new THREE.Box3().setFromObject(block);
+                const blockBoundingBoxHelper = new THREE.Box3Helper(blockBoundingBox, "blue");
+                Game.scene.add(blockBoundingBoxHelper);
+            });
+        };
 
-        Game.scene.add(sphere);
+        createHitterBoundingBoxes();
+        createMiniBallBoundingBoxes();
+        createBlockBoundingBoxes();
+        createAuxiliarSphere();
     }
 
     destructor() {

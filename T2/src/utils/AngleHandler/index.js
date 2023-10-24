@@ -32,6 +32,28 @@ class AngleHandler {
 
         return angle;
     }
+
+    static checkWallDirectionIsCorrect(angle, wallDirection) {
+        const degreeAngle = THREE.MathUtils.radToDeg(angle);
+
+        const abs = degreeAngle < 0 ? degreeAngle + 360 : degreeAngle % 360;
+
+        if (wallDirection === "left") {
+            return abs > 90 && abs < 270;
+        }
+
+        if (wallDirection === "right") {
+            return abs < 90 || abs > 270;
+        }
+
+        if (wallDirection === "top") {
+            return abs < 180;
+        }
+
+        if (wallDirection === "bottom") {
+            return abs > 180;
+        }
+    }
 }
 
 export default AngleHandler;

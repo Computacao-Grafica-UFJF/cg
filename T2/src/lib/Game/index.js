@@ -46,11 +46,11 @@ class Game {
     }
 
     static changeLevel() {
-        this.scene.remove(...this.scene.children);
-
         this.scene.children.forEach((child) => {
             if (child.destructor) child.destructor();
         });
+
+        this.scene.remove(...this.scene.children);
 
         this.init();
     }
