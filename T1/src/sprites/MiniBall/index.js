@@ -248,28 +248,21 @@ export class MiniBall extends THREE.Mesh {
 
         if (minCollisionDistance === leftCollisionDistance || minCollisionDistance === rightCollisionDistance) {
             this.invertAngleHorizontally(angle);
-            return;
+            return true;
         }
 
         this.invertAngleVertically(angle);
+        return true;
     }
 
     collisionWithBlocks = (blocks, hitBlock) => {
-        const getBallBoundingBox = () => {
-            const sphereCenter = this.position;
-            const min = new THREE.Vector3(sphereCenter.x - this.radius, sphereCenter.y - this.radius, sphereCenter.z - this.radius);
-            const max = new THREE.Vector3(sphereCenter.x + this.radius, sphereCenter.y + this.radius, sphereCenter.z + this.radius);
-            const ballBoundingBox = new THREE.Box3(min, max);
-            return ballBoundingBox;
-        };
-        const ballBoundingBox = getBallBoundingBox();
+        const ballBoundingBox = new THREE.Box3().setFromObject(this);
         const currentAngle = this.angle;
 
         blocks.find((block) => {
             const blockBoundingBox = new THREE.Box3().setFromObject(block);
             if (ballBoundingBox.intersectsBox(blockBoundingBox)) {
-                this.changeAngleByBlock(block, currentAngle);
-                hitBlock(block);
+                if (this.changeAngleByBlock(block, currentAngle)) hitBlock(block);
 
                 return 1;
             }
