@@ -265,7 +265,7 @@ class Level {
     }
 
     viewBoundingBox() {
-        const createBoundingBoxes = () => {
+        const createHitterBoundingBoxes = () => {
             const hitterCenterMiddle = this.hitter.position;
 
             const leftLeftMin = new THREE.Vector3(
@@ -328,36 +328,52 @@ class Level {
             );
             const rightRightBoundingBox = new THREE.Box3(rightRightMin, rightRightMax);
 
-            return { leftLeftBoundingBox, leftBoundingBox, middleBoundingBox, rightRightBoundingBox, rightBoundingBox };
+            const hitterBoundingBoxHelper1 = new THREE.Box3Helper(leftLeftBoundingBox, 0xffaaff);
+            const hitterBoundingBoxHelper3 = new THREE.Box3Helper(leftBoundingBox, 0x000);
+            const hitterBoundingBoxHelper2 = new THREE.Box3Helper(middleBoundingBox, 0xffff00);
+            const hitterBoundingBoxHelper4 = new THREE.Box3Helper(rightRightBoundingBox, 0xfc0303);
+            const hitterBoundingBoxHelper5 = new THREE.Box3Helper(rightBoundingBox, 0x0352fc);
+
+            Game.scene.add(
+                hitterBoundingBoxHelper1,
+                hitterBoundingBoxHelper2,
+                hitterBoundingBoxHelper3,
+                hitterBoundingBoxHelper4,
+                hitterBoundingBoxHelper5
+            );
         };
 
-        const { leftLeftBoundingBox, leftBoundingBox, middleBoundingBox, rightRightBoundingBox, rightBoundingBox } = createBoundingBoxes();
-        const hitterBoundingBoxHelper1 = new THREE.Box3Helper(leftLeftBoundingBox, 0xffaaff);
-        const hitterBoundingBoxHelper3 = new THREE.Box3Helper(leftBoundingBox, 0x000);
-        const hitterBoundingBoxHelper2 = new THREE.Box3Helper(middleBoundingBox, 0xffff00);
-        const hitterBoundingBoxHelper4 = new THREE.Box3Helper(rightRightBoundingBox, 0xfc0303);
-        const hitterBoundingBoxHelper5 = new THREE.Box3Helper(rightBoundingBox, 0x0352fc);
+        const createMiniBallBoundingBoxes = () => {
+            this.miniBalls.forEach((miniBall) => {
+                const ballBoundingBox = new THREE.Box3().setFromObject(miniBall);
+                const ballBoundingBoxHelper = new THREE.Box3Helper(ballBoundingBox, "purple");
+                Game.scene.add(ballBoundingBoxHelper);
+            });
+        };
 
-        Game.scene.add(hitterBoundingBoxHelper1);
-        Game.scene.add(hitterBoundingBoxHelper2);
-        Game.scene.add(hitterBoundingBoxHelper3);
-        Game.scene.add(hitterBoundingBoxHelper4);
-        Game.scene.add(hitterBoundingBoxHelper5);
+        const createAuxiliarSphere = () => {
+            const sphereGeometry = new THREE.SphereGeometry(0.1, 8, 8);
+            const sphereMaterial = new THREE.MeshBasicMaterial({ color: "green" });
+            const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
 
-        this.miniBalls.forEach((miniBall) => {
-            const ballBoundingBox = new THREE.Box3().setFromObject(miniBall);
-            const ballBoundingBoxHelper = new THREE.Box3Helper(ballBoundingBox, "purple");
-            Game.scene.add(ballBoundingBoxHelper);
-        });
+            const hitterCenter = this.hitter.position;
+            sphere.position.set(hitterCenter.x, hitterCenter.y, hitterCenter.z);
 
-        const sphereGeometry = new THREE.SphereGeometry(0.1, 8, 8);
-        const sphereMaterial = new THREE.MeshBasicMaterial({ color: "green" });
-        const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+            Game.scene.add(sphere);
+        };
 
-        const hitterCenter = this.hitter.position;
-        sphere.position.set(hitterCenter.x, hitterCenter.y, hitterCenter.z);
+        const createBlockBoundingBoxes = () => {
+            this.blocks.forEach((block) => {
+                const blockBoundingBox = new THREE.Box3().setFromObject(block);
+                const blockBoundingBoxHelper = new THREE.Box3Helper(blockBoundingBox, "blue");
+                Game.scene.add(blockBoundingBoxHelper);
+            });
+        };
 
-        Game.scene.add(sphere);
+        createHitterBoundingBoxes();
+        createMiniBallBoundingBoxes();
+        createBlockBoundingBoxes();
+        createAuxiliarSphere();
     }
 
     destructor() {
