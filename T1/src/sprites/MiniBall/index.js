@@ -47,7 +47,6 @@ export class MiniBall extends THREE.Mesh {
         const increment = ((this.maxSpeed - this.minSpeed) / duration) * 1000;
 
         const increase = () => {
-            console.log("Speed: ", this.speed);
             if (this.destroyed || this.died) return;
 
             if (this.speed < this.maxSpeed - increment) {
