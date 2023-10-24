@@ -215,14 +215,13 @@ export class MiniBall extends THREE.Mesh {
     };
 
     invertAngleHorizontally(angle) {
-        const oldAngle = angle;
-        this.angle = AngleHandler.invertAngleHorizontally(angle);
+        console.log(
+            "invertAngleHorizontally",
+            THREE.MathUtils.radToDeg(angle),
+            THREE.MathUtils.radToDeg(AngleHandler.invertAngleHorizontally(angle))
+        );
 
-        if (oldAngle === angle) {
-            this.angle = -angle;
-        }
-
-        this.rotate(this.angle);
+        this.rotate(AngleHandler.invertAngleHorizontally(angle));
     }
 
     invertAngleVertically(angle) {
