@@ -13,8 +13,8 @@ export class MiniBall extends THREE.Mesh {
         this.died = false;
         this.destroyed = false;
         this.isRaycasterMode = startSpeed === 0 ? true : false;
-        this.minSpeed = 0.2;
-        this.maxSpeed = 0.4;
+        this.minSpeed = 0.1;
+        this.maxSpeed = 0.1;
         this.speed = startSpeed || this.minSpeed;
         this.radius = 0.5;
         this.evadeTimeHitter = 100;
@@ -47,7 +47,6 @@ export class MiniBall extends THREE.Mesh {
         const increment = ((this.maxSpeed - this.minSpeed) / duration) * 1000;
 
         const increase = () => {
-            console.log("Speed: ", this.speed);
             if (this.destroyed || this.died) return;
 
             if (this.speed < this.maxSpeed - increment) {
@@ -256,6 +255,77 @@ export class MiniBall extends THREE.Mesh {
         this.invertAngleVertically(angle);
     }
 
+    checkCollisionType(centerBall, blockBoundingBox, angle) {
+        console.log(this.radius);
+        console.log("CX: ", centerBall.x, centerBall.y);
+        console.log("CX + R: ", centerBall.x + this.radius, centerBall.y + this.radius);
+        console.log("CX - R: ", centerBall.x - this.radius, centerBall.y - this.radius);
+        console.log("BMAX: ", blockBoundingBox.max.x, blockBoundingBox.max.y);
+        console.log("BMIn: ", blockBoundingBox.min.x, blockBoundingBox.min.y);
+
+        const dist = (p1, p2) => {
+            return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
+        };
+
+        if (
+            centerBall.x <= blockBoundingBox.max.x &&
+            centerBall.x >= blockBoundingBox.min.x &&
+            centerBall.y - this.radius <= blockBoundingBox.max.y &&
+            centerBall.y + this.radius >= blockBoundingBox.min.y
+        ) {
+            console.log("Horizontal");
+            this.invertAngleVertically(angle);
+        }
+
+        if (
+            centerBall.y <= blockBoundingBox.max.y &&
+            centerBall.y >= blockBoundingBox.min.y &&
+            centerBall.x - this.radius <= blockBoundingBox.max.x &&
+            centerBall.x + this.radius >= blockBoundingBox.min.x
+        ) {
+            console.log("Vertical");
+            this.invertAngleHorizontally(angle);
+        }
+
+        // const minSup = blockBoundingBox.min;
+        // minSup.y = blockBoundingBox.max.y;
+
+        // const maxInf = blockBoundingBox.max;
+        // maxInf.x = blockBoundingBox.min.x;
+
+        // if (
+        //     dist(centerBall, minSup) <= this.radius &&
+        //     centerBall.x + this.radius >= blockBoundingBox.minSup.x &&
+        //     centerBall.y - this.radius <= blockBoundingBox.minSup.y
+        // ) {
+        //     console.log("R 5");
+        // }
+
+        // if (
+        //     dist(centerBall, blockBoundingBox.min) <= this.radius &&
+        //     centerBall.x + this.radius >= blockBoundingBox.min.x &&
+        //     centerBall.y + this.radius >= blockBoundingBox.min.y
+        // ) {
+        //     console.log("R 7");
+        // }
+
+        // if (
+        //     dist(centerBall, blockBoundingBox.max) <= this.radius &&
+        //     centerBall.x - this.radius <= blockBoundingBox.max.x &&
+        //     centerBall.y - this.radius <= blockBoundingBox.max.y
+        // ) {
+        //     console.log("R 6");
+        // }
+
+        // if (
+        //     dist(centerBall, maxInf) <= this.radius &&
+        //     centerBall.x - this.radius <= blockBoundingBox.maxInf.x &&
+        //     centerBall.y + this.radius >= blockBoundingBox.maxInf.y
+        // ) {
+        //     console.log("R 8");
+        // }
+    }
+
     collisionWithBlocks = (blocks, hitBlock) => {
         const getBallBoundingBox = () => {
             const sphereCenter = this.position;
@@ -270,7 +340,10 @@ export class MiniBall extends THREE.Mesh {
         blocks.find((block) => {
             const blockBoundingBox = new THREE.Box3().setFromObject(block);
             if (ballBoundingBox.intersectsBox(blockBoundingBox)) {
-                this.changeAngleByBlock(block, currentAngle);
+                // this.changeAngleByBlock(block, currentAngle);
+
+                this.checkCollisionType(this.position, blockBoundingBox, currentAngle);
+
                 hitBlock(block);
 
                 return 1;
