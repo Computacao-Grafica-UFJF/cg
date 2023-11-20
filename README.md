@@ -8,7 +8,7 @@ Files for the Computer Graphics course in Three.js
 
     [ ] Modo orbital
     [ ] Tela de início e fim
-    [ ] Correto posicionamento da câmera e visualização do ambiente
+    [X] Correto posicionamento da câmera e visualização do ambiente
 
 ## Textura e decoração
 
