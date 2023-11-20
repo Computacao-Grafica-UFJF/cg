@@ -35,9 +35,9 @@ class Game {
     }
 
     static fixCameraPosition() {
-        const controls = new OrbitControls(this.camera, this.renderer.domElement);
-        controls.enabled = false;
-        controls.enableZoom = false;
+        // const controls = new OrbitControls(this.camera, this.renderer.domElement);
+        // controls.enabled = false;
+        // controls.enableZoom = false;
     }
 
     static pause() {
