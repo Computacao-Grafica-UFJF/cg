@@ -270,8 +270,8 @@ export class MiniBall extends THREE.Mesh {
             const blockBoundingBox = new THREE.Box3().setFromObject(block);
             if (ballBoundingBox.intersectsBox(blockBoundingBox) && this.evadeModeBlock === false) {
                 this.changeAngleByBlock(block, currentAngle);
-                hitBlock(block);
                 this.activateEvadeModeBlock();
+                hitBlock(block);
 
                 return 1;
             }
