@@ -37,6 +37,7 @@ class Hitter extends THREE.Mesh {
         }
 
         this.position.x = x;
+        // this.rotateX(THREE.MathUtils.degToRad(15));
     };
 
     getSegmentPositionByRelativeX(relativeX) {
