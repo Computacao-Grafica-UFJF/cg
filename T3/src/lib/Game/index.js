@@ -12,6 +12,8 @@ class Game {
     static renderer = initRenderer();
     static camera = new PerspectiveCameraWrapper();
     static paused = false;
+    static movableCamera = true;
+    static controls = new OrbitControls(this.camera, this.renderer.domElement);
 
     static init() {
         this.initLight();
@@ -35,9 +37,13 @@ class Game {
     }
 
     static fixCameraPosition() {
-        const controls = new OrbitControls(this.camera, this.renderer.domElement);
-        // controls.enabled = false;
-        // controls.enableZoom = false;
+        this.movableCamera = !this.movableCamera;
+        if (!this.movableCamera) {
+            this.camera.resetToStartingPosition();
+        }
+
+        this.controls.enabled = this.movableCamera;
+        this.controls.enableZoom = this.movableCamera;
     }
 
     static pause() {

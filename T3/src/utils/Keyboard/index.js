@@ -12,6 +12,7 @@ class KeyboardCommands {
         if (this.keyboardState.down("space")) Game.pause();
         if (this.keyboardState.down("enter")) this.fullScreenControl.toggleFullScreen();
         if (this.keyboardState.down("G")) LevelSelector.nextLevel();
+        if (this.keyboardState.down("O")) Game.fixCameraPosition();
     }
 
     static keyboardListening = (level) => {
