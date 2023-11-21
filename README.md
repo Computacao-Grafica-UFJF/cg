@@ -12,7 +12,7 @@ Files for the Computer Graphics course in Three.js
 
 ## Textura e decoração
 
-    [ ] Textura do bloco
+    [X] Textura do bloco
     [ ] Textura do Skybox
     [ ] Textura do Power Up 1
     [ ] Textura do Power Up 2
