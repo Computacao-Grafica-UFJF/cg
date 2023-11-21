@@ -1,9 +1,10 @@
 import Game from "../../lib/Game/index.js";
 import level1 from "../../scenes/Level1/index.js";
 import level2 from "../../scenes/Level2/index.js";
+import level3 from "../../scenes/Level3/index.js";
 
 class LevelSelector {
-    static levels = [level1, level2];
+    static levels = [level1, level2, level3];
     static currentLevelIndex = 0;
     static currentLevel = null;
 
