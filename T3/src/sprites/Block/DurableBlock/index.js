@@ -2,11 +2,11 @@ import * as THREE from "three";
 import Block from "../index.js";
 
 class DurableBlock extends Block {
-    constructor(x, y, z, width, height) {
+    constructor(x, y, z, width, height, type) {
         const textureLoader = new THREE.TextureLoader();
         const texture = textureLoader.load("./assets/texture/blocks/texture_block.jpg");
 
-        super(x, y, z, width, height, 1.4, "#E8EEF2", texture);
+        super(x, y, z, width, height, 1.4, "#E8EEF2", type, texture);
 
         this.maxHits = 2;
         this.hits = 0;

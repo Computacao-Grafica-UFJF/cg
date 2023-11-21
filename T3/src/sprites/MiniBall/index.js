@@ -172,6 +172,7 @@ export class MiniBall extends THREE.Mesh {
                 ballBoundingBox.intersectsBox(rightRightBoundingBox)) &&
             this.evadeModeHitter === false
         ) {
+            this.playSound(this.sounds[0]);
             this.activateEvadeModeHitter();
             const centerHitter = hitter.position;
 
@@ -186,8 +187,6 @@ export class MiniBall extends THREE.Mesh {
             // console.log("Angulo de entrada: ", THREE.MathUtils.radToDeg(this.angle - Math.PI));
             // console.log("Angulo da normal: ", THREE.MathUtils.radToDeg(angleNormal));
             // console.log("Angulo de saída: ", THREE.MathUtils.radToDeg(angle));
-
-            this.playSound(this.sounds[0]);
 
             this.rotate(angle);
         }
@@ -255,6 +254,20 @@ export class MiniBall extends THREE.Mesh {
         blocks.find((block) => {
             const blockBoundingBox = new THREE.Box3().setFromObject(block);
             if (ballBoundingBox.intersectsBox(blockBoundingBox) && this.evadeModeBlock === false) {
+                switch (block.type) {
+                    case "normalBlock":
+                        this.playSound(this.sounds[1]);
+                        break;
+                    case "durableBlock":
+                        this.playSound(this.sounds[2]);
+                        break;
+                    case "indestructibleBlock":
+                        this.playSound(this.sounds[3]);
+                        break;
+
+                    default:
+                        break;
+                }
                 this.changeAngleByBlock(block, currentAngle);
                 this.activateEvadeModeBlock();
                 hitBlock(block);
@@ -332,12 +345,7 @@ export class MiniBall extends THREE.Mesh {
     playSound(sound) {
         if (sound) {
             sound.play();
-        }
-    }
-
-    pauseSound(sound) {
-        if (sound) {
-            sound.pause();
+            sound.setLoop(false);
         }
     }
 }
