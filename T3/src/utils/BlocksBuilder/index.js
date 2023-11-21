@@ -1,4 +1,5 @@
 import DurableBlock from "../../sprites/Block/DurableBlock/index.js";
+import IndestructibleBlock from "../../sprites/Block/IndestructibleBlock/index.js";
 import Block from "../../sprites/Block/index.js";
 
 class BlocksBuilder {
@@ -36,6 +37,10 @@ class BlocksBuilder {
 
         if (cell === 6) {
             return new DurableBlock(x, y, z, blockWidth, this.blockHeight);
+        }
+
+        if (cell === 7) {
+            return new IndestructibleBlock(x, y, z, blockWidth, this.blockHeight);
         }
 
         return new Block(x, y, z, blockWidth, this.blockHeight, 1, this.getBlockColor(cell));
