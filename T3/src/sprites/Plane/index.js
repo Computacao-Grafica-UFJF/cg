@@ -3,7 +3,7 @@ import * as THREE from "three";
 class Plane extends THREE.Mesh {
     constructor(width, height) {
         const planeGeometry = new THREE.PlaneGeometry(width, height, 80, 80);
-        const planeMaterial = new THREE.MeshLambertMaterial({ side: THREE.DoubleSide, color: "#47454E" });
+        const planeMaterial = new THREE.MeshLambertMaterial({ side: THREE.DoubleSide, transparent: true, opacity: 0 });
         super(planeGeometry, planeMaterial);
 
         this.receiveShadow = true;

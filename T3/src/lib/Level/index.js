@@ -66,7 +66,20 @@ class Level {
     }
 
     buildGamePlatform() {
-        const gamePlatform = new Platform(innerWidth, innerHeight, "#202030");
+        const path = "./assets/texture/skybox/";
+        const format = ".png";
+        const urls = [
+            path + "right" + format,
+            path + "left" + format,
+            path + "top" + format,
+            path + "bottom" + format,
+            path + "front" + format,
+            path + "back" + format,
+        ];
+        const cubeMapTexture = new THREE.CubeTextureLoader().load(urls);
+        Game.scene.background = cubeMapTexture;
+
+        const gamePlatform = new Platform(innerWidth, innerHeight, "#ffffff", cubeMapTexture);
         return gamePlatform;
     }
 
