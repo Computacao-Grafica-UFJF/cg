@@ -258,11 +258,8 @@ export class MiniBall extends THREE.Mesh {
                     case "normalBlock":
                         this.playSound(this.sounds[1]);
                         break;
-                    case "durableBlock":
+                    case "durableBlock" || "indestructibleBlock":
                         this.playSound(this.sounds[2]);
-                        break;
-                    case "indestructibleBlock":
-                        this.playSound(this.sounds[3]);
                         break;
 
                     default:
