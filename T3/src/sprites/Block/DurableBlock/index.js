@@ -26,7 +26,7 @@ class DurableBlock extends Block {
     }
 
     getColor() {
-        const colors = ["#E8EEF2", "#555"];
+        const colors = ["#E8EEF2", "#FF7F50"];
 
         return colors[this.hits];
     }
