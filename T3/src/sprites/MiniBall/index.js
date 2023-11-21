@@ -343,6 +343,9 @@ export class MiniBall extends THREE.Mesh {
     }
 
     playSound(sound) {
+        if (sound && sound.isPlaying) {
+            sound.stop();
+        }
         if (sound) {
             sound.play();
             sound.setLoop(false);
