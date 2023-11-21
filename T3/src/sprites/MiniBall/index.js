@@ -29,6 +29,15 @@ export class MiniBall extends THREE.Mesh {
         this.startY = y;
         this.startZ = z;
 
+        this.audioLoader = new THREE.AudioLoader();
+        this.audioPaths = [
+            "../../../../assets/sounds/rebatedor.mp3",
+            "../../../../assets/sounds/bloco1.mp3",
+            "../../../../assets/sounds/bloco2.mp3",
+            "../../../../assets/sounds/bloco3.mp3",
+        ];
+        this.sounds = this.loadSounds(this.audioPaths);
+
         if (startSpeed && startAngle) {
             this.position.set(this.startX, this.startY, this.startZ);
             this.rotate(startAngle);
@@ -67,31 +76,6 @@ export class MiniBall extends THREE.Mesh {
         this.speed = this.speed - increment;
 
         increase();
-    }
-
-    checkCollisionWithTopHitter(hitter) {
-        const ballLeft = this.position.x - this.radius;
-        const ballRight = this.position.x + this.radius;
-        const ballTop = this.position.y + this.radius;
-        const ballBottom = this.position.y - this.radius;
-
-        const hitterLeft = hitter.position.x - hitter.width / 2;
-        const hitterRight = hitter.position.x + hitter.width / 2;
-        const hitterTop = hitter.position.y + hitter.height / 2;
-        const hitterBottom = hitter.position.y - hitter.height / 2;
-
-        const leftCollisionDistance = Math.abs(ballLeft - hitterRight);
-        const rightCollisionDistance = Math.abs(ballRight - hitterLeft);
-        const topCollisionDistance = Math.abs(ballTop - hitterBottom);
-        const bottomCollisionDistance = Math.abs(ballBottom - hitterTop);
-
-        const minCollisionDistance = Math.min(leftCollisionDistance, rightCollisionDistance, topCollisionDistance, bottomCollisionDistance);
-
-        if (minCollisionDistance === bottomCollisionDistance) {
-            return true;
-        }
-
-        return false;
     }
 
     rotate(angle) {
@@ -188,6 +172,7 @@ export class MiniBall extends THREE.Mesh {
                 ballBoundingBox.intersectsBox(rightRightBoundingBox)) &&
             this.evadeModeHitter === false
         ) {
+            this.playSound(this.sounds[0]);
             this.activateEvadeModeHitter();
             const centerHitter = hitter.position;
 
@@ -269,6 +254,17 @@ export class MiniBall extends THREE.Mesh {
         blocks.find((block) => {
             const blockBoundingBox = new THREE.Box3().setFromObject(block);
             if (ballBoundingBox.intersectsBox(blockBoundingBox) && this.evadeModeBlock === false) {
+                switch (block.type) {
+                    case "normalBlock":
+                        this.playSound(this.sounds[1]);
+                        break;
+                    case "durableBlock" || "indestructibleBlock":
+                        this.playSound(this.sounds[2]);
+                        break;
+
+                    default:
+                        break;
+                }
                 this.changeAngleByBlock(block, currentAngle);
                 this.activateEvadeModeBlock();
                 hitBlock(block);
@@ -330,6 +326,27 @@ export class MiniBall extends THREE.Mesh {
         this.destroyed = true;
         this.geometry.dispose();
         this.material.dispose();
+    }
+
+    loadSounds(paths) {
+        return paths.map((path) => {
+            const sound = new THREE.Audio(new THREE.AudioListener());
+            this.audioLoader.load(path, function (buffer) {
+                sound.setBuffer(buffer);
+                sound.setLoop(true);
+            });
+            return sound;
+        });
+    }
+
+    playSound(sound) {
+        if (sound && sound.isPlaying) {
+            sound.stop();
+        }
+        if (sound) {
+            sound.play();
+            sound.setLoop(false);
+        }
     }
 }
 
