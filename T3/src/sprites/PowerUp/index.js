@@ -90,8 +90,8 @@ class PowerUp extends THREE.Group {
 
     destructor() {
         this.speed = 0;
-        this.geometry.dispose();
-        this.material.dispose();
+        // this.geometry.dispose();
+        // this.material.dispose();
     }
 }
 
