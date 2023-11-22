@@ -260,6 +260,10 @@ class Level {
         Logs.updateCurrentSpeed(0);
         Game.session.die();
 
+        if (!Game.session.isAlive()) {
+            Game.gameOver();
+        }
+
         setTimeout(() => {
             this.restartLevel();
         }, 500);

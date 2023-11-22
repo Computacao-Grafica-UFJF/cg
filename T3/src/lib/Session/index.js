@@ -4,7 +4,7 @@ class Session {
     lives;
 
     constructor() {
-        this.lives = 5;
+        this.lives = 2;
     }
 
     die = () => {
@@ -18,7 +18,7 @@ class Session {
     };
 
     isAlive = () => {
-        return this.lives > 0;
+        return this.lives >= 0;
     };
 }
 

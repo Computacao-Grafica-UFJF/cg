@@ -81,6 +81,18 @@ class Game {
 
         this.init();
     }
+
+    static gameOver() {
+        this.scene.children.forEach((child) => {
+            if (child.destructor) child.destructor();
+        });
+
+        this.scene.remove(...this.scene.children);
+        this.movableCamera = true;
+
+        this.session.reset();
+        this.init();
+    }
 }
 
 export default Game;
