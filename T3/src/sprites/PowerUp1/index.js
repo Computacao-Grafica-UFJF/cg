@@ -2,80 +2,12 @@ import * as THREE from "three";
 import gameConfig from "../../config/Game.js";
 import Game from "../../lib/Game/index.js";
 
-class PowerUp1 extends THREE.Group {
+class PowerUp1 extends THREE.Mesh {
     constructor(x, y, z, destroy) {
-        function createCustomGeometry() {
-            const v = [
-                0, // p1
-                0.3,
-                0.3,
-                0, // p2
-                -0.3,
-                0.3,
-                0.2, // p3
-                -0.3,
-                0.22,
-                0.2, // p4
-                0.3,
-                0.22,
-            ];
-
-            const f = [0, 1, 2, 0, 2, 3];
-            const n = v;
-
-            // Set buffer attributes
-            var vertices = new Float32Array(v);
-            var normals = new Float32Array(n);
-            var indices = new Uint32Array(f);
-
-            // Set the Buffer Geometry
-            const geometry = new THREE.BufferGeometry();
-
-            geometry.setAttribute("position", new THREE.BufferAttribute(vertices, 3)); // 3 components per vertex
-            geometry.setAttribute("normal", new THREE.BufferAttribute(normals, 3)); // 3 components per normal
-            geometry.setIndex(new THREE.BufferAttribute(indices, 1));
-            geometry.computeVertexNormals();
-
-            const material = new THREE.MeshPhongMaterial({ color: "rgb(255,0,0)" });
-            material.side = THREE.DoubleSide; // Show front and back polygons
-            material.flatShading = true;
-            const mesh = new THREE.Mesh(geometry, material);
-
-            setTexture(mesh);
-            return mesh;
-        }
-
-        function setTexture(mesh) {
-            const geometry = mesh.geometry;
-            const material = mesh.material;
-
-            var uvCoords = [
-                0.0,
-                0.0, // Canto superior esquerdo
-                1.0,
-                0.0, // Canto superior direito
-                1.0,
-                1.0, // Canto inferior direito
-                0.0,
-                1.0, // Canto inferior esquerdo
-            ];
-
-            geometry.setAttribute("uv", new THREE.BufferAttribute(new Float32Array(uvCoords), 2));
-
-            // Load the texture and set to the material of the mesh
-            const texture = new THREE.TextureLoader().load("./assets/texture/powerup/letterT.jpg");
-            material.map = texture;
-        }
-
         const geometry = new THREE.CapsuleGeometry(0.3, 0.5, 16);
-        const material = new THREE.MeshLambertMaterial({ color: "#FF1D1D" });
-        const capsule = new THREE.Mesh(geometry, material);
+        const material = new THREE.MeshLambertMaterial({ color: "red" });
 
-        const sprite = createCustomGeometry();
-
-        super();
-        this.add(sprite);
-        this.add(capsule);
+        super(geometry, material);
 
         this.speed = 0.1;
         this.destroy = destroy;
@@ -86,7 +18,6 @@ class PowerUp1 extends THREE.Group {
         this.translateY(y);
         this.translateZ(z);
         this.rotateZ(THREE.MathUtils.degToRad(90));
-        this.rotateY(THREE.MathUtils.degToRad(-25));
     }
 
     move(hitter) {
@@ -97,6 +28,24 @@ class PowerUp1 extends THREE.Group {
         this.checkCollisionWithHitter(hitter);
 
         this.checkCollisionWithEndGame();
+    }
+
+    calcularBallBoundingBox(group) {
+        let esferaEnvolvedora = new THREE.Sphere();
+        group.traverse((objeto) => {
+            if (objeto.isMesh) {
+                // Atualize a esfera envolvente com base na posição e escala do objeto
+                objeto.geometry.computeBoundingSphere();
+                esferaEnvolvedora.union(objeto.geometry.boundingSphere.clone().applyMatrix4(objeto.matrixWorld));
+            }
+        });
+
+        // Crie a caixa delimitadora esférica usando a esfera envolvente
+        let ballBoundingBox = new THREE.Box3().setFromObject(
+            new THREE.Mesh(new THREE.SphereGeometry(esferaEnvolvedora.radius), new THREE.MeshBasicMaterial())
+        );
+
+        return ballBoundingBox;
     }
 
     checkCollisionWithHitter = (hitter) => {
