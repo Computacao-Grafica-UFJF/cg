@@ -11,12 +11,12 @@ import Wall from "../../sprites/Wall/index.js";
 import gameConfig from "../../config/Game.js";
 import BlocksBuilder from "../../utils/BlocksBuilder/index.js";
 import Plane from "../../sprites/Plane/index.js";
-import PowerUp1 from "../../sprites/PowerUp/index.js";
+import PowerUp from "../../sprites/PowerUp/index.js";
 
 import * as THREE from "three";
 
 class Level {
-    powerUp1;
+    PowerUp;
 
     constructor(matrix) {
         this.matrix = matrix;
@@ -150,9 +150,9 @@ class Level {
     createPowerUp1(block) {
         const position = block.position;
 
-        this.powerUp1 = new PowerUp1(position.x, position.y, position.z + 0.6, this.destroyPowerUp1.bind(this));
+        this.PowerUp = new PowerUp(position.x, position.y, position.z + 0.6, this.destroyPowerUp1.bind(this));
         this.activePowerUp1 = true;
-        Game.scene.add(this.powerUp1);
+        Game.scene.add(this.PowerUp);
     }
 
     destroyPowerUp1(collideWithHitter) {
@@ -162,23 +162,23 @@ class Level {
             }
 
             this.activePowerUp1 = true;
-            Game.scene.remove(this.powerUp1);
+            Game.scene.remove(this.PowerUp);
             this.createNewBall();
             return;
         }
 
-        Game.scene.remove(this.powerUp1);
+        Game.scene.remove(this.PowerUp);
         this.activePowerUp1 = false;
-        this.powerUp1 = null;
+        this.PowerUp = null;
         this.blocksDestroyed = 0;
     }
 
     destroyPowerUp1OnEndGame() {
-        if (!this.powerUp1) return;
+        if (!this.PowerUp) return;
 
-        Game.scene.remove(this.powerUp1);
-        this.powerUp1.destructor();
-        this.powerUp1 = null;
+        Game.scene.remove(this.PowerUp);
+        this.PowerUp.destructor();
+        this.PowerUp = null;
     }
 
     checkPowerUp1(block) {
@@ -213,8 +213,8 @@ class Level {
     render() {
         this.moveMiniBall();
 
-        if (this.powerUp1) {
-            this.powerUp1.move(this.hitter);
+        if (this.PowerUp) {
+            this.PowerUp.move(this.hitter);
         }
     }
 
@@ -387,7 +387,7 @@ class Level {
 
     destructor() {
         Game.scene.remove(...this.getElements());
-        if (this.powerUp1) Game.scene.remove(this.powerUp1);
+        if (this.PowerUp) Game.scene.remove(this.PowerUp);
 
         this.miniBalls.forEach((miniBall) => {
             miniBall.destructor();
