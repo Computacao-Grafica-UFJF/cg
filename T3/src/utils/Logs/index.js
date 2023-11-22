@@ -5,8 +5,8 @@ class Logs {
     static lives = new SecondaryBox("");
 
     static updateCurrentSpeed(speed) {
-        const formattedSpeed = speed.toFixed(4);
-        this.currentSpeed.changeMessage("Speed: " + formattedSpeed);
+        // const formattedSpeed = speed.toFixed(4);
+        // this.currentSpeed.changeMessage("Speed: " + formattedSpeed);
     }
 
     static updateLives(lives) {

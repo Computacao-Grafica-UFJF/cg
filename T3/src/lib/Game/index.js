@@ -6,6 +6,7 @@ import { OrbitControls } from "../../../../build/jsm/controls/OrbitControls.js";
 import Pause from "../../sprites/Pause/index.js";
 import DirectionalLight from "../../utils/DirectionalLight/index.js";
 import Session from "../Session/index.js";
+import Logs from "../../utils/Logs/index.js";
 
 class Game {
     static scene = new THREE.Scene();
@@ -20,6 +21,8 @@ class Game {
     static init() {
         this.initLight();
         this.fixCameraPosition();
+
+        Logs.updateLives(this.session.lives);
     }
 
     static render(render) {

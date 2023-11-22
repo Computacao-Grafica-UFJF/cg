@@ -22,7 +22,8 @@ class Level {
         this.matrix = matrix;
         this.blocksDestroyed = 0;
         this.blocksDestroyedLimit = 1;
-        this.activePowerUp1 = false;
+        this.activePowerUp = false;
+        this.died = false;
 
         this.init();
     }
@@ -76,6 +77,7 @@ class Level {
             path + "front" + format,
             path + "back" + format,
         ];
+
         const cubeMapTexture = new THREE.CubeTextureLoader().load(urls);
         Game.scene.background = cubeMapTexture;
 
@@ -147,33 +149,33 @@ class Level {
         Game.scene.add(newMiniBall);
     }
 
-    createPowerUp1(block) {
+    createPowerUp(block) {
         const position = block.position;
 
-        this.PowerUp = new PowerUp(position.x, position.y, position.z + 0.6, this.destroyPowerUp1.bind(this));
-        this.activePowerUp1 = true;
+        this.PowerUp = new PowerUp(position.x, position.y, position.z + 0.6, this.destroyPowerUp.bind(this));
+        this.activePowerUp = true;
         Game.scene.add(this.PowerUp);
     }
 
-    destroyPowerUp1(collideWithHitter) {
+    destroyPowerUp(collideWithHitter) {
         if (collideWithHitter) {
             if (this.miniBalls.length > 1) {
                 return;
             }
 
-            this.activePowerUp1 = true;
+            this.activePowerUp = true;
             Game.scene.remove(this.PowerUp);
             this.createNewBall();
             return;
         }
 
         Game.scene.remove(this.PowerUp);
-        this.activePowerUp1 = false;
+        this.activePowerUp = false;
         this.PowerUp = null;
         this.blocksDestroyed = 0;
     }
 
-    destroyPowerUp1OnEndGame() {
+    destroyPowerUpOnEndGame() {
         if (!this.PowerUp) return;
 
         Game.scene.remove(this.PowerUp);
@@ -181,18 +183,18 @@ class Level {
         this.PowerUp = null;
     }
 
-    checkPowerUp1(block) {
-        if (this.activePowerUp1 || this.miniBalls.length > 1) return;
+    checkPowerUp(block) {
+        if (this.activePowerUp || this.miniBalls.length > 1) return;
 
         this.blocksDestroyed++;
 
         if (this.blocksDestroyed >= this.blocksDestroyedLimit) {
-            this.createPowerUp1(block);
+            this.createPowerUp(block);
         }
     }
 
     destroyBlock(block) {
-        this.checkPowerUp1(block);
+        this.checkPowerUp(block);
         this.blocks = this.blocks.filter((b) => b !== block);
         Game.scene.remove(block);
 
@@ -206,7 +208,7 @@ class Level {
         const deathZones = [this.walls[1]];
 
         this.miniBalls.forEach((miniBall) => {
-            miniBall.update(this.hitter, collisionWalls, this.blocks, deathZones, this.hitBlock.bind(this), this.death.bind(this));
+            miniBall.update(this.hitter, collisionWalls, this.blocks, deathZones, this.hitBlock.bind(this), this.destroyBall.bind(this));
         });
     }
 
@@ -227,7 +229,7 @@ class Level {
             miniBall.resetPosition();
         });
 
-        this.activePowerUp1 = false;
+        this.activePowerUp = false;
         this.blocksDestroyed = 0;
     }
 
@@ -245,22 +247,28 @@ class Level {
         }
     }
 
-    gameOver() {
-        this.destroyPowerUp1OnEndGame();
-
-        Logs.updateCurrentSpeed(0);
-
-        setTimeout(
-            () =>
-                this.miniBalls.forEach((miniBall) => {
-                    miniBall.raycasterMode();
-                }),
-            500
-        );
+    restartLevel() {
+        this.miniBalls.forEach((miniBall) => {
+            miniBall.raycasterMode();
+        });
+        this.died = false;
     }
 
-    death(miniBall) {
-        this.activePowerUp1 = false;
+    die() {
+        this.died = true;
+        this.destroyPowerUpOnEndGame();
+        Logs.updateCurrentSpeed(0);
+        Game.session.die();
+
+        setTimeout(() => {
+            this.restartLevel();
+        }, 500);
+    }
+
+    destroyBall(miniBall) {
+        if (this.died) return;
+
+        this.activePowerUp = false;
         this.blocksDestroyed = 0;
 
         if (this.miniBalls.length > 1) {
@@ -270,7 +278,7 @@ class Level {
             return;
         }
 
-        this.gameOver();
+        this.die();
     }
 
     viewBoundingBox() {

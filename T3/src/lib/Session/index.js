@@ -1,19 +1,23 @@
 import Logs from "../../utils/Logs/index.js";
 
 class Session {
-    static lives = 5;
+    lives;
 
-    static die = () => {
-        this.lives--;
-        Logs.updateLives(this.speed);
-    };
-
-    static reset = () => {
+    constructor() {
         this.lives = 5;
-        Logs.updateLives(this.speed);
+    }
+
+    die = () => {
+        this.lives--;
+        Logs.updateLives(this.lives);
     };
 
-    static isAlive = () => {
+    reset = () => {
+        this.lives = 5;
+        Logs.updateLives(this.lives);
+    };
+
+    isAlive = () => {
         return this.lives > 0;
     };
 }
