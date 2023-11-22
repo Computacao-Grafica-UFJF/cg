@@ -4,68 +4,42 @@ import Game from "../../lib/Game/index.js";
 
 class PowerUp extends THREE.Group {
     constructor(x, y, z, destroy) {
-        function createCustomGeometry() {
-            const v = [
-                0, // p1
-                0.3,
-                0.3,
-                0, // p2
-                -0.3,
-                0.3,
-                0.2, // p3
-                -0.3,
-                0.22,
-                0.2, // p4
-                0.3,
-                0.22,
-            ];
-
+        const createCustomGeometry = () => {
+            const v = [0, 0.3, 0.3, 0, -0.3, 0.3, 0.2, -0.3, 0.22, 0.2, 0.3, 0.22];
             const f = [0, 1, 2, 0, 2, 3];
             const n = v;
 
-            // Set buffer attributes
-            var vertices = new Float32Array(v);
-            var normals = new Float32Array(n);
-            var indices = new Uint32Array(f);
+            const vertices = new Float32Array(v);
+            const normals = new Float32Array(n);
+            const indices = new Uint32Array(f);
 
-            // Set the Buffer Geometry
             const geometry = new THREE.BufferGeometry();
 
-            geometry.setAttribute("position", new THREE.BufferAttribute(vertices, 3)); // 3 components per vertex
-            geometry.setAttribute("normal", new THREE.BufferAttribute(normals, 3)); // 3 components per normal
+            geometry.setAttribute("position", new THREE.BufferAttribute(vertices, 3));
+            geometry.setAttribute("normal", new THREE.BufferAttribute(normals, 3));
             geometry.setIndex(new THREE.BufferAttribute(indices, 1));
             geometry.computeVertexNormals();
 
             const material = new THREE.MeshPhongMaterial({ color: "rgb(255,0,0)" });
-            material.side = THREE.DoubleSide; // Show front and back polygons
+            material.side = THREE.DoubleSide;
             material.flatShading = true;
             const mesh = new THREE.Mesh(geometry, material);
 
             setTexture(mesh);
             return mesh;
-        }
+        };
 
-        function setTexture(mesh) {
+        const setTexture = (mesh) => {
             const geometry = mesh.geometry;
             const material = mesh.material;
 
-            var uvCoords = [
-                0.0,
-                0.0, // Canto superior esquerdo
-                1.0,
-                0.0, // Canto superior direito
-                1.0,
-                1.0, // Canto inferior direito
-                0.0,
-                1.0, // Canto inferior esquerdo
-            ];
+            const uvCoords = [0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0];
 
             geometry.setAttribute("uv", new THREE.BufferAttribute(new Float32Array(uvCoords), 2));
 
-            // Load the texture and set to the material of the mesh
             const texture = new THREE.TextureLoader().load("./assets/texture/powerup/letterT.jpg");
             material.map = texture;
-        }
+        };
 
         const geometry = new THREE.CapsuleGeometry(0.3, 0.5, 16);
         const material = new THREE.MeshLambertMaterial({ color: "#FF1D1D" });
