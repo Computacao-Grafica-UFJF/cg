@@ -107,10 +107,10 @@ class Level {
     }
 
     buildWalls() {
-        const wallTop = new Wall(0, gameConfig.width + 0.5, 0, gameConfig.width + 2, 1, "top");
-        const wallBottom = new Wall(0, -gameConfig.width - 0.5, 0, gameConfig.width + 2, 1, "bottom");
-        const wallLeft = new Wall(-gameConfig.width / 2 - 0.5, 0, 0, 1, 2 * gameConfig.width, "left");
-        const wallRight = new Wall(gameConfig.width / 2 + 0.5, 0, 0, 1, 2 * gameConfig.width, "right");
+        const wallTop = new Wall(0, gameConfig.width / 2 - 0.7, 0, gameConfig.width + 2, 1, "top");
+        const wallBottom = new Wall(0, -gameConfig.width / 2 + 0.3, 0, gameConfig.width + 2, 1, "bottom");
+        const wallLeft = new Wall(-gameConfig.width / 2 - 0.5, 0, 0, 1, gameConfig.width - 0.7, "left");
+        const wallRight = new Wall(gameConfig.width / 2 + 0.5, 0, 0, 1, gameConfig.width - 0.7, "right");
 
         return [wallTop, wallBottom, wallLeft, wallRight];
     }

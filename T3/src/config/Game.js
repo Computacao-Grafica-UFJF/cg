@@ -1,5 +1,5 @@
 const game = {
-    width: 15,
+    width: 30,
 };
 
 export default game;

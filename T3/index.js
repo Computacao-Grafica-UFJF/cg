@@ -14,22 +14,4 @@ const render = () => {
     Game.render(render);
 };
 
-// function buildInterface() {
-//     var controls = new (function () {
-//         this.refraction = false;
-//         this.onSetRefraction = function () {
-//             if (this.refraction) this.cubeMapTexture.mapping = THREE.CubeRefractionMapping;
-//             else this.cubeMapTexture.mapping = THREE.CubeReflectionMapping;
-//             this.gamePlatform.needsUpdate = true;
-//         };
-//     })();
-//     // const gui = new GUI();
-//     // gui.add(controls, "refraction", false)
-//     //     .name("Refraction")
-//     //     .onChange(function (e) {
-//     //         controls.onSetRefraction();
-//     //     });
-// }
-
-// buildInterface();
 render();

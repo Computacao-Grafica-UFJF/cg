@@ -6,7 +6,7 @@ class DurableBlock extends Block {
         const textureLoader = new THREE.TextureLoader();
         const texture = textureLoader.load("./assets/texture/blocks/texture_block.jpg");
 
-        super(x, y, z, width, height, 1.4, "#E8EEF2", type, texture);
+        super(x, y, z, width, height, 1.4, "#fff", type, texture);
 
         this.maxHits = 2;
         this.hits = 0;
@@ -19,16 +19,10 @@ class DurableBlock extends Block {
             return true;
         }
 
-        const newMaterial = new THREE.MeshLambertMaterial({ color: this.getColor() });
+        const newMaterial = new THREE.MeshLambertMaterial({ color: "#555" });
         this.material = newMaterial;
 
         return false;
-    }
-
-    getColor() {
-        const colors = ["#E8EEF2", "#FF7F50"];
-
-        return colors[this.hits];
     }
 }
 
