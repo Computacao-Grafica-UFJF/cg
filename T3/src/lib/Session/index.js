@@ -1,20 +1,21 @@
-import Logs from "../../utils/Logs/index.js";
+import gameConfig from "../../config/Game.js";
 
 class Session {
     lives;
 
     constructor() {
-        this.lives = 2;
+        this.lives = gameConfig.session.lives;
+        console.log(this.lives);
     }
 
     die = () => {
         this.lives--;
-        Logs.updateLives(this.lives);
+        console.log(this.lives);
     };
 
     reset = () => {
-        this.lives = 5;
-        Logs.updateLives(this.lives);
+        this.lives = gameConfig.session.lives;
+        console.log(this.lives);
     };
 
     isAlive = () => {

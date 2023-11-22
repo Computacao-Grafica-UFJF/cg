@@ -6,7 +6,7 @@ class BlocksBuilder {
     static horizontalSpace = 0.1;
     static verticalSpace = 0.1;
 
-    static levelWidth = gameConfig.width;
+    static levelWidth = gameConfig.level.width;
     static leftMarginDefault = -this.levelWidth / 2;
     static blockHeight = 0.7;
     static topMargin = 12;

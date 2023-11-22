@@ -21,7 +21,7 @@ class Level {
     constructor(matrix) {
         this.matrix = matrix;
         this.blocksDestroyed = 0;
-        this.blocksDestroyedLimit = 1;
+        this.blocksDestroyedLimit = gameConfig.level.blocksDestroyedLimit;
         this.activePowerUp = false;
         this.died = false;
 
@@ -86,12 +86,12 @@ class Level {
     }
 
     buildPlatform() {
-        const platform = new Plane(gameConfig.width, innerHeight);
+        const platform = new Plane(gameConfig.level.width, innerHeight);
         return platform;
     }
 
     buildPlayablePlatform() {
-        const playablePlatform = new AuxiliarPlatform(gameConfig.width - this.hitter.width, innerHeight);
+        const playablePlatform = new AuxiliarPlatform(gameConfig.level.width - this.hitter.width, innerHeight);
         return playablePlatform;
     }
 
@@ -109,10 +109,10 @@ class Level {
     }
 
     buildWalls() {
-        const wallTop = new Wall(0, gameConfig.width / 2 - 0.7, 0, gameConfig.width + 2, 1, "top");
-        const wallBottom = new Wall(0, -gameConfig.width / 2 + 0.3, 0, gameConfig.width + 2, 1, "bottom");
-        const wallLeft = new Wall(-gameConfig.width / 2 - 0.5, 0, 0, 1, gameConfig.width - 0.7, "left");
-        const wallRight = new Wall(gameConfig.width / 2 + 0.5, 0, 0, 1, gameConfig.width - 0.7, "right");
+        const wallTop = new Wall(0, gameConfig.level.width / 2 - 0.7, 0, gameConfig.level.width + 2, 1, "top");
+        const wallBottom = new Wall(0, -gameConfig.level.width / 2 + 0.3, 0, gameConfig.level.width + 2, 1, "bottom");
+        const wallLeft = new Wall(-gameConfig.level.width / 2 - 0.5, 0, 0, 1, gameConfig.level.width - 0.7, "left");
+        const wallRight = new Wall(gameConfig.level.width / 2 + 0.5, 0, 0, 1, gameConfig.level.width - 0.7, "right");
 
         return [wallTop, wallBottom, wallLeft, wallRight];
     }

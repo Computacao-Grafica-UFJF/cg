@@ -2,6 +2,7 @@ import * as THREE from "three";
 import AngleHandler from "../../utils/AngleHandler/index.js";
 import Game from "../../lib/Game/index.js";
 import Logs from "../../utils/Logs/index.js";
+import gameConfig from "../../config/Game.js";
 
 export class MiniBall extends THREE.Mesh {
     constructor(x, y, z, color, startSpeed = 0, startAngle = 0) {
@@ -13,7 +14,7 @@ export class MiniBall extends THREE.Mesh {
         this.died = false;
         this.destroyed = false;
         this.isRaycasterMode = startSpeed === 0 ? true : false;
-        this.minSpeed = 0.15;
+        this.minSpeed = gameConfig.game.miniBall.startSpeed;
         this.maxSpeed = this.minSpeed * 2;
         this.speed = startSpeed || this.minSpeed;
         this.radius = 0.5;

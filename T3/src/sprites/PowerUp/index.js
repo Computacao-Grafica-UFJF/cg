@@ -58,7 +58,7 @@ class PowerUp extends THREE.Mesh {
     };
 
     checkCollisionWithEndGame = () => {
-        if (this.position.y < -gameConfig.width) {
+        if (this.position.y < -gameConfig.level.width) {
             this.destroy(false);
         }
     };
