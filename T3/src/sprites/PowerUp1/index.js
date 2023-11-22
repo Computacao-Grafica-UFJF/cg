@@ -2,12 +2,23 @@ import * as THREE from "three";
 import gameConfig from "../../config/Game.js";
 import Game from "../../lib/Game/index.js";
 
-class PowerUp extends THREE.Mesh {
+class PowerUp1 extends THREE.Mesh {
     constructor(x, y, z, destroy) {
-        const geometry = new THREE.SphereGeometry(0.3, 32, 32);
-        const material = new THREE.MeshLambertMaterial({ color: "yellow" });
+        // const canvas = document.createElement("canvas");
+        // const context = canvas.getContext("2d");
+        // canvas.width = 512;
+        // canvas.height = 256;
+        // context.fillStyle = "red";
+        // context.font = "72px Arial";
+        // context.fillText("T", 120, 150);
+        // const texture = new THREE.CanvasTexture(canvas);
+
+        const geometry = new THREE.CapsuleGeometry(0.3, 0.5, 16);
+        const material = new THREE.MeshLambertMaterial({ color: "red" });
 
         super(geometry, material);
+
+        this.castShadow = true;
 
         this.speed = 0.1;
         this.destroy = destroy;
@@ -17,12 +28,13 @@ class PowerUp extends THREE.Mesh {
         this.translateX(x);
         this.translateY(y);
         this.translateZ(z);
+        this.rotateZ(THREE.MathUtils.degToRad(90));
     }
 
     move(hitter) {
         if (Game.paused) return;
 
-        this.translateY(-this.speed);
+        this.translateX(-this.speed);
 
         this.checkCollisionWithHitter(hitter);
 
@@ -51,4 +63,4 @@ class PowerUp extends THREE.Mesh {
     }
 }
 
-export default PowerUp;
+export default PowerUp1;

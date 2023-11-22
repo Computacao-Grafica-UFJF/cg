@@ -19,6 +19,7 @@ class Pause extends THREE.Sprite {
 
         super(material);
         this.scale.set(10, 10, 1);
+        this.position.set(5, 5, 0);
     }
 }
 

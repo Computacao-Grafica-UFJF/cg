@@ -11,18 +11,18 @@ import Wall from "../../sprites/Wall/index.js";
 import gameConfig from "../../config/Game.js";
 import BlocksBuilder from "../../utils/BlocksBuilder/index.js";
 import Plane from "../../sprites/Plane/index.js";
-import PowerUp from "../../sprites/PowerUp/index.js";
+import PowerUp1 from "../../sprites/PowerUp1/index.js";
 
 import * as THREE from "three";
 
 class Level {
-    powerUp;
+    powerUp1;
 
     constructor(matrix) {
         this.matrix = matrix;
         this.blocksDestroyed = 0;
-        this.blocksDestroyedLimit = 10;
-        this.activePowerUp = false;
+        this.blocksDestroyedLimit = 1;
+        this.activePowerUp1 = false;
 
         this.init();
     }
@@ -147,52 +147,52 @@ class Level {
         Game.scene.add(newMiniBall);
     }
 
-    createPowerUp(block) {
+    createPowerUp1(block) {
         const position = block.position;
 
-        this.powerUp = new PowerUp(position.x, position.y, position.z + 0.6, this.destroyPowerUp.bind(this));
-        this.activePowerUp = true;
-        Game.scene.add(this.powerUp);
+        this.powerUp1 = new PowerUp1(position.x, position.y, position.z + 0.6, this.destroyPowerUp1.bind(this));
+        this.activePowerUp1 = true;
+        Game.scene.add(this.powerUp1);
     }
 
-    destroyPowerUp(collideWithHitter) {
+    destroyPowerUp1(collideWithHitter) {
         if (collideWithHitter) {
             if (this.miniBalls.length > 1) {
                 return;
             }
 
-            this.activePowerUp = true;
-            Game.scene.remove(this.powerUp);
+            this.activePowerUp1 = true;
+            Game.scene.remove(this.powerUp1);
             this.createNewBall();
             return;
         }
 
-        Game.scene.remove(this.powerUp);
-        this.activePowerUp = false;
-        this.powerUp = null;
+        Game.scene.remove(this.powerUp1);
+        this.activePowerUp1 = false;
+        this.powerUp1 = null;
         this.blocksDestroyed = 0;
     }
 
-    destroyPowerUpOnEndGame() {
-        if (!this.powerUp) return;
+    destroyPowerUp1OnEndGame() {
+        if (!this.powerUp1) return;
 
-        Game.scene.remove(this.powerUp);
-        this.powerUp.destructor();
-        this.powerUp = null;
+        Game.scene.remove(this.powerUp1);
+        this.powerUp1.destructor();
+        this.powerUp1 = null;
     }
 
-    checkPowerUp(block) {
-        if (this.activePowerUp || this.miniBalls.length > 1) return;
+    checkPowerUp1(block) {
+        if (this.activePowerUp1 || this.miniBalls.length > 1) return;
 
         this.blocksDestroyed++;
 
         if (this.blocksDestroyed >= this.blocksDestroyedLimit) {
-            this.createPowerUp(block);
+            this.createPowerUp1(block);
         }
     }
 
     destroyBlock(block) {
-        this.checkPowerUp(block);
+        this.checkPowerUp1(block);
         this.blocks = this.blocks.filter((b) => b !== block);
         Game.scene.remove(block);
 
@@ -213,8 +213,8 @@ class Level {
     render() {
         this.moveMiniBall();
 
-        if (this.powerUp) {
-            this.powerUp.move(this.hitter);
+        if (this.powerUp1) {
+            this.powerUp1.move(this.hitter);
         }
     }
 
@@ -227,7 +227,7 @@ class Level {
             miniBall.resetPosition();
         });
 
-        this.activePowerUp = false;
+        this.activePowerUp1 = false;
         this.blocksDestroyed = 0;
     }
 
@@ -246,7 +246,7 @@ class Level {
     }
 
     gameOver() {
-        this.destroyPowerUpOnEndGame();
+        this.destroyPowerUp1OnEndGame();
 
         Logs.updateCurrentSpeed(0);
 
@@ -260,7 +260,7 @@ class Level {
     }
 
     death(miniBall) {
-        this.activePowerUp = false;
+        this.activePowerUp1 = false;
         this.blocksDestroyed = 0;
 
         if (this.miniBalls.length > 1) {
@@ -387,7 +387,7 @@ class Level {
 
     destructor() {
         Game.scene.remove(...this.getElements());
-        if (this.powerUp) Game.scene.remove(this.powerUp);
+        if (this.powerUp1) Game.scene.remove(this.powerUp1);
 
         this.miniBalls.forEach((miniBall) => {
             miniBall.destructor();

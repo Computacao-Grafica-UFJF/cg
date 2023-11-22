@@ -39,3 +39,6 @@ Files for the Computer Graphics course in Three.js
     [ ] Controle com Raycaster
     [ ] Ajustar conteúdo na tela
     [ ] Botões de full Screen e disparar bolinha
+
+## Pessoais 
+    [ ] Consertar o pause
