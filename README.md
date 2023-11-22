@@ -40,5 +40,6 @@ Files for the Computer Graphics course in Three.js
     [ ] Ajustar conteúdo na tela
     [ ] Botões de full Screen e disparar bolinha
 
-## Pessoais 
+## Pessoais
+
     [ ] Consertar o pause
