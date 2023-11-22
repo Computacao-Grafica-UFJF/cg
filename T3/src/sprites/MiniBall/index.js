@@ -5,7 +5,7 @@ import Logs from "../../utils/Logs/index.js";
 
 export class MiniBall extends THREE.Mesh {
     constructor(x, y, z, color, startSpeed = 0, startAngle = 0) {
-        const geometry = new THREE.SphereGeometry(0.2, 32, 32);
+        const geometry = new THREE.SphereGeometry(0.3, 32, 32);
         const material = new THREE.MeshPhongMaterial({ color });
 
         super(geometry, material);
@@ -291,7 +291,7 @@ export class MiniBall extends THREE.Mesh {
 
     move(hitter) {
         if (this.isRaycasterMode) {
-            this.position.set(hitter.position.x, hitter.position.y + 1.25, hitter.position.z);
+            this.position.set(hitter.position.x, hitter.position.y + 1.31, hitter.position.z);
             return;
         }
 

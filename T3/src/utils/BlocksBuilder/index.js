@@ -1,13 +1,14 @@
 import DurableBlock from "../../sprites/Block/DurableBlock/index.js";
 import IndestructibleBlock from "../../sprites/Block/IndestructibleBlock/index.js";
 import Block from "../../sprites/Block/index.js";
-
+import gameConfig from "../../config/Game.js";
 class BlocksBuilder {
     static horizontalSpace = 0.1;
     static verticalSpace = 0.1;
 
-    static levelWidth = 15.0;
-    static blockHeight = 0.5;
+    static levelWidth = gameConfig.width;
+    static leftMarginDefault = -this.levelWidth / 2;
+    static blockHeight = 0.7;
     static topMargin = 12;
 
     static getXPosition = (index, blockWidth, leftMargin) => {
@@ -21,7 +22,7 @@ class BlocksBuilder {
     static buildGamePlatform(matrix) {
         const blockWidth = (this.levelWidth - (matrix[0].length - 1) * this.horizontalSpace) / matrix[0].length;
 
-        const leftMargin = -7.5 + blockWidth / 2;
+        const leftMargin = this.leftMarginDefault + blockWidth / 2;
 
         const blocks = matrix.flatMap((row, i) =>
             row.map((cell, j) => (cell ? this.createBlock(j, i, cell, blockWidth, leftMargin) : null)).filter((block) => block !== null)

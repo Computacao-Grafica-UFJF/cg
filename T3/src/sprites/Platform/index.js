@@ -1,9 +1,9 @@
 import * as THREE from "three";
 
 export class Platform extends THREE.Mesh {
-    constructor(width, height, color, receiveShadow, castShadow) {
+    constructor(width, height, color, cubeMapTexture, receiveShadow, castShadow) {
         const geometry = new THREE.PlaneGeometry(width, height, 1, 1);
-        const material = new THREE.MeshLambertMaterial({ color: color });
+        const material = new THREE.MeshLambertMaterial({ transparent: true, opacity: 0, envMap: cubeMapTexture, refractionRatio: 0.95 });
 
         material.side = THREE.DoubleSide;
 

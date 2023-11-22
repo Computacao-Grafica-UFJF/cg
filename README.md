@@ -6,14 +6,14 @@ Files for the Computer Graphics course in Three.js
 
 ## Ambiente (Game)
 
-    [ ] Modo orbital
+    [X] Modo orbital
     [ ] Tela de início e fim
     [X] Correto posicionamento da câmera e visualização do ambiente
 
 ## Textura e decoração
 
     [X] Textura do bloco
-    [ ] Textura do Skybox
+    [X] Textura do Skybox
     [ ] Textura do Power Up 1
     [ ] Textura do Power Up 2
     [ ] Textura Vida
@@ -39,3 +39,6 @@ Files for the Computer Graphics course in Three.js
     [ ] Controle com Raycaster
     [ ] Ajustar conteúdo na tela
     [ ] Botões de full Screen e disparar bolinha
+
+## Pessoais 
+    [ ] Consertar o pause
