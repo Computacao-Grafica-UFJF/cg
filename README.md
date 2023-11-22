@@ -22,7 +22,7 @@ Files for the Computer Graphics course in Three.js
 
 ## Jogabilidade (Level)
 
-    [ ] Adicionar controle de vida no Level
+    [x] Adicionar controle de vida no Level
     [X] Level 3
     [ ] Power up 1
     [ ] Power up 2 (a ver com o professor)

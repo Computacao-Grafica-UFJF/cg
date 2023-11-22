@@ -63,7 +63,7 @@ class Level {
 
         Game.scene.add(...this.getElements());
 
-        // this.viewBoundingBox();
+        if (gameConfig.level.viewBoundingBox) this.viewBoundingBox();
     }
 
     buildGamePlatform() {

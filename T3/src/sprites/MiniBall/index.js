@@ -14,7 +14,7 @@ export class MiniBall extends THREE.Mesh {
         this.died = false;
         this.destroyed = false;
         this.isRaycasterMode = startSpeed === 0 ? true : false;
-        this.minSpeed = gameConfig.game.miniBall.startSpeed;
+        this.minSpeed = gameConfig.level.miniBall.startSpeed;
         this.maxSpeed = this.minSpeed * 2;
         this.speed = startSpeed || this.minSpeed;
         this.radius = 0.5;
