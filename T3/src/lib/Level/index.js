@@ -99,7 +99,7 @@ class Level {
     }
 
     buildMiniBall() {
-        const positionStartX = 0.0;
+        const positionStartX = 0;
         const positionStartY = -12;
 
         const miniBall = new MiniBall(positionStartX, positionStartY, 0, "#fff");

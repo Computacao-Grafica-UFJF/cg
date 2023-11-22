@@ -47,7 +47,16 @@ class Game {
     }
 
     static pause() {
-        this.paused ? this.scene.remove(...this.scene.children.filter((child) => child instanceof Pause)) : this.scene.add(new Pause());
+        if (this.paused) {
+            this.scene.remove(...this.scene.children.filter((child) => child instanceof Pause));
+            this.controls.enabled = this.movableCamera;
+            this.controls.enableZoom = this.movableCamera;
+        } else {
+            this.scene.add(new Pause());
+            console.log(this.movableCamera);
+            this.controls.enabled = false;
+            this.controls.enableZoom = false;
+        }
         this.paused = !this.paused;
     }
 
@@ -57,6 +66,7 @@ class Game {
         });
 
         this.scene.remove(...this.scene.children);
+        this.movableCamera = true;
 
         this.init();
     }
