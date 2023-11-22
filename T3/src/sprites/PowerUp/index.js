@@ -2,7 +2,7 @@ import * as THREE from "three";
 import gameConfig from "../../config/Game.js";
 import Game from "../../lib/Game/index.js";
 
-class PowerUp1 extends THREE.Group {
+class PowerUp extends THREE.Group {
     constructor(x, y, z, destroy) {
         function createCustomGeometry() {
             const v = [
@@ -121,4 +121,4 @@ class PowerUp1 extends THREE.Group {
     }
 }
 
-export default PowerUp1;
+export default PowerUp;

@@ -5,6 +5,7 @@ import PerspectiveCameraWrapper from "../../utils/PerspectiveCameraWrapper/index
 import { OrbitControls } from "../../../../build/jsm/controls/OrbitControls.js";
 import Pause from "../../sprites/Pause/index.js";
 import DirectionalLight from "../../utils/DirectionalLight/index.js";
+import Session from "../Session/index.js";
 
 class Game {
     static scene = new THREE.Scene();
@@ -14,6 +15,7 @@ class Game {
     static paused = false;
     static movableCamera = true;
     static controls = new OrbitControls(this.camera, this.renderer.domElement);
+    static session = new Session();
 
     static init() {
         this.initLight();
@@ -47,16 +49,22 @@ class Game {
     }
 
     static pause() {
-        if (this.paused) {
-            this.scene.remove(...this.scene.children.filter((child) => child instanceof Pause));
-            this.controls.enabled = this.movableCamera;
-            this.controls.enableZoom = this.movableCamera;
-        } else {
+        const insertPauseSprite = () => {
+            if (this.paused) {
+                this.scene.remove(...this.scene.children.filter((child) => child instanceof Pause));
+                this.controls.enabled = this.movableCamera;
+                this.controls.enableZoom = this.movableCamera;
+
+                return;
+            }
+
             this.scene.add(new Pause());
             console.log(this.movableCamera);
             this.controls.enabled = false;
             this.controls.enableZoom = false;
-        }
+        };
+
+        insertPauseSprite();
         this.paused = !this.paused;
     }
 

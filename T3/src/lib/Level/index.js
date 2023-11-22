@@ -11,7 +11,7 @@ import Wall from "../../sprites/Wall/index.js";
 import gameConfig from "../../config/Game.js";
 import BlocksBuilder from "../../utils/BlocksBuilder/index.js";
 import Plane from "../../sprites/Plane/index.js";
-import PowerUp1 from "../../sprites/PowerUp1/index.js";
+import PowerUp1 from "../../sprites/PowerUp/index.js";
 
 import * as THREE from "three";
 
