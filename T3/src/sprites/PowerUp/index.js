@@ -3,14 +3,15 @@ import gameConfig from "../../config/Game.js";
 import Game from "../../lib/Game/index.js";
 
 class PowerUp extends THREE.Mesh {
-    constructor(x, y, z, destroy) {
+    constructor(x, y, z, destroy, actionFunction, color) {
         const geometry = new THREE.CapsuleGeometry(0.3, 0.5, 16);
-        const material = new THREE.MeshLambertMaterial({ color: "red" });
+        const material = new THREE.MeshLambertMaterial({ color });
 
         super(geometry, material);
 
         this.speed = 0.1;
         this.destroy = destroy;
+        this.actionFunction = actionFunction;
 
         this.castShadow = true;
 

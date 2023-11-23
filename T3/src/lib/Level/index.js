@@ -11,12 +11,14 @@ import Wall from "../../sprites/Wall/index.js";
 import gameConfig from "../../config/Game.js";
 import BlocksBuilder from "../../utils/BlocksBuilder/index.js";
 import Plane from "../../sprites/Plane/index.js";
-import PowerUp from "../../sprites/PowerUp/index.js";
+import PowerUpMultipleBalls from "../../sprites/PowerUp/PowerUpMultipleBalls/index.js";
+import PowerUpFireBall from "../../sprites/PowerUp/PowerUpFireBall/index.js";
 
 import * as THREE from "three";
 
 class Level {
     PowerUp;
+    powerUps = [PowerUpMultipleBalls, PowerUpFireBall];
 
     constructor(matrix) {
         this.matrix = matrix;
@@ -24,6 +26,7 @@ class Level {
         this.blocksDestroyedLimit = gameConfig.level.blocksDestroyedLimit;
         this.activePowerUp = false;
         this.died = false;
+        this.powerUpsTaken = 0;
 
         this.init();
     }
@@ -150,9 +153,23 @@ class Level {
     }
 
     createPowerUp(block) {
+        const getPowerUpIndex = () => {
+            const index = this.powerUpsTaken;
+            const normalizedIndex = index % this.powerUps.length;
+
+            return normalizedIndex;
+        };
+
         const position = block.position;
 
-        this.PowerUp = new PowerUp(position.x, position.y, position.z + 0.6, this.destroyPowerUp.bind(this));
+        this.PowerUp = new this.powerUps[getPowerUpIndex()](
+            position.x,
+            position.y,
+            position.z + 0.6,
+            this.destroyPowerUp.bind(this),
+            this.createNewBall.bind(this)
+        );
+
         this.activePowerUp = true;
         Game.scene.add(this.PowerUp);
     }
@@ -164,6 +181,7 @@ class Level {
             }
 
             this.activePowerUp = true;
+            this.powerUpsTaken++;
             Game.scene.remove(this.PowerUp);
             this.createNewBall();
             return;
@@ -184,7 +202,13 @@ class Level {
     }
 
     checkPowerUp(block) {
-        if (this.activePowerUp || this.miniBalls.length > 1) return;
+        const AreThereFireBall = () => {
+            return this.miniBalls.find((miniBall) => {
+                miniBall.fire;
+            });
+        };
+
+        if (this.activePowerUp || this.miniBalls.length > 1 || AreThereFireBall()) return;
 
         this.blocksDestroyed++;
 
@@ -257,6 +281,7 @@ class Level {
     die() {
         this.died = true;
         this.destroyPowerUpOnEndGame();
+        this.powerUpsTaken = 0;
         Logs.updateCurrentSpeed(0);
         Game.session.die();
 
