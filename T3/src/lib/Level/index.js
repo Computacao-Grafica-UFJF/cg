@@ -152,22 +152,35 @@ class Level {
         Game.scene.add(newMiniBall);
     }
 
+    transformMiniBallInFireBall() {
+        this.miniBalls.forEach((miniBall) => {
+            miniBall.transformInFireBall();
+        });
+    }
+
     createPowerUp(block) {
         const getPowerUpIndex = () => {
-            const index = this.powerUpsTaken;
-            const normalizedIndex = index % this.powerUps.length;
-
-            return normalizedIndex;
+            return this.powerUpsTaken % this.powerUps.length;
         };
 
-        const position = block.position;
+        const actionFunctions = [
+            () => {
+                this.createNewBall();
+            },
+            () => {
+                this.transformMiniBallInFireBall();
+            },
+        ];
 
-        this.PowerUp = new this.powerUps[getPowerUpIndex()](
+        const position = block.position;
+        const index = getPowerUpIndex();
+
+        this.PowerUp = new this.powerUps[index](
             position.x,
             position.y,
             position.z + 0.6,
             this.destroyPowerUp.bind(this),
-            this.createNewBall.bind(this)
+            actionFunctions[index].bind(this)
         );
 
         this.activePowerUp = true;
@@ -183,7 +196,7 @@ class Level {
             this.activePowerUp = true;
             this.powerUpsTaken++;
             Game.scene.remove(this.PowerUp);
-            this.createNewBall();
+            this.PowerUp.actionFunction();
             return;
         }
 

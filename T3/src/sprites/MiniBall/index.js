@@ -20,6 +20,7 @@ export class MiniBall extends THREE.Mesh {
         this.radius = 0.5;
         this.evadeTimeHitter = 100;
         this.evadeTimeBlock = 20;
+        this.fireBall = false;
 
         this.evadeModeHitter = false;
         this.evadeModeBlock = false;
@@ -83,6 +84,20 @@ export class MiniBall extends THREE.Mesh {
         this.angle = angle;
         this.rotation.set(0, 0, this.angle);
     }
+
+    playSound = (type) => {
+        switch (type) {
+            case "normalBlock":
+                this.playSound(this.sounds[1]);
+                break;
+            case "durableBlock" || "indestructibleBlock":
+                this.playSound(this.sounds[2]);
+                break;
+
+            default:
+                break;
+        }
+    };
 
     activateEvadeModeHitter() {
         this.evadeModeHitter = true;
@@ -185,10 +200,6 @@ export class MiniBall extends THREE.Mesh {
 
             const angle = hitter.getKickBallAngle(this.angle, angleNormal);
 
-            // console.log("Angulo de entrada: ", THREE.MathUtils.radToDeg(this.angle - Math.PI));
-            // console.log("Angulo da normal: ", THREE.MathUtils.radToDeg(angleNormal));
-            // console.log("Angulo de saída: ", THREE.MathUtils.radToDeg(angle));
-
             this.rotate(angle);
         }
     };
@@ -255,19 +266,13 @@ export class MiniBall extends THREE.Mesh {
         blocks.find((block) => {
             const blockBoundingBox = new THREE.Box3().setFromObject(block);
             if (ballBoundingBox.intersectsBox(blockBoundingBox) && this.evadeModeBlock === false) {
-                switch (block.type) {
-                    case "normalBlock":
-                        this.playSound(this.sounds[1]);
-                        break;
-                    case "durableBlock" || "indestructibleBlock":
-                        this.playSound(this.sounds[2]);
-                        break;
+                this.playSound(block.type);
 
-                    default:
-                        break;
+                if (!this.fireBall) {
+                    this.changeAngleByBlock(block, currentAngle);
+                    this.activateEvadeModeBlock();
                 }
-                this.changeAngleByBlock(block, currentAngle);
-                this.activateEvadeModeBlock();
+
                 hitBlock(block);
 
                 return 1;
@@ -283,6 +288,16 @@ export class MiniBall extends THREE.Mesh {
                 this.die(death);
             }
         });
+    }
+
+    transformInFireBall() {
+        this.fireBall = true;
+        this.material.color.set("orange");
+
+        setTimeout(() => {
+            this.fireBall = false;
+            this.material.color.set("white");
+        }, 7000);
     }
 
     die(death) {

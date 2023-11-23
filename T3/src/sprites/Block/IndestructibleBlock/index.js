@@ -1,4 +1,3 @@
-import * as THREE from "three";
 import Block from "../index.js";
 
 class IndestructibleBlock extends Block {
