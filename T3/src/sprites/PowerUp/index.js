@@ -31,24 +31,6 @@ class PowerUp extends THREE.Mesh {
         this.checkCollisionWithEndGame();
     }
 
-    calcularBallBoundingBox(group) {
-        let esferaEnvolvedora = new THREE.Sphere();
-        group.traverse((objeto) => {
-            if (objeto.isMesh) {
-                // Atualize a esfera envolvente com base na posição e escala do objeto
-                objeto.geometry.computeBoundingSphere();
-                esferaEnvolvedora.union(objeto.geometry.boundingSphere.clone().applyMatrix4(objeto.matrixWorld));
-            }
-        });
-
-        // Crie a caixa delimitadora esférica usando a esfera envolvente
-        let ballBoundingBox = new THREE.Box3().setFromObject(
-            new THREE.Mesh(new THREE.SphereGeometry(esferaEnvolvedora.radius), new THREE.MeshBasicMaterial())
-        );
-
-        return ballBoundingBox;
-    }
-
     checkCollisionWithHitter = (hitter) => {
         const ballBoundingBox = new THREE.Box3().setFromObject(this);
         const hitterBoundingBox = new THREE.Box3().setFromObject(hitter);

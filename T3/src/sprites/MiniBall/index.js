@@ -85,20 +85,6 @@ export class MiniBall extends THREE.Mesh {
         this.rotation.set(0, 0, this.angle);
     }
 
-    playSound = (type) => {
-        switch (type) {
-            case "normalBlock":
-                this.playSound(this.sounds[1]);
-                break;
-            case "durableBlock" || "indestructibleBlock":
-                this.playSound(this.sounds[2]);
-                break;
-
-            default:
-                break;
-        }
-    };
-
     activateEvadeModeHitter() {
         this.evadeModeHitter = true;
         setTimeout(() => (this.evadeModeHitter = false), this.evadeTimeHitter);
@@ -266,7 +252,7 @@ export class MiniBall extends THREE.Mesh {
         blocks.find((block) => {
             const blockBoundingBox = new THREE.Box3().setFromObject(block);
             if (ballBoundingBox.intersectsBox(blockBoundingBox) && this.evadeModeBlock === false) {
-                this.playSound(block.type);
+                this.playSoundByType(block.type);
 
                 if (!this.fireBall) {
                     this.changeAngleByBlock(block, currentAngle);
@@ -338,10 +324,30 @@ export class MiniBall extends THREE.Mesh {
         this.collisionWithDeathZones(deathZones, death);
     }
 
-    destructor() {
-        this.destroyed = true;
-        this.geometry.dispose();
-        this.material.dispose();
+    playSoundByType = (type) => {
+        console.log(type);
+        switch (type) {
+            case "normal":
+                this.playSound(this.sounds[1]);
+                break;
+            case "durable":
+            case "indestructible":
+                this.playSound(this.sounds[2]);
+                break;
+
+            default:
+                break;
+        }
+    };
+
+    playSound(sound) {
+        if (sound && sound.isPlaying) {
+            sound.stop();
+        }
+        if (sound) {
+            sound.play();
+            sound.setLoop(false);
+        }
     }
 
     loadSounds(paths) {
@@ -355,14 +361,10 @@ export class MiniBall extends THREE.Mesh {
         });
     }
 
-    playSound(sound) {
-        if (sound && sound.isPlaying) {
-            sound.stop();
-        }
-        if (sound) {
-            sound.play();
-            sound.setLoop(false);
-        }
+    destructor() {
+        this.destroyed = true;
+        this.geometry.dispose();
+        this.material.dispose();
     }
 }
 

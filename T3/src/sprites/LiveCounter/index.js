@@ -1,6 +1,8 @@
 import Live from "./Live/index.js";
 
 class LiveCounter {
+    static lives;
+
     constructor(startLives) {
         this.lives = startLives;
     }

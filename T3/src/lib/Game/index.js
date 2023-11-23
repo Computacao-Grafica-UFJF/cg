@@ -18,11 +18,11 @@ class Game {
     static movableCamera = true;
     static controls = new OrbitControls(this.camera, this.renderer.domElement);
     static session = new Session();
-    static liveCounter = new LiveCounter(this.session.lives);
 
     static init() {
         this.initLight();
         this.fixCameraPosition();
+        // LiveCounter.
     }
 
     static render(render) {
