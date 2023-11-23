@@ -6,6 +6,8 @@ import { OrbitControls } from "../../../../build/jsm/controls/OrbitControls.js";
 import Pause from "../../sprites/Pause/index.js";
 import DirectionalLight from "../../utils/DirectionalLight/index.js";
 import Session from "../Session/index.js";
+import LiveCounter from "../../sprites/LiveCounter/index.js";
+import Live from "../../sprites/LiveCounter/Live/index.js";
 
 class Game {
     static scene = new THREE.Scene();
@@ -16,6 +18,7 @@ class Game {
     static movableCamera = true;
     static controls = new OrbitControls(this.camera, this.renderer.domElement);
     static session = new Session();
+    static liveCounter = new LiveCounter(this.session.lives);
 
     static init() {
         this.initLight();
@@ -78,6 +81,22 @@ class Game {
 
         this.init();
     }
+
+    static die = () => {
+        const destroyLastLiveSprite = () => {
+            for (let i = this.length - 1; i >= 0; i--) {
+                if (callback(this[i], i, this)) {
+                    return this[i];
+                }
+            }
+            return undefined;
+        };
+
+        this.session.die();
+        this.liveCounter.update(this.session.lives);
+
+        destroyAllLiveSprites();
+    };
 
     static gameOver() {
         this.scene.children.forEach((child) => {

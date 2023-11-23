@@ -303,7 +303,7 @@ class Level {
         this.destroyPowerUpOnEndGame();
         this.powerUpsTaken = 0;
         Logs.updateCurrentSpeed(0);
-        Game.session.die();
+        Game.die();
 
         if (!Game.session.isAlive()) {
             Game.gameOver();

@@ -7,7 +7,7 @@ import gameConfig from "../../config/Game.js";
 export class MiniBall extends THREE.Mesh {
     constructor(x, y, z, color, startSpeed = 0, startAngle = 0) {
         const geometry = new THREE.SphereGeometry(0.3, 32, 32);
-        const material = new THREE.MeshPhongMaterial({ color });
+        const material = new THREE.MeshPhongMaterial({ color, shininess: 1000 });
 
         super(geometry, material);
 
