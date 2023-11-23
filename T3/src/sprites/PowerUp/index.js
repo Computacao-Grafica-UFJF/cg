@@ -53,8 +53,9 @@ class PowerUp extends THREE.Mesh {
         const ballBoundingBox = new THREE.Box3().setFromObject(this);
         const hitterBoundingBox = new THREE.Box3().setFromObject(hitter);
 
-        if (ballBoundingBox.intersectsBox(hitterBoundingBox)) {
+        if (ballBoundingBox.intersectsBox(hitterBoundingBox) && this.speed > 0) {
             this.destroy(true);
+            this.destructor();
         }
     };
 

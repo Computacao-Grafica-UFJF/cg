@@ -297,7 +297,7 @@ export class MiniBall extends THREE.Mesh {
         setTimeout(() => {
             this.fireBall = false;
             this.material.color.set("white");
-        }, 7000);
+        }, gameConfig.level.miniBall.firePowerUpTime);
     }
 
     die(death) {

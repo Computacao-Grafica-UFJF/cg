@@ -19,6 +19,14 @@ import * as THREE from "three";
 class Level {
     PowerUp;
     powerUps = [PowerUpMultipleBalls, PowerUpFireBall];
+    actionFunctions = [
+        () => {
+            this.createNewBalls();
+        },
+        () => {
+            this.transformMiniBallInFireBall();
+        },
+    ];
 
     constructor(matrix) {
         this.matrix = matrix;
@@ -136,41 +144,45 @@ class Level {
         if (destroyedOnHit) this.destroyBlock(block);
     }
 
-    createNewBall() {
+    createNewBalls() {
         const existentMiniBall = this.miniBalls[0];
 
-        const newMiniBall = new MiniBall(
+        const newMiniBall1 = new MiniBall(
             existentMiniBall.position.x,
             existentMiniBall.position.y,
             0,
             "#fff",
             existentMiniBall.speed,
-            existentMiniBall.angle - Math.PI
+            existentMiniBall.angle - THREE.MathUtils.degToRad(30)
         );
 
-        this.miniBalls.push(newMiniBall);
-        Game.scene.add(newMiniBall);
+        const newMiniBall2 = new MiniBall(
+            existentMiniBall.position.x,
+            existentMiniBall.position.y,
+            0,
+            "#fff",
+            existentMiniBall.speed,
+            existentMiniBall.angle + Math.PI
+        );
+
+        this.miniBalls.push(newMiniBall1, newMiniBall2);
+        Game.scene.add(newMiniBall1, newMiniBall2);
     }
 
     transformMiniBallInFireBall() {
         this.miniBalls.forEach((miniBall) => {
             miniBall.transformInFireBall();
         });
+
+        setTimeout(() => {
+            this.activePowerUp = false;
+        }, gameConfig.level.miniBall.firePowerUpTime);
     }
 
     createPowerUp(block) {
         const getPowerUpIndex = () => {
             return this.powerUpsTaken % this.powerUps.length;
         };
-
-        const actionFunctions = [
-            () => {
-                this.createNewBall();
-            },
-            () => {
-                this.transformMiniBallInFireBall();
-            },
-        ];
 
         const position = block.position;
         const index = getPowerUpIndex();
@@ -180,7 +192,7 @@ class Level {
             position.y,
             position.z + 0.6,
             this.destroyPowerUp.bind(this),
-            actionFunctions[index].bind(this)
+            this.actionFunctions[index].bind(this)
         );
 
         this.activePowerUp = true;
@@ -215,13 +227,7 @@ class Level {
     }
 
     checkPowerUp(block) {
-        const AreThereFireBall = () => {
-            return this.miniBalls.find((miniBall) => {
-                miniBall.fire;
-            });
-        };
-
-        if (this.activePowerUp || this.miniBalls.length > 1 || AreThereFireBall()) return;
+        if (this.activePowerUp) return;
 
         this.blocksDestroyed++;
 
@@ -268,6 +274,7 @@ class Level {
 
         this.activePowerUp = false;
         this.blocksDestroyed = 0;
+        this.powerUpsTaken = 0;
     }
 
     finish() {
@@ -310,13 +317,16 @@ class Level {
     destroyBall(miniBall) {
         if (this.died) return;
 
-        this.activePowerUp = false;
-        this.blocksDestroyed = 0;
-
         if (this.miniBalls.length > 1) {
             Game.scene.remove(miniBall);
             this.miniBalls = this.miniBalls.filter((ball) => ball.id !== miniBall.id);
             miniBall.destructor();
+
+            if (this.miniBalls.length === 1) {
+                this.activePowerUp = false;
+                this.blocksDestroyed = 0;
+            }
+
             return;
         }
 
