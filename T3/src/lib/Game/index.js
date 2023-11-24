@@ -22,7 +22,9 @@ class Game {
     static init() {
         this.initLight();
         this.fixCameraPosition();
-        // LiveCounter.
+
+        LiveCounter.update(this.session.lives);
+        LiveCounter.getRenderLives().forEach((live) => this.scene.add(live));
     }
 
     static render(render) {
@@ -84,18 +86,28 @@ class Game {
 
     static die = () => {
         const destroyLastLiveSprite = () => {
-            for (let i = this.length - 1; i >= 0; i--) {
-                if (callback(this[i], i, this)) {
-                    return this[i];
+            const getLastLiveSprite = () => {
+                const sprites = this.scene.children;
+
+                for (let i = sprites.length - 1; i >= 0; i--) {
+                    if (sprites[i] instanceof Live) {
+                        console.log(sprites[i]);
+                        return sprites[i];
+                    }
                 }
-            }
-            return undefined;
+
+                return undefined;
+            };
+
+            const lastLiveSprite = getLastLiveSprite();
+            if (lastLiveSprite) this.scene.remove(lastLiveSprite);
         };
 
         this.session.die();
-        this.liveCounter.update(this.session.lives);
 
-        destroyAllLiveSprites();
+        LiveCounter.update(this.session.lives);
+
+        destroyLastLiveSprite();
     };
 
     static gameOver() {
@@ -107,7 +119,6 @@ class Game {
         this.movableCamera = true;
 
         this.session.reset();
-        this.init();
     }
 }
 

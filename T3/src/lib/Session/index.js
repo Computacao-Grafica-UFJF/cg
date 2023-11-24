@@ -10,12 +10,10 @@ class Session {
 
     die = () => {
         this.lives--;
-        console.log(this.lives);
     };
 
     reset = () => {
         this.lives = gameConfig.session.lives;
-        console.log(this.lives);
     };
 
     isAlive = () => {
