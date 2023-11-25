@@ -9,6 +9,7 @@ import Session from "../Session/index.js";
 import LiveCounter from "../../sprites/LiveCounter/index.js";
 import Live from "../../sprites/LiveCounter/Live/index.js";
 import Loader from "../../utils/Loader/index.js";
+import Menu from "../../utils/Menu/index.js";
 
 class Game {
     static scene = new THREE.Scene();
@@ -118,6 +119,8 @@ class Game {
 
         this.scene.remove(...this.scene.children);
         this.movableCamera = true;
+
+        Menu.showStartMenu();
 
         this.session.reset();
     }

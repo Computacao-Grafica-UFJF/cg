@@ -3,6 +3,9 @@ class Menu {
 
     static showStartMenu = () => {
         this.open = true;
+
+        const loadingScreen = document.getElementById("loading-screen");
+        loadingScreen.classList.remove("fade-out");
     };
 
     static enableStartMenuToStart = () => {
@@ -22,10 +25,10 @@ class Menu {
         const loadingScreen = document.getElementById("loading-screen");
         loadingScreen.transition = 0;
         loadingScreen.classList.add("fade-out");
-        loadingScreen.addEventListener("transitionend", (e) => {
-            const element = e.target;
-            element.remove();
-        });
+        // loadingScreen.addEventListener("transitionend", (e) => {
+        //     const element = e.target;
+        //     element.remove();
+        // });
     };
 }
 

@@ -26,7 +26,7 @@ Files for the Computer Graphics course in Three.js
     [x] Adicionar controle de vida no Level
     [X] Level 3
     [x] Power up 1
-    [x] Power up 2 (a ver com o professor)
+    [x] Power up 2
 
 ## Sons
 
