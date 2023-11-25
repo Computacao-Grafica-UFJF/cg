@@ -5,7 +5,6 @@ class Session {
 
     constructor() {
         this.lives = gameConfig.session.lives;
-        console.log(this.lives);
     }
 
     die = () => {

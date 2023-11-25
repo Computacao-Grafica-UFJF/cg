@@ -8,6 +8,7 @@ import DirectionalLight from "../../utils/DirectionalLight/index.js";
 import Session from "../Session/index.js";
 import LiveCounter from "../../sprites/LiveCounter/index.js";
 import Live from "../../sprites/LiveCounter/Live/index.js";
+import Loader from "../../utils/Loader/index.js";
 
 class Game {
     static scene = new THREE.Scene();
@@ -25,6 +26,8 @@ class Game {
 
         LiveCounter.update(this.session.lives);
         LiveCounter.getRenderLives().forEach((live) => this.scene.add(live));
+
+        Loader.init();
     }
 
     static render(render) {
@@ -64,7 +67,6 @@ class Game {
             }
 
             this.scene.add(new Pause());
-            console.log(this.movableCamera);
             this.controls.enabled = false;
             this.controls.enableZoom = false;
         };
@@ -91,7 +93,6 @@ class Game {
 
                 for (let i = sprites.length - 1; i >= 0; i--) {
                     if (sprites[i] instanceof Live) {
-                        console.log(sprites[i]);
                         return sprites[i];
                     }
                 }
