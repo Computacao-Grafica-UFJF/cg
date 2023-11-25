@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import Menu from "../Menu/index.js";
 
 class Loader {
     static manager;
@@ -8,29 +9,10 @@ class Loader {
     static audioPaths;
 
     static init() {
-        this.manager = new THREE.LoadingManager(() => {
-            const loadingScreen = document.getElementById("loading-screen");
-            loadingScreen.transition = 0;
-
-            const button = document.getElementById("myBtn");
-            const buttonText = document.getElementById("buttonText");
-            buttonText.innerHTML = "Click to Start";
-            button.addEventListener("click", this.onButtonPressed);
-        });
+        this.manager = new THREE.LoadingManager(() => Menu.enableStartMenuToStart());
 
         this.loadSounds();
     }
-
-    static onButtonPressed = () => {
-        console.log("oi");
-        const loadingScreen = document.getElementById("loading-screen");
-        loadingScreen.transition = 0;
-        loadingScreen.classList.add("fade-out");
-        loadingScreen.addEventListener("transitionend", (e) => {
-            const element = e.target;
-            element.remove();
-        });
-    };
 
     static loadSounds = () => {
         const loadSoundsPackages = (paths) => {

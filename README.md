@@ -7,7 +7,8 @@ Files for the Computer Graphics course in Three.js
 ## Ambiente (Game)
 
     [X] Modo orbital
-    [ ] Tela de início e fim
+    [X] Tela de início
+    [ ] Tela de fim
     [X] Correto posicionamento da câmera e visualização do ambiente
 
 ## Textura e decoração

@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import Menu from "../Menu/index.js";
 
 class Raycaster extends THREE.Raycaster {
     constructor() {
@@ -41,6 +42,8 @@ class Raycaster extends THREE.Raycaster {
     };
 
     onMouseDown(event, level) {
+        if (Menu.open) return;
+
         if (event.button === 0) {
             level.init();
         }
