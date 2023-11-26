@@ -2,23 +2,26 @@ import * as THREE from "three";
 import AngleHandler from "../../utils/AngleHandler/index.js";
 import Game from "../../lib/Game/index.js";
 import Logs from "../../utils/Logs/index.js";
+import gameConfig from "../../config/Game.js";
+import SoundPlayer from "../../utils/SoundPlayer/index.js";
 
 export class MiniBall extends THREE.Mesh {
     constructor(x, y, z, color, startSpeed = 0, startAngle = 0) {
         const geometry = new THREE.SphereGeometry(0.3, 32, 32);
-        const material = new THREE.MeshPhongMaterial({ color });
+        const material = new THREE.MeshPhongMaterial({ color, shininess: 1000 });
 
         super(geometry, material);
 
         this.died = false;
         this.destroyed = false;
         this.isRaycasterMode = startSpeed === 0 ? true : false;
-        this.minSpeed = 0.15;
+        this.minSpeed = gameConfig.level.miniBall.startSpeed;
         this.maxSpeed = this.minSpeed * 2;
         this.speed = startSpeed || this.minSpeed;
         this.radius = 0.5;
         this.evadeTimeHitter = 100;
         this.evadeTimeBlock = 20;
+        this.fireBall = false;
 
         this.evadeModeHitter = false;
         this.evadeModeBlock = false;
@@ -28,15 +31,6 @@ export class MiniBall extends THREE.Mesh {
         this.startX = x;
         this.startY = y;
         this.startZ = z;
-
-        this.audioLoader = new THREE.AudioLoader();
-        this.audioPaths = [
-            "../../../../assets/sounds/rebatedor.mp3",
-            "../../../../assets/sounds/bloco1.mp3",
-            "../../../../assets/sounds/bloco2.mp3",
-            "../../../../assets/sounds/bloco3.mp3",
-        ];
-        this.sounds = this.loadSounds(this.audioPaths);
 
         if (startSpeed && startAngle) {
             this.position.set(this.startX, this.startY, this.startZ);
@@ -172,7 +166,7 @@ export class MiniBall extends THREE.Mesh {
                 ballBoundingBox.intersectsBox(rightRightBoundingBox)) &&
             this.evadeModeHitter === false
         ) {
-            this.playSound(this.sounds[0]);
+            SoundPlayer.playByKey("hitter");
             this.activateEvadeModeHitter();
             const centerHitter = hitter.position;
 
@@ -183,10 +177,6 @@ export class MiniBall extends THREE.Mesh {
             const angleNormal = normal.angleTo(axis);
 
             const angle = hitter.getKickBallAngle(this.angle, angleNormal);
-
-            // console.log("Angulo de entrada: ", THREE.MathUtils.radToDeg(this.angle - Math.PI));
-            // console.log("Angulo da normal: ", THREE.MathUtils.radToDeg(angleNormal));
-            // console.log("Angulo de saída: ", THREE.MathUtils.radToDeg(angle));
 
             this.rotate(angle);
         }
@@ -247,6 +237,10 @@ export class MiniBall extends THREE.Mesh {
         this.invertAngleVertically(angle);
     }
 
+    playBlockSound = (type) => {
+        SoundPlayer.playByKey(`${type}Block`);
+    };
+
     collisionWithBlocks = (blocks, hitBlock) => {
         const ballBoundingBox = new THREE.Box3().setFromObject(this);
         const currentAngle = this.angle;
@@ -254,19 +248,12 @@ export class MiniBall extends THREE.Mesh {
         blocks.find((block) => {
             const blockBoundingBox = new THREE.Box3().setFromObject(block);
             if (ballBoundingBox.intersectsBox(blockBoundingBox) && this.evadeModeBlock === false) {
-                switch (block.type) {
-                    case "normalBlock":
-                        this.playSound(this.sounds[1]);
-                        break;
-                    case "durableBlock" || "indestructibleBlock":
-                        this.playSound(this.sounds[2]);
-                        break;
-
-                    default:
-                        break;
+                if (!this.fireBall) {
+                    this.playBlockSound(block.type);
+                    this.changeAngleByBlock(block, currentAngle);
+                    this.activateEvadeModeBlock();
                 }
-                this.changeAngleByBlock(block, currentAngle);
-                this.activateEvadeModeBlock();
+
                 hitBlock(block);
 
                 return 1;
@@ -282,6 +269,16 @@ export class MiniBall extends THREE.Mesh {
                 this.die(death);
             }
         });
+    }
+
+    transformInFireBall() {
+        this.fireBall = true;
+        this.material.color.set("orange");
+
+        setTimeout(() => {
+            this.fireBall = false;
+            this.material.color.set("white");
+        }, gameConfig.level.miniBall.firePowerUpTime);
     }
 
     die(death) {
@@ -326,27 +323,6 @@ export class MiniBall extends THREE.Mesh {
         this.destroyed = true;
         this.geometry.dispose();
         this.material.dispose();
-    }
-
-    loadSounds(paths) {
-        return paths.map((path) => {
-            const sound = new THREE.Audio(new THREE.AudioListener());
-            this.audioLoader.load(path, function (buffer) {
-                sound.setBuffer(buffer);
-                sound.setLoop(true);
-            });
-            return sound;
-        });
-    }
-
-    playSound(sound) {
-        if (sound && sound.isPlaying) {
-            sound.stop();
-        }
-        if (sound) {
-            sound.play();
-            sound.setLoop(false);
-        }
     }
 }
 

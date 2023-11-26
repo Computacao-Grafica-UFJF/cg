@@ -6,7 +6,7 @@ class BlocksBuilder {
     static horizontalSpace = 0.1;
     static verticalSpace = 0.1;
 
-    static levelWidth = gameConfig.width;
+    static levelWidth = gameConfig.level.width;
     static leftMarginDefault = -this.levelWidth / 2;
     static blockHeight = 0.7;
     static topMargin = 12;
@@ -37,14 +37,14 @@ class BlocksBuilder {
         const z = 0;
 
         if (cell === 6) {
-            return new DurableBlock(x, y, z, blockWidth, this.blockHeight, "durableBlock");
+            return new DurableBlock(x, y, z, blockWidth, this.blockHeight);
         }
 
         if (cell === 7) {
-            return new IndestructibleBlock(x, y, z, blockWidth, this.blockHeight, "indestructibleBlock");
+            return new IndestructibleBlock(x, y, z, blockWidth, this.blockHeight);
         }
 
-        return new Block(x, y, z, blockWidth, this.blockHeight, 1, this.getBlockColor(cell), "normalBlock");
+        return new Block(x, y, z, blockWidth, this.blockHeight, 1, this.getBlockColor(cell));
     }
 
     static getBlockColor = (i) => {

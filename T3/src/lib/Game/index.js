@@ -5,6 +5,11 @@ import PerspectiveCameraWrapper from "../../utils/PerspectiveCameraWrapper/index
 import { OrbitControls } from "../../../../build/jsm/controls/OrbitControls.js";
 import Pause from "../../sprites/Pause/index.js";
 import DirectionalLight from "../../utils/DirectionalLight/index.js";
+import Session from "../Session/index.js";
+import LiveCounter from "../../sprites/LiveCounter/index.js";
+import Live from "../../sprites/LiveCounter/Live/index.js";
+import Loader from "../../utils/Loader/index.js";
+import Menu from "../../utils/Menu/index.js";
 
 class Game {
     static scene = new THREE.Scene();
@@ -14,10 +19,16 @@ class Game {
     static paused = false;
     static movableCamera = true;
     static controls = new OrbitControls(this.camera, this.renderer.domElement);
+    static session = new Session();
 
     static init() {
         this.initLight();
         this.fixCameraPosition();
+
+        LiveCounter.update(this.session.lives);
+        LiveCounter.getRenderLives().forEach((live) => this.scene.add(live));
+
+        Loader.init();
     }
 
     static render(render) {
@@ -47,16 +58,21 @@ class Game {
     }
 
     static pause() {
-        if (this.paused) {
-            this.scene.remove(...this.scene.children.filter((child) => child instanceof Pause));
-            this.controls.enabled = this.movableCamera;
-            this.controls.enableZoom = this.movableCamera;
-        } else {
+        const insertPauseSprite = () => {
+            if (this.paused) {
+                this.scene.remove(...this.scene.children.filter((child) => child instanceof Pause));
+                this.controls.enabled = this.movableCamera;
+                this.controls.enableZoom = this.movableCamera;
+
+                return;
+            }
+
             this.scene.add(new Pause());
-            console.log(this.movableCamera);
             this.controls.enabled = false;
             this.controls.enableZoom = false;
-        }
+        };
+
+        insertPauseSprite();
         this.paused = !this.paused;
     }
 
@@ -69,6 +85,49 @@ class Game {
         this.movableCamera = true;
 
         this.init();
+    }
+
+    static die = () => {
+        const destroyLastLiveSprite = () => {
+            const getLastLiveSprite = () => {
+                const sprites = this.scene.children;
+
+                for (let i = sprites.length - 1; i >= 0; i--) {
+                    if (sprites[i] instanceof Live) {
+                        return sprites[i];
+                    }
+                }
+
+                return undefined;
+            };
+
+            const lastLiveSprite = getLastLiveSprite();
+            if (lastLiveSprite) this.scene.remove(lastLiveSprite);
+        };
+
+        this.session.die();
+
+        LiveCounter.update(this.session.lives);
+
+        destroyLastLiveSprite();
+    };
+
+    static restart = () => {
+        this.session.reset();
+        LiveCounter.update(this.session.lives);
+    };
+
+    static gameOver() {
+        this.scene.children.forEach((child) => {
+            if (child.destructor) child.destructor();
+        });
+
+        this.scene.remove(...this.scene.children);
+        this.movableCamera = true;
+
+        Menu.showGameOverMenu();
+
+        this.session.reset();
     }
 }
 

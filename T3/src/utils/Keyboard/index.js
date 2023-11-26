@@ -2,6 +2,7 @@ import KeyboardState from "../../../../libs/util/KeyboardState.js";
 import Game from "../../lib/Game/index.js";
 import FullScreenControl from "../FullScreenControl/index.js";
 import LevelSelector from "../LevelSelector/index.js";
+import Menu from "../Menu/index.js";
 
 class KeyboardCommands {
     static keyboardState = new KeyboardState();
@@ -16,6 +17,8 @@ class KeyboardCommands {
     }
 
     static keyboardListening = (level) => {
+        if (Menu.open) return;
+
         this.keyboardState.update();
         this.listenCommands(level);
     };

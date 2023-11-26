@@ -7,7 +7,8 @@ Files for the Computer Graphics course in Three.js
 ## Ambiente (Game)
 
     [X] Modo orbital
-    [ ] Tela de início e fim
+    [X] Tela de início
+    [X] Tela de fim
     [X] Correto posicionamento da câmera e visualização do ambiente
 
 ## Textura e decoração
@@ -22,10 +23,10 @@ Files for the Computer Graphics course in Three.js
 
 ## Jogabilidade (Level)
 
-    [ ] Adicionar controle de vida no Level
+    [x] Adicionar controle de vida no Level
     [X] Level 3
-    [ ] Power up 1
-    [ ] Power up 2 (a ver com o professor)
+    [x] Power up 1
+    [x] Power up 2
 
 ## Sons
 
@@ -40,5 +41,6 @@ Files for the Computer Graphics course in Three.js
     [ ] Ajustar conteúdo na tela
     [ ] Botões de full Screen e disparar bolinha
 
-## Pessoais 
+## Pessoais
+
     [ ] Consertar o pause

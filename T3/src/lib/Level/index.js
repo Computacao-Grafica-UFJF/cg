@@ -11,18 +11,30 @@ import Wall from "../../sprites/Wall/index.js";
 import gameConfig from "../../config/Game.js";
 import BlocksBuilder from "../../utils/BlocksBuilder/index.js";
 import Plane from "../../sprites/Plane/index.js";
-import PowerUp1 from "../../sprites/PowerUp1/index.js";
+import PowerUpMultipleBalls from "../../sprites/PowerUp/PowerUpMultipleBalls/index.js";
+import PowerUpFireBall from "../../sprites/PowerUp/PowerUpFireBall/index.js";
 
 import * as THREE from "three";
 
 class Level {
-    powerUp1;
+    PowerUp;
+    powerUps = [PowerUpMultipleBalls, PowerUpFireBall];
+    actionFunctions = [
+        () => {
+            this.createNewBalls();
+        },
+        () => {
+            this.transformMiniBallInFireBall();
+        },
+    ];
 
     constructor(matrix) {
         this.matrix = matrix;
         this.blocksDestroyed = 0;
-        this.blocksDestroyedLimit = 1;
-        this.activePowerUp1 = false;
+        this.blocksDestroyedLimit = gameConfig.level.blocksDestroyedLimit;
+        this.activePowerUp = false;
+        this.died = false;
+        this.powerUpsTaken = 0;
 
         this.init();
     }
@@ -62,7 +74,7 @@ class Level {
 
         Game.scene.add(...this.getElements());
 
-        // this.viewBoundingBox();
+        if (gameConfig.level.viewBoundingBox) this.viewBoundingBox();
     }
 
     buildGamePlatform() {
@@ -76,6 +88,7 @@ class Level {
             path + "front" + format,
             path + "back" + format,
         ];
+
         const cubeMapTexture = new THREE.CubeTextureLoader().load(urls);
         Game.scene.background = cubeMapTexture;
 
@@ -84,12 +97,12 @@ class Level {
     }
 
     buildPlatform() {
-        const platform = new Plane(gameConfig.width, innerHeight);
+        const platform = new Plane(gameConfig.level.width, innerHeight);
         return platform;
     }
 
     buildPlayablePlatform() {
-        const playablePlatform = new AuxiliarPlatform(gameConfig.width - this.hitter.width, innerHeight);
+        const playablePlatform = new AuxiliarPlatform(gameConfig.level.width - this.hitter.width, innerHeight);
         return playablePlatform;
     }
 
@@ -107,10 +120,10 @@ class Level {
     }
 
     buildWalls() {
-        const wallTop = new Wall(0, gameConfig.width / 2 - 0.7, 0, gameConfig.width + 2, 1, "top");
-        const wallBottom = new Wall(0, -gameConfig.width / 2 + 0.3, 0, gameConfig.width + 2, 1, "bottom");
-        const wallLeft = new Wall(-gameConfig.width / 2 - 0.5, 0, 0, 1, gameConfig.width - 0.7, "left");
-        const wallRight = new Wall(gameConfig.width / 2 + 0.5, 0, 0, 1, gameConfig.width - 0.7, "right");
+        const wallTop = new Wall(0, gameConfig.level.width / 2 - 0.7, 0, gameConfig.level.width + 2, 1, "top");
+        const wallBottom = new Wall(0, -gameConfig.level.width / 2 + 0.3, 0, gameConfig.level.width + 2, 1, "bottom");
+        const wallLeft = new Wall(-gameConfig.level.width / 2 - 0.5, 0, 0, 1, gameConfig.level.width - 0.7, "left");
+        const wallRight = new Wall(gameConfig.level.width / 2 + 0.5, 0, 0, 1, gameConfig.level.width - 0.7, "right");
 
         return [wallTop, wallBottom, wallLeft, wallRight];
     }
@@ -131,68 +144,100 @@ class Level {
         if (destroyedOnHit) this.destroyBlock(block);
     }
 
-    createNewBall() {
+    createNewBalls() {
         const existentMiniBall = this.miniBalls[0];
 
-        const newMiniBall = new MiniBall(
+        const newMiniBall1 = new MiniBall(
             existentMiniBall.position.x,
             existentMiniBall.position.y,
             0,
             "#fff",
             existentMiniBall.speed,
-            existentMiniBall.angle - Math.PI
+            existentMiniBall.angle - THREE.MathUtils.degToRad(30)
         );
 
-        this.miniBalls.push(newMiniBall);
-        Game.scene.add(newMiniBall);
+        const newMiniBall2 = new MiniBall(
+            existentMiniBall.position.x,
+            existentMiniBall.position.y,
+            0,
+            "#fff",
+            existentMiniBall.speed,
+            existentMiniBall.angle + Math.PI
+        );
+
+        this.miniBalls.push(newMiniBall1, newMiniBall2);
+        Game.scene.add(newMiniBall1, newMiniBall2);
     }
 
-    createPowerUp1(block) {
+    transformMiniBallInFireBall() {
+        this.miniBalls.forEach((miniBall) => {
+            miniBall.transformInFireBall();
+        });
+
+        setTimeout(() => {
+            this.activePowerUp = false;
+        }, gameConfig.level.miniBall.firePowerUpTime);
+    }
+
+    createPowerUp(block) {
+        const getPowerUpIndex = () => {
+            return this.powerUpsTaken % this.powerUps.length;
+        };
+
         const position = block.position;
+        const index = getPowerUpIndex();
 
-        this.powerUp1 = new PowerUp1(position.x, position.y, position.z + 0.6, this.destroyPowerUp1.bind(this));
-        this.activePowerUp1 = true;
-        Game.scene.add(this.powerUp1);
+        this.PowerUp = new this.powerUps[index](
+            position.x,
+            position.y,
+            position.z + 0.6,
+            this.destroyPowerUp.bind(this),
+            this.actionFunctions[index].bind(this)
+        );
+
+        this.activePowerUp = true;
+        Game.scene.add(this.PowerUp);
     }
 
-    destroyPowerUp1(collideWithHitter) {
+    destroyPowerUp(collideWithHitter) {
         if (collideWithHitter) {
             if (this.miniBalls.length > 1) {
                 return;
             }
 
-            this.activePowerUp1 = true;
-            Game.scene.remove(this.powerUp1);
-            this.createNewBall();
+            this.activePowerUp = true;
+            this.powerUpsTaken++;
+            Game.scene.remove(this.PowerUp);
+            this.PowerUp.actionFunction();
             return;
         }
 
-        Game.scene.remove(this.powerUp1);
-        this.activePowerUp1 = false;
-        this.powerUp1 = null;
+        Game.scene.remove(this.PowerUp);
+        this.activePowerUp = false;
+        this.PowerUp = null;
         this.blocksDestroyed = 0;
     }
 
-    destroyPowerUp1OnEndGame() {
-        if (!this.powerUp1) return;
+    destroyPowerUpOnEndGame() {
+        if (!this.PowerUp) return;
 
-        Game.scene.remove(this.powerUp1);
-        this.powerUp1.destructor();
-        this.powerUp1 = null;
+        Game.scene.remove(this.PowerUp);
+        this.PowerUp.destructor();
+        this.PowerUp = null;
     }
 
-    checkPowerUp1(block) {
-        if (this.activePowerUp1 || this.miniBalls.length > 1) return;
+    checkPowerUp(block) {
+        if (this.activePowerUp) return;
 
         this.blocksDestroyed++;
 
         if (this.blocksDestroyed >= this.blocksDestroyedLimit) {
-            this.createPowerUp1(block);
+            this.createPowerUp(block);
         }
     }
 
     destroyBlock(block) {
-        this.checkPowerUp1(block);
+        this.checkPowerUp(block);
         this.blocks = this.blocks.filter((b) => b !== block);
         Game.scene.remove(block);
 
@@ -206,15 +251,15 @@ class Level {
         const deathZones = [this.walls[1]];
 
         this.miniBalls.forEach((miniBall) => {
-            miniBall.update(this.hitter, collisionWalls, this.blocks, deathZones, this.hitBlock.bind(this), this.death.bind(this));
+            miniBall.update(this.hitter, collisionWalls, this.blocks, deathZones, this.hitBlock.bind(this), this.destroyBall.bind(this));
         });
     }
 
     render() {
         this.moveMiniBall();
 
-        if (this.powerUp1) {
-            this.powerUp1.move(this.hitter);
+        if (this.PowerUp) {
+            this.PowerUp.move(this.hitter);
         }
     }
 
@@ -227,8 +272,9 @@ class Level {
             miniBall.resetPosition();
         });
 
-        this.activePowerUp1 = false;
+        this.activePowerUp = false;
         this.blocksDestroyed = 0;
+        this.powerUpsTaken = 0;
     }
 
     finish() {
@@ -245,32 +291,48 @@ class Level {
         }
     }
 
-    gameOver() {
-        this.destroyPowerUp1OnEndGame();
-
-        Logs.updateCurrentSpeed(0);
-
-        setTimeout(
-            () =>
-                this.miniBalls.forEach((miniBall) => {
-                    miniBall.raycasterMode();
-                }),
-            500
-        );
+    restartLevel() {
+        this.miniBalls.forEach((miniBall) => {
+            miniBall.raycasterMode();
+        });
+        this.died = false;
     }
 
-    death(miniBall) {
-        this.activePowerUp1 = false;
-        this.blocksDestroyed = 0;
+    die() {
+        this.died = true;
+        this.destroyPowerUpOnEndGame();
+        this.powerUpsTaken = 0;
+        this.activePowerUp = false;
+        Logs.updateCurrentSpeed(0);
+        Game.die();
+
+        if (!Game.session.isAlive()) {
+            Game.gameOver();
+            this.nextLevel(true);
+        }
+
+        setTimeout(() => {
+            this.restartLevel();
+        }, 500);
+    }
+
+    destroyBall(miniBall) {
+        if (this.died) return;
 
         if (this.miniBalls.length > 1) {
             Game.scene.remove(miniBall);
             this.miniBalls = this.miniBalls.filter((ball) => ball.id !== miniBall.id);
             miniBall.destructor();
+
+            if (this.miniBalls.length === 1) {
+                this.activePowerUp = false;
+                this.blocksDestroyed = 0;
+            }
+
             return;
         }
 
-        this.gameOver();
+        this.die();
     }
 
     viewBoundingBox() {
@@ -387,7 +449,7 @@ class Level {
 
     destructor() {
         Game.scene.remove(...this.getElements());
-        if (this.powerUp1) Game.scene.remove(this.powerUp1);
+        if (this.PowerUp) Game.scene.remove(this.PowerUp);
 
         this.miniBalls.forEach((miniBall) => {
             miniBall.destructor();

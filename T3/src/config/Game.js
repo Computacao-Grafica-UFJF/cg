@@ -1,5 +1,16 @@
-const game = {
-    width: 30,
+const gameConfig = {
+    level: {
+        width: 30,
+        blocksDestroyedLimit: 10,
+        viewBoundingBox: false,
+        miniBall: {
+            startSpeed: 0.15,
+            firePowerUpTime: 7000,
+        },
+    },
+    session: {
+        lives: 5,
+    },
 };
 
-export default game;
+export default gameConfig;
