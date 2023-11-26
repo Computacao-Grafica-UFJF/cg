@@ -101,6 +101,11 @@ body {
     width: 100%;
     height: 100%;
 }
+
+#universe.fade-out {
+    opacity: 0;
+}
+
 #galaxy {
     transform: rotateX(75deg);
     transform-style: preserve-3d;
@@ -321,15 +326,24 @@ body {
     }
 }
 
-.astronaut {
+#astronaut {
     width: 250px;
     height: 300px;
     position: absolute;
     z-index: 11;
-    top: calc(50% - 150px);
+    top: calc(50% - 200px);
     left: calc(50% - 125px);
     -webkit-animation: astronaut 5s linear infinite;
+    -moz-animation: astronaut 5s linear infinite;
+    animation: astronaut 5s linear infinite;
+
+    opacity: 0;
 }
+
+#astronaut.fade-in {
+    opacity: 1;
+}
+
 .schoolbag {
     width: 100px;
     height: 150px;

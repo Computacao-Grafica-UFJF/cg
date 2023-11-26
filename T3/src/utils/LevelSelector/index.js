@@ -8,7 +8,13 @@ class LevelSelector {
     static currentLevelIndex = 0;
     static currentLevel = null;
 
-    static nextLevel() {
+    static nextLevel(died = false) {
+        console.log("nextLevel", died);
+        if (died) {
+            this.startLevel();
+            return;
+        }
+
         this.currentLevelIndex++;
 
         if (this.currentLevelIndex >= this.levels.length) {

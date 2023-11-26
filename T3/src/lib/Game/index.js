@@ -112,6 +112,11 @@ class Game {
         destroyLastLiveSprite();
     };
 
+    static restart = () => {
+        this.session.reset();
+        LiveCounter.update(this.session.lives);
+    };
+
     static gameOver() {
         this.scene.children.forEach((child) => {
             if (child.destructor) child.destructor();
@@ -120,7 +125,7 @@ class Game {
         this.scene.remove(...this.scene.children);
         this.movableCamera = true;
 
-        Menu.showStartMenu();
+        Menu.showGameOverMenu();
 
         this.session.reset();
     }
