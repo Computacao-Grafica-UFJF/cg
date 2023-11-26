@@ -49,6 +49,8 @@ class Game {
 
     static fixCameraPosition() {
         this.movableCamera = !this.movableCamera;
+
+        console.log("oi");
         if (!this.movableCamera) {
             this.camera.resetToStartingPosition();
         }
