@@ -252,6 +252,8 @@ export class MiniBall extends THREE.Mesh {
                     this.playBlockSound(block.type);
                     this.changeAngleByBlock(block, currentAngle);
                     this.activateEvadeModeBlock();
+                } else {
+                    SoundPlayer.playByKey("fireBall");
                 }
 
                 hitBlock(block);
