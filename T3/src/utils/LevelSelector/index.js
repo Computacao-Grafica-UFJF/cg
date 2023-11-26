@@ -9,7 +9,6 @@ class LevelSelector {
     static currentLevel = null;
 
     static nextLevel(died = false) {
-        console.log("nextLevel", died);
         if (died) {
             this.startLevel();
             return;

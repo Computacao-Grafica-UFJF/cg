@@ -464,6 +464,8 @@ class Level {
         this.walls.forEach((wall) => {
             wall.destructor();
         });
+
+        if (this.PowerUp) this.PowerUp.destructor();
     }
 }
 
