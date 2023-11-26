@@ -1,7 +1,7 @@
 const gameConfig = {
     level: {
         width: 30,
-        blocksDestroyedLimit: 1,
+        blocksDestroyedLimit: 10,
         viewBoundingBox: false,
         miniBall: {
             startSpeed: 0.15,
@@ -9,7 +9,7 @@ const gameConfig = {
         },
     },
     session: {
-        lives: 0,
+        lives: 5,
     },
 };
 
