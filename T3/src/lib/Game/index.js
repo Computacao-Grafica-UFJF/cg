@@ -49,6 +49,7 @@ class Game {
 
     static fixCameraPosition() {
         this.movableCamera = !this.movableCamera;
+
         if (!this.movableCamera) {
             this.camera.resetToStartingPosition();
         }
