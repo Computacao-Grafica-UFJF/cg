@@ -12,7 +12,7 @@ class PerspectiveCameraWrapper extends THREE.PerspectiveCamera {
         const far = 1000;
 
         const position = new THREE.Vector3(0, -12, 30);
-        const lookAt = new THREE.Vector3(0, -2, 0);
+        const lookAt = new THREE.Vector3(0, -1.63, 0);
 
         this.position.copy(position);
         this.lookAt(lookAt);
