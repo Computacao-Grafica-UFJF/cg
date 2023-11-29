@@ -248,7 +248,7 @@ export class MiniBall extends THREE.Mesh {
         blocks.find((block) => {
             const blockBoundingBox = new THREE.Box3().setFromObject(block);
             if (ballBoundingBox.intersectsBox(blockBoundingBox) && this.evadeModeBlock === false) {
-                if (!this.fireBall) {
+                if (!this.fireBall || block.type === "indestructible") {
                     this.playBlockSound(block.type);
                     this.changeAngleByBlock(block, currentAngle);
                     this.activateEvadeModeBlock();
