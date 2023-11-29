@@ -19,11 +19,12 @@ class PowerUp extends THREE.Mesh {
         this.translateY(y);
         this.translateZ(z);
         this.rotateZ(THREE.MathUtils.degToRad(90));
+        this.texturize(letter);
+    }
 
+    texturize(letter) {
         const path = `./assets/texture/powerUp/${letter}.png`;
-        console.log(path);
         const texture = new THREE.TextureLoader().load(path);
-        console.log(texture);
         this.material.map = texture;
     }
 
