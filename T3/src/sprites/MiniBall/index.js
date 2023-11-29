@@ -275,7 +275,7 @@ export class MiniBall extends THREE.Mesh {
 
     transformInFireBall() {
         this.fireBall = true;
-        this.material.color.set("orange");
+        this.material.color.set("red");
 
         setTimeout(() => {
             this.fireBall = false;
