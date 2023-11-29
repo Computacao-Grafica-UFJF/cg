@@ -3,9 +3,9 @@ import gameConfig from "../../config/Game.js";
 import Game from "../../lib/Game/index.js";
 
 class PowerUp extends THREE.Mesh {
-    constructor(x, y, z, destroy, actionFunction, color) {
-        const geometry = new THREE.CapsuleGeometry(0.3, 0.5, 16);
-        const material = new THREE.MeshLambertMaterial({ color });
+    constructor(x, y, z, destroy, actionFunction, letter) {
+        const geometry = new THREE.CapsuleGeometry(0.5, 0.5, 16);
+        const material = new THREE.MeshLambertMaterial({ color: "#fff" });
 
         super(geometry, material);
 
@@ -19,12 +19,19 @@ class PowerUp extends THREE.Mesh {
         this.translateY(y);
         this.translateZ(z);
         this.rotateZ(THREE.MathUtils.degToRad(90));
+
+        const path = `./assets/texture/powerUp/${letter}.png`;
+        console.log(path);
+        const texture = new THREE.TextureLoader().load(path);
+        console.log(texture);
+        this.material.map = texture;
     }
 
     move(hitter) {
         if (Game.paused) return;
 
-        this.translateX(-this.speed);
+        this.position.set(this.position.x, this.position.y - this.speed, this.position.z);
+        this.rotateY(THREE.MathUtils.degToRad(5));
 
         this.checkCollisionWithHitter(hitter);
 
