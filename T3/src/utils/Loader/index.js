@@ -41,6 +41,7 @@ class Loader {
             durableBlock: soundsPackages[2],
             indestructibleBlock: soundsPackages[2],
             hitter: soundsPackages[0],
+            fireBall: soundsPackages[3],
         };
     };
 }

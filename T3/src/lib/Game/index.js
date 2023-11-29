@@ -3,7 +3,6 @@ import Stats from "../../../../build/jsm/libs/stats.module.js";
 import { initRenderer } from "../../../../libs/util/util.js";
 import PerspectiveCameraWrapper from "../../utils/PerspectiveCameraWrapper/index.js";
 import { OrbitControls } from "../../../../build/jsm/controls/OrbitControls.js";
-import Pause from "../../sprites/Pause/index.js";
 import DirectionalLight from "../../utils/DirectionalLight/index.js";
 import Session from "../Session/index.js";
 import LiveCounter from "../../sprites/LiveCounter/index.js";
@@ -59,21 +58,19 @@ class Game {
     }
 
     static pause() {
-        const insertPauseSprite = () => {
+        const insertPause = () => {
             if (this.paused) {
-                this.scene.remove(...this.scene.children.filter((child) => child instanceof Pause));
                 this.controls.enabled = this.movableCamera;
                 this.controls.enableZoom = this.movableCamera;
 
                 return;
             }
 
-            this.scene.add(new Pause());
             this.controls.enabled = false;
             this.controls.enableZoom = false;
         };
 
-        insertPauseSprite();
+        insertPause();
         this.paused = !this.paused;
     }
 

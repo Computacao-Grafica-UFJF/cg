@@ -33,14 +33,10 @@ Files for the Computer Graphics course in Three.js
     [X] Colisão com o rebatedor
     [X] Colisão com bloco comum
     [X] Colisão com bloco com resistência maior ou indestrutível
-    [] Colisão com qualquer bloco quando segundo power-up estiver ativo
+    [X] Colisão com qualquer bloco quando segundo power-up estiver ativo
 
 ## Mobile
 
     [ ] Controle com Raycaster
     [ ] Ajustar conteúdo na tela
     [ ] Botões de full Screen e disparar bolinha
-
-## Pessoais
-
-    [ ] Consertar o pause
